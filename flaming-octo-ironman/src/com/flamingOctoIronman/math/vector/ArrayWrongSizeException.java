@@ -1,5 +1,6 @@
 package com.flamingOctoIronman.math.vector;
 
+@SuppressWarnings("serial")
 public class ArrayWrongSizeException extends Exception {
 	public float[] array = null;
 	public ArrayWrongSizeException(float[] location){

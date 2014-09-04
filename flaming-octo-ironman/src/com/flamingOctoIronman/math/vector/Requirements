@@ -6,7 +6,7 @@ Done	-Provide a Vector class that stores vector information, including coordinat
 Done		-Provide a method for returning each of the values in the vector, or as an array
 Done		-Provide a method for returning the vector type
 Done	-Multiply and divide a vector by a scalar
-		-Add and subtract a vector with another vector
+Done	-Add and subtract a vector with another vector
 		Calculate the following:
 			-Dot product
 			-Cross product

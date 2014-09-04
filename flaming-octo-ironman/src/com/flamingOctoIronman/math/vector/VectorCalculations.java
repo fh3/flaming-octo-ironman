@@ -7,6 +7,7 @@ public class VectorCalculations {
 	 */
 	
 	//Methods
+	//Public methods
 	public Vector scalarMultiplication(Vector vector, float scalar){
 		return new Vector(vector.getX() * scalar, vector.getY() * scalar, vector.getZ() * scalar, vector.isDirectional());
 	}
@@ -29,5 +30,10 @@ public class VectorCalculations {
 		//Vectors being subtracted always equal a directional vector regardless of type 
 		//Vector "b" gets subtracted from vector "a"
 		return new Vector(a.getX() - b.getX(), a.getY() - b.getY(), a.getZ() - b.getZ(), true);
+	}
+	
+	//Private methods
+	private float vectorSumSquared(Vector v){
+		return v.getX() * v.getX() + v.getY() * v.getY() + v.getZ() * v.getZ();
 	}
 }
