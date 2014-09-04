@@ -1,0 +1,16 @@
+List of function this package must fulfill:
+
+	-Provide a Vector class that stores vector information, including coordinates and type
+	This class must:
+		-Provide a method for returning the vector as a column or row matrix
+		-Provide a method for returning each of the values in the vector
+		-Provide a method for returning the vector type
+	-Multiply and divide a vector by a scalar
+	-Add and subtract a vector with another vector
+	Calculate the following:
+		-Dot product
+		-Cross product
+		-Magnitude
+		-Angle between two vectors
+		-Determine the relationship between two vectors I.E. collinear, collinear but opposite, perpendicular, same direction, opposite directions
+		-Linear Interpolation
