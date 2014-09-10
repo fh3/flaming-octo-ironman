@@ -1,7 +1,8 @@
 package com.flamingOctoIronman.math.vector;
 
 public class VectorCalculations {
-	/* Class information
+	/* 
+	 * Class information
 	 * This class is used to perform math using vectors. Most methods will return either Vector objects
 	 * or scalar values.
 	 */
@@ -35,5 +36,15 @@ public class VectorCalculations {
 	//Private methods
 	private float vectorSumSquared(Vector v){
 		return v.getX() * v.getX() + v.getY() * v.getY() + v.getZ() * v.getZ();
+	}
+	
+	public float findMagnitude(Vector v){
+		//This function is computationally expensive, use conservatively
+		return (float) Math.sqrt(vectorSumSquared(v));
+	}
+	
+	public Vector normalizedVector(Vector v){
+		float magnitude = findMagnitude(v);
+		return new Vector(v.getX() / magnitude, v.getY() / magnitude, v.getZ() / magnitude, true);
 	}
 }
