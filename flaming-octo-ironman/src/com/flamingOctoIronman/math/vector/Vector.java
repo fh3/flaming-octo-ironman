@@ -8,6 +8,7 @@ public class Vector {
 	//Variables
 	private float location[] = new float[3];		//This is the value of the vector
 	private boolean isDirectional = false;			//This is the vector type, either directional or positional
+	private float magnitude;
 	
 	//Constructors
 	public Vector(boolean isDirectional){			//Constructor chaining is used here to provide a number of options
@@ -59,5 +60,34 @@ public class Vector {
 	
 	public boolean isDirectional(){
 		return this.isDirectional;
+	}
+	
+	public float getMagnitude(){
+		return this.magnitude;
+	}
+	
+	//Methods for Vector calculations
+		
+	//Public methods
+	public void scalarMultiplication(float scalar){
+		this.location[0] *= scalar;
+		this.location[1] *= scalar;
+		this.location[2] *= scalar;
+	}
+	
+	public void scalarDivision(float scalar){
+		this.location[0] /= scalar;
+		this.location[1] /= scalar;
+		this.location[2] /= scalar;
+	}
+	
+	//This function is computationally expensive, use conservatively
+	public void updateMagnitude(){
+		magnitude = (float) Math.sqrt(vectorSumSquared());
+	}
+	
+	//Private methods
+	private float vectorSumSquared(){
+		return (this.location[0] * this.location[0]) + (this.location[1] * this.location[1]) + (this.location[2] * this.location[2]);
 	}
 }

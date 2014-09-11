@@ -1,4 +1,4 @@
-List of function this package must fulfill:
+3List of function this package must fulfill:
 
 	-Provide a Matrix class that can handle matrices of different sizes
 	-Provide a class to perform mathematical operations involving matrices

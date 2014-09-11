@@ -5,18 +5,12 @@ public class VectorCalculations {
 	 * Class information
 	 * This class is used to perform math using vectors. Most methods will return either Vector objects
 	 * or scalar values.
+	 * 
+	 * This is only used for methods that require two vectors
 	 */
 	
 	//Methods
-	//Public methods
-	public Vector scalarMultiplication(Vector vector, float scalar){
-		return new Vector(vector.getX() * scalar, vector.getY() * scalar, vector.getZ() * scalar, vector.isDirectional());
-	}
-	
-	public Vector scalarDivision(Vector vector, float scalar){
-		return new Vector(vector.getX() / scalar, vector.getY() / scalar, vector.getZ() / scalar, vector.isDirectional());
-	}
-	
+	//Public methods	
 	public Vector vectorAddition(Vector a, Vector b){
 		if(a.isDirectional() && b.isDirectional()){
 			//Two directional vectors always equals a directional vector 
@@ -31,29 +25,15 @@ public class VectorCalculations {
 		//Vectors being subtracted always equal a directional vector regardless of type 
 		//Vector "b" gets subtracted from vector "a"
 		return new Vector(a.getX() - b.getX(), a.getY() - b.getY(), a.getZ() - b.getZ(), true);
-	}
-	
-	//Private methods
-	private float vectorSumSquared(Vector v){
-		return v.getX() * v.getX() + v.getY() * v.getY() + v.getZ() * v.getZ();
-	}
-	
-	public float findMagnitude(Vector v){
-		//This function is computationally expensive, use conservatively
-		return (float) Math.sqrt(vectorSumSquared(v));
-	}
-	
-	public Vector newUnitVector(Vector v){
-		float magnitude = findMagnitude(v);
-		return new Vector(v.getX() / magnitude, v.getY() / magnitude, v.getZ() / magnitude, true);
-	}
-	
+	}	
 	public float findDotProduct(Vector a, Vector b){
 		return a.getX() * b.getX() + a.getY() * b.getY() + a.getZ() * b.getZ();
 	}
 	
 	public float findAngle(Vector a, Vector b){
-		return (float) Math.acos(findDotProduct(a, b) / (findMagnitude(a) * findMagnitude(b)));
+		a.updateMagnitude();
+		b.updateMagnitude();
+		return (float) Math.acos(findDotProduct(a, b) / (a.getMagnitude() * b.getMagnitude()));
 	}
 	
 	public Vector findCrossProduct(Vector a, Vector b){
