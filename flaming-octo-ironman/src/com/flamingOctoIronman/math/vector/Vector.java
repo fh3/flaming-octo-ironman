@@ -29,6 +29,7 @@ public class Vector {
 		this.location[1] = y;
 		this.location[2] = z;
 		this.isDirectional = isDirectional;
+		this.updateMagnitude();
 	}
 	
 	//Methods
@@ -40,6 +41,7 @@ public class Vector {
 	
 	public void setX(float x){
 		this.location[0] = x;
+		this.updateMagnitude();
 	}
 	
 	public float getY(){
@@ -48,6 +50,7 @@ public class Vector {
 	
 	public void setY(float y){
 		this.location[1] = y;
+		this.updateMagnitude();
 	}
 	
 	public float getZ(){
@@ -56,6 +59,7 @@ public class Vector {
 	
 	public void setZ(float z){
 		this.location[2] = z;
+		this.updateMagnitude();
 	}
 	
 	public boolean isDirectional(){
@@ -82,7 +86,7 @@ public class Vector {
 	}
 	
 	//This function is computationally expensive, use conservatively
-	public void updateMagnitude(){
+	private void updateMagnitude(){
 		magnitude = (float) Math.sqrt(vectorSumSquared());
 	}
 	

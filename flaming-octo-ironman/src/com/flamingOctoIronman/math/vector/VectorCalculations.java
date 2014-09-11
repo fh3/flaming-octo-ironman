@@ -31,8 +31,6 @@ public class VectorCalculations {
 	}
 	
 	public float findAngle(Vector a, Vector b){
-		a.updateMagnitude();
-		b.updateMagnitude();
 		return (float) Math.acos(findDotProduct(a, b) / (a.getMagnitude() * b.getMagnitude()));
 	}
 	

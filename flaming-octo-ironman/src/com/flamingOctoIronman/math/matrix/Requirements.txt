@@ -10,10 +10,10 @@
 		-Provide a method for setting values in a matrix								Done
 		-Provide a constructor for creating a new object from a pre-existing array		Done
 		-Provide a constructor for creating a new object from a pre-existing matrix		Done
-		-Provide a constructor that creates an identity matrix							Create a new class for this
+		-Provide a constructor that creates an identity matrix							Done
 	MatrixMath class must do the following:
-		-Matrix scalar multiplication
-		-Matrix scalar division
+		-Matrix scalar multiplication													Done
+		-Matrix scalar division															Done
 		-Matrix by matrix multiplication
 		-Finding the determinate of a matrix
 		-Finding the inverse of a matrix
