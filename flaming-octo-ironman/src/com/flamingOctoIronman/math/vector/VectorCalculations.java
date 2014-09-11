@@ -43,8 +43,31 @@ public class VectorCalculations {
 		return (float) Math.sqrt(vectorSumSquared(v));
 	}
 	
-	public Vector normalizedVector(Vector v){
+	public Vector newUnitVector(Vector v){
 		float magnitude = findMagnitude(v);
 		return new Vector(v.getX() / magnitude, v.getY() / magnitude, v.getZ() / magnitude, true);
+	}
+	
+	public float findDotProduct(Vector a, Vector b){
+		return a.getX() * b.getX() + a.getY() * b.getY() + a.getZ() * b.getZ();
+	}
+	
+	public float findAngle(Vector a, Vector b){
+		return (float) Math.acos(findDotProduct(a, b) / (findMagnitude(a) * findMagnitude(b)));
+	}
+	
+	public Vector findCrossProduct(Vector a, Vector b){
+		return new Vector(a.getY() * b.getZ() - a.getZ() * b.getY(), a.getZ() * b.getX() - a.getX() * b.getZ(), a.getX() * b.getY() - a.getY() * b.getX(), true);
+	}
+	
+	//Calculates the position vector of a point moving between two other vectors
+	public Vector LERP(Vector a, Vector b, float percent){
+		float change = 1 - percent;
+		if(percent <= 1){
+			return new Vector(change * a.getX() + percent * b.getX(), change * a.getY() + percent * b.getY(), change * a.getZ() + percent * b.getZ(), false);
+		}
+		else{
+			return null;
+		}
 	}
 }
