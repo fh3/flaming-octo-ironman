@@ -1,0 +1,3 @@
+Project notes:
+
+Not sure if I should return a new vector and matrix in the math classes or if I should edit the passed object (also remove math classes and create subclasses)
