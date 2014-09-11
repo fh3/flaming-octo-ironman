@@ -1,16 +1,16 @@
 List of function this package must fulfill:
 
-	-Provide a Matrix class that can store vectors of different sizes
+	-Provide a Matrix class that can handle matrices of different sizes
 	-Provide a class to perform mathematical operations involving matrices
 	-Provide a class for 4 by 4 matrices
 	-Provide a class for transition matrices
 	-Provide a class for change of basis matrices
 	Matrix class must:
-		-Provide a method for returning the value of a given position of the vector
-		-Provide a method for setting values in a vector
-		-Provide a constructor for creating a new object from a pre-existing array
-		-Provide a constructor for creating a new object from a pre-existing matrix
-		-Provide a constructor that creates an identity matrix
+		-Provide a method for returning the value of a given position of the matrix		Done
+		-Provide a method for setting values in a matrix								Done
+		-Provide a constructor for creating a new object from a pre-existing array		Done
+		-Provide a constructor for creating a new object from a pre-existing matrix		Done
+		-Provide a constructor that creates an identity matrix							Create a new class for this
 	MatrixMath class must do the following:
 		-Matrix scalar multiplication
 		-Matrix scalar division
