@@ -1,0 +1,5 @@
+Architecture	Target microarchitecture	Required instruction extensions
+x86-64			Intel Nehalem				SSE, SSE3
+x86-64			Intel Sandy Bridge			AVX
+x86-64			Intel Haswell				AVX, FMA3
+x86-64			AMD Bulldozer				AVX, FMA4 

@@ -1,5 +1,7 @@
 package com.flamingOctoIronman.math.vector;
 
+import info.yeppp.Core;
+
 public class Vector {
 	/* Class information
 	 * This class is used to define vectors. Floating point numbers are used to allow vectors to exist between
@@ -15,13 +17,9 @@ public class Vector {
 		this(0.0f, 0.0f, 0.0f, isDirectional);		//when creating vectors
 	}
 
-	public Vector(float location[], boolean isDirectional) throws ArrayWrongSizeException{
-		if(location.length == 3){
+	public Vector(float location[], boolean isDirectional){
 			this.location = location;
 			this.isDirectional = isDirectional;
-		} else{
-			throw new ArrayWrongSizeException(location);		//This is to prevent an array larger than three
-		}														//From being accidentally passed as the vector
 	}
 	
 	public Vector(float x, float y, float z, boolean isDirectional){
@@ -69,6 +67,9 @@ public class Vector {
 	public float getMagnitude(){
 		return this.magnitude;
 	}
+	public float[] getArray(){
+		return this.location;
+	}
 	
 	//Methods for Vector calculations
 		
@@ -85,6 +86,11 @@ public class Vector {
 		this.location[2] /= scalar;
 	}
 	
+	@Override
+	public String toString(){
+		return "<" + location[0] + ", " + location[1] + ", " + location[2] + ">";
+	}
+	
 	//This function is computationally expensive, use conservatively
 	private void updateMagnitude(){
 		magnitude = (float) Math.sqrt(vectorSumSquared());
@@ -92,6 +98,6 @@ public class Vector {
 	
 	//Private methods
 	private float vectorSumSquared(){
-		return (this.location[0] * this.location[0]) + (this.location[1] * this.location[1]) + (this.location[2] * this.location[2]);
+		return Core.SumSquares_V32f_S32f(location, 0, location.length);
 	}
 }
