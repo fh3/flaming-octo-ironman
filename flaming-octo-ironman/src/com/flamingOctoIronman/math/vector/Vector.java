@@ -60,6 +60,16 @@ public class Vector {
 		this.location[2] = z;
 		this.updateMagnitude();
 	}
+	public float[] getAll(){
+		float[] r = {this.getX(), this.getY(), this.getZ()};
+		return r;
+	}
+	public void setAll(float coords[]){
+		this.location[0] = coords[0];
+		this.location[1] = coords[1];
+		this.location[2] = coords[2];
+		this.updateMagnitude();
+	}
 	
 	public boolean isDirectional(){
 		return this.isDirectional;
@@ -79,12 +89,14 @@ public class Vector {
 		this.location[0] *= scalar;
 		this.location[1] *= scalar;
 		this.location[2] *= scalar;
+		this.updateMagnitude();
 	}
 	
 	public void scalarDivision(float scalar){
 		this.location[0] /= scalar;
 		this.location[1] /= scalar;
 		this.location[2] /= scalar;
+		this.updateMagnitude();
 	}
 	
 	@Override
