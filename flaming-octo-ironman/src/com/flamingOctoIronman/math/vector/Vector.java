@@ -8,8 +8,8 @@ public class Vector {
 	 * points on the scene graph. This class can be used for both positional and directional vectors.	
 	 */
 	//Variables
-	private float location[] = new float[3];		//This is the value of the vector
-	private boolean isDirectional = false;			//This is the vector type, either directional or positional
+	private float location[];		//This is the value of the vector
+	private boolean isDirectional;	//This is the vector type, either directional or positional
 	private float magnitude;
 	
 	//Constructors
@@ -18,8 +18,9 @@ public class Vector {
 	}
 
 	public Vector(float location[], boolean isDirectional){
-			this.location = location;
-			this.isDirectional = isDirectional;
+		this.location = new float[3];
+		this.location = location;
+		this.isDirectional = isDirectional;
 	}
 	
 	public Vector(float x, float y, float z, boolean isDirectional){

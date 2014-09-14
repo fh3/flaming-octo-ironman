@@ -14,8 +14,8 @@
 	MatrixMath class must do the following:
 		-Matrix scalar multiplication													Done
 		-Matrix scalar division															Done
-		-Matrix by matrix multiplication
-		-Finding the determinate of a matrix
+		-Matrix by matrix multiplication												Done
+		-Finding the determinate of a matrix											Not doing
 		-Finding the inverse of a matrix
 		-Transpose a matrix
 		-Create a 1x4 matrix from a 1x3 matrix
