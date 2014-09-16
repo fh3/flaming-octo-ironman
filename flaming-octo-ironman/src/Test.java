@@ -2,10 +2,8 @@ import info.yeppp.CpuArchitecture;
 import info.yeppp.CpuSimdFeature;
 import info.yeppp.Library;
 
-import java.util.Arrays;
 import java.util.Iterator;
 
-import com.flamingOctoIronman.math.matrix.IdentityMatrix;
 import com.flamingOctoIronman.math.matrix.Matrix;
 import com.flamingOctoIronman.math.matrix.MatrixMath;
 
@@ -37,12 +35,13 @@ public class Test {
 		//Testing Matrix stuff
 		float[][] matrixAArray = {{16, 15, 14, 13}, {12, 11, 10, 9}, {8, 7, 6, 5}, {4, 3, 2, 1}};
 		Matrix b = new Matrix(matrixAArray);
-		float[][] matrixBArray = {{5, 4, 3, 2}};
-		Matrix a = new Matrix(matrixBArray);
-		float[] column = {1, 2, 3, 4};
+		//float[][] matrixBArray = {{5, 4, 3, 2}};
+		//Matrix a = new Matrix(matrixBArray);
+		//float[] column = {1, 2, 3, 4};
 		//m.setMatrixColumn(1, column);
 		//m.scalarMultiplication(5);
-		Matrix p = MatrixMath.multipyMatrices(a, b);
-		System.out.println(p.toString());
+		//Matrix p = MatrixMath.multipyMatrices(a, b);
+		b.gaussianElimination();
+		System.out.println(b.toString());
 	}
 }

@@ -22,6 +22,9 @@ public class Matrix {
 		this.matrix = m.getMatrix();
 		this.matrix[rows][columns] = this.matrix[rows][columns];
 	}
+	public Matrix(Matrix m){
+		this.matrix = m.getMatrix();
+	}
 	
 	//Methods
 	//Public Methods
@@ -105,5 +108,4 @@ public class Matrix {
 			}
 		}
 	}
-
 }

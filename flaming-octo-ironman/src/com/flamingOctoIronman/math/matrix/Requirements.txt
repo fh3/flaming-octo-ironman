@@ -19,6 +19,8 @@
 		-Finding the inverse of a matrix
 		-Transpose a matrix
 		-Create a 1x4 matrix from a 1x3 matrix
+		-Add matrices
+		-Subtract matrices
 	TransitionMatrix class must do the following:
 		-Extend the Matrix class
 		-Always be 4x4

@@ -16,7 +16,7 @@ public class VectorCalculations {
 	//Methods
 	//Public methods	
 	public static Vector vectorAddition(Vector a, Vector b){
-		float[] sum = {0, 0, 0};
+		float[] sum = new float[3];
 		if(a.isDirectional() && b.isDirectional()){
 			//Two directional vectors always equals a directional vector 
 			Core.Add_V32fV32f_V32f(a.getArray(), 0, b.getArray(), 0, sum, 0, 3);
@@ -31,7 +31,7 @@ public class VectorCalculations {
 	public static Vector vectorSubtraction(Vector a, Vector b){
 		//Vectors being subtracted always equal a directional vector regardless of type 
 		//Vector "b" gets subtracted from vector "a"
-		float[] difference = {0, 0, 0};
+		float[] difference = new float[3];
 		Core.Subtract_V32fV32f_V32f(a.getArray(), 0, b.getArray(), 0, difference, 0, 3);
 		return new Vector(difference, false);
 	}	
@@ -51,8 +51,8 @@ public class VectorCalculations {
 	public static Vector LERP(Vector a, Vector b, float percent){
 		float change = 1 - percent;
 		if(percent <= 1){
-			float[] aResults = {0, 0, 0};
-			float[] bResults = {0, 0, 0};
+			float[] aResults = new float[3];
+			float[] bResults = new float[3];
 			Core.Multiply_V32fS32f_V32f(a.getArray(), 0, change, aResults, 0, 3);
 			Core.Multiply_V32fS32f_V32f(b.getArray(), 0, percent, bResults, 0, 3);
 			Core.Add_IV32fV32f_IV32f(aResults, 0, bResults, 0, 3);
