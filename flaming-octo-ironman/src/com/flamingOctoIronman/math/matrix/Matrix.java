@@ -60,7 +60,7 @@ public class Matrix {
 	}
 	public void setMatrixRow(int rowNumber, float[] row){
 		if(this.matrix[--rowNumber].length == row.length){
-			this.matrix[--rowNumber] = row;
+			this.matrix[rowNumber] = row;
 		} else{
 			System.out.println("Row of wrong size");
 		}

@@ -41,7 +41,7 @@ public class Test {
 		//m.setMatrixColumn(1, column);
 		//m.scalarMultiplication(5);
 		//Matrix p = MatrixMath.multipyMatrices(a, b);
-		b.gaussianElimination();
-		System.out.println(b.toString());
+		Matrix result = MatrixMath.gaussianElimination(b);
+		System.out.println(result.toString());
 	}
 }
