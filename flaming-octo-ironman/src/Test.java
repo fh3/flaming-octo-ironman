@@ -12,6 +12,7 @@ public class Test {
 		System.out.println("Test 2");
 		System.out.println("Commit from austin");
 		System.out.println("Commit from Oliver");
+		System.out.println("Stuff");
 		
 		
 		//SIMD testing stuff

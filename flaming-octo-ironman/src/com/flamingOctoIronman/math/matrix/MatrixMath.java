@@ -11,7 +11,6 @@ public class MatrixMath {
 	 * 
 	 * All classes are to be static
 	 */
-	
 	public static Matrix multipyMatrices(Matrix a, Matrix b){
 		//Multiples matrices so product P = AB
 		
