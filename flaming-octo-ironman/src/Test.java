@@ -14,7 +14,6 @@ public class Test {
 		System.out.println("Commit from Oliver");
 		System.out.println("Stuff");
 		
-		
 		//SIMD testing stuff
 		final CpuArchitecture architecture = Library.getCpuArchitecture();
 		final Iterator<CpuSimdFeature> simdFeaturesIterator = architecture.iterateSimdFeatures();
@@ -34,7 +33,7 @@ public class Test {
 		*/
 		
 		//Testing Matrix stuff
-		float[][] matrixAArray = {{16, 15, 14, 13}, {12, 11, 10, 9}, {8, 7, 6, 5}, {4, 3, 2, 1}};
+		float[][] matrixAArray = {{16, 15, 14, 13}, {12, 10, 10, 9}, {8, 7, 6.054f, 5}, {4, 3, 2, 1}};
 		Matrix b = new Matrix(matrixAArray);
 		//float[][] matrixBArray = {{5, 4, 3, 2}};
 		//Matrix a = new Matrix(matrixBArray);

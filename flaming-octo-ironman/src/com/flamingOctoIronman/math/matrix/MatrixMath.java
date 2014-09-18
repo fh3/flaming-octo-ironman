@@ -1,5 +1,7 @@
 package com.flamingOctoIronman.math.matrix;
 
+import java.text.DecimalFormat;
+
 import info.yeppp.Core;
 
 public class MatrixMath {
@@ -29,6 +31,7 @@ public class MatrixMath {
 		}
 	}
 	public static Matrix addMatrices(Matrix a, Matrix b){
+		DecimalFormat dec;
 		if(a.getRows() == b.getRows() && a.getColumns() == b.getColumns()){
 			float[][] matrixArray = new float[a.getRows()][a.getColumns()];
 			for(int row = 0; row < a.getRows(); row++){
@@ -36,22 +39,22 @@ public class MatrixMath {
 					matrixArray[row][column] = a.getMatrixValue(row, column) + b.getMatrixValue(row, column);
 				}
 			}
-			return new Matrix(matrixArray);
+			return new Matrix(matrixArray, dec);
 		} else{
 			System.out.println("Matrices not of equal sides");
 			return null;
 		}
 	}
-	public static Matrix gaussianElimination(Matrix m){
-		Matrix gaussianMatrix = new Matrix(m);	//Creates a new matrix so original isn't accidentally operated on
+	public static Matrix gaussianElimination(Matrix m, DecimalFormat dec){
+		Matrix gaussianMatrix = new Matrix(m, dec);	//Creates a new matrix so original isn't accidentally operated on
 		//Loops through each column
 		for(int column = 1; column < gaussianMatrix.getColumns(); column++){
 			//Loops through each row
-			for(int row = 1; row < gaussianMatrix.getRows(); row++){
+			for(int row = column; row < gaussianMatrix.getRows(); row++){
 				//Checks to see if the given row has a leading coefficient other than one
 				if(gaussianMatrix.getMatrixValue(row + 1, column) != 0){
 					//If it does do row operation 3 with a calculated scalar
-					RowOp3(gaussianMatrix, row + 1, column, (-1 * (gaussianMatrix.getMatrixValue(row + 1, column) / gaussianMatrix.getMatrixValue(column, column))));
+					RowOp3(gaussianMatrix, row + 1, column, (-1 * (gaussianMatrix.getMatrixValue(row + 1, column) / gaussianMatrix.getMatrixValue(column, column))), dec);
 				}
 			}
 		}
@@ -68,11 +71,24 @@ public class MatrixMath {
 	private static void RowOp2(Matrix m, int row, float scalar){
 		Core.Multiply_IV32fS32f_IV32f(m.getMatrixRow(row), 0, scalar, m.getRows());
 	}
-	//Implements the equation row1 = row1 + scalar * row2
-	private static void RowOp3(Matrix m, int row1, int row2, float scalar){
+	/** Implements the equation row1 = row1 + scalar * row2 in Matrix m
+	 * based on DecimalFormat precision
+	 * **/
+	private static void RowOp3(Matrix m, int row1, int row2, float scalar, DecimalFormat dec){
 		float[] multiplied = new float[m.getColumns()];	//Create an array for results
 		Core.Multiply_V32fS32f_V32f(m.getMatrixRow(row2), 0, scalar, multiplied, 0, multiplied.length);	//Multiply by the scalar
 		Core.Add_IV32fV32f_IV32f(multiplied, 0, m.getMatrixRow(row1), 0, multiplied.length);
+		//Round values so math works out better
+		for(int i = 0; i < multiplied.length; i++){
+			multiplied[i] = Float.valueOf(dec.format(multiplied[i]));
+		}
 		m.setMatrixRow(row1, multiplied);
+	}
+	private static void findDecimalFormat(Matrix a, Matrix b){
+		if(a.getDecimalFormat() < = b.getDecimalFormat()){
+			return a.getDecimalFormat();
+		} else{
+			return b.getDecimalFormat();
+		}
 	}
 }

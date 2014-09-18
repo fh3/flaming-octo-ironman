@@ -1,5 +1,7 @@
 package com.flamingOctoIronman.math.matrix;
 
+import java.text.DecimalFormat;
+
 import info.yeppp.Core;
 
 
@@ -11,19 +13,24 @@ public class Matrix {
 	 * It stores the actual matrix values in a two dimensional floating point array
 	 */
 	private float[][] matrix;
+	private DecimalFormat dec;
 	
-	public Matrix(int rows, int columns){
+	public Matrix(int rows, int columns, DecimalFormat dec){
 		this.matrix = new float[rows][columns];
+		this.dec = dec;
 	}
-	public Matrix(float[][] matrix){
+	public Matrix(float[][] matrix, DecimalFormat dec){
 		this.matrix = matrix;
+		this.dec = dec;
 	}
-	public Matrix(int rows, int columns, Matrix m){
+	public Matrix(int rows, int columns, Matrix m, DecimalFormat dec){
 		this.matrix = m.getMatrix();
 		this.matrix[rows][columns] = this.matrix[rows][columns];
+		this.dec = dec;
 	}
-	public Matrix(Matrix m){
+	public Matrix(Matrix m, DecimalFormat dec){
 		this.matrix = m.getMatrix();
+		this.dec = dec;
 	}
 	
 	//Methods
