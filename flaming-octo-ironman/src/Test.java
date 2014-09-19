@@ -36,7 +36,7 @@ public class Test {
 		//Testing Matrix stuff
 		DecimalFormat dec = new DecimalFormat("#.####");
 		Matrix.setDecimalFormat(dec);
-		float[][] matrixAArray = {{16, 15, 14, 13}, {12, 10, 10, 9}, {8, 7, 6.054f, 5}, {4, 3, 2, 1}};
+		float[][] matrixAArray = {{16, 15, 14, 13}, {12, 11, 10, 9}, {8, 7, 6, 5}, {4, 3, 2, 1}};
 		Matrix b = new Matrix(matrixAArray);
 		//float[][] matrixBArray = {{5, 4, 3, 2}};
 		//Matrix a = new Matrix(matrixBArray);
@@ -44,7 +44,7 @@ public class Test {
 		//m.setMatrixColumn(1, column);
 		//m.scalarMultiplication(5);
 		//Matrix p = MatrixMath.multipyMatrices(a, b);
-		Matrix result = MatrixMath.gaussianElimination(b);
+		Matrix result = MatrixMath.findInverse(b);
 		System.out.println(result.toString());
 	}
 }

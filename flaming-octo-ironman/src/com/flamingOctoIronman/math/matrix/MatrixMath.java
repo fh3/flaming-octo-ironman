@@ -1,7 +1,5 @@
 package com.flamingOctoIronman.math.matrix;
 
-import java.text.DecimalFormat;
-
 import info.yeppp.Core;
 
 public class MatrixMath {
@@ -42,6 +40,31 @@ public class MatrixMath {
 		} else{
 			System.out.println("Matrices not of equal sides");
 			return null;
+		}
+	}
+	public static Matrix findInverse(Matrix m){
+		return gaussianElimination(appendIdentityMatrix(m));
+	}
+	public static Matrix appendIdentityMatrix(Matrix m){
+		float[][] matrixArray = new float[m.getRows()][2 * m.getColumns()];	//Create a matrix array with twice as many columns as the original
+		copyArray(m.getMatrix(), matrixArray, 0, 0, 0, 0);	//Copy old matrix into new matrix
+		Matrix identity = new IdentityMatrix(matrixArray.length);
+		copyArray(identity.getMatrix(), matrixArray, 0, 0, 0, m.getColumns());
+		return new Matrix(matrixArray);
+	}
+	//Private methods for appendIdentityMatrix
+	//Copy old array values into a new array
+	//I might move this into some static class, I seem to use this often with matrices
+	//TODO implement some size checking
+	//TODO allow for copying into different positions in the new array from different positions in the old array
+	private static void copyArray(float[] oldArray, float[] newArray, int oldColumnStart, int newColumnStart){
+		for(int column = oldColumnStart; column < oldArray.length; column++){
+			newArray[newColumnStart++] = oldArray[column];
+		}
+	}
+	private static void copyArray(float[][] oldArray, float[][] newArray, int oldRowStart, int oldColumnStart, int newRowStart, int newColumnStart){
+		for(int row = oldRowStart; row < oldArray.length; row++){
+			copyArray(oldArray[row], newArray[newRowStart++], oldColumnStart, newColumnStart);
 		}
 	}
 	public static Matrix gaussianElimination(Matrix m){
