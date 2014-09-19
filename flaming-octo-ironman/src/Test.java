@@ -2,6 +2,7 @@ import info.yeppp.CpuArchitecture;
 import info.yeppp.CpuSimdFeature;
 import info.yeppp.Library;
 
+import java.text.DecimalFormat;
 import java.util.Iterator;
 
 import com.flamingOctoIronman.math.matrix.Matrix;
@@ -33,6 +34,8 @@ public class Test {
 		*/
 		
 		//Testing Matrix stuff
+		DecimalFormat dec = new DecimalFormat("#.####");
+		Matrix.setDecimalFormat(dec);
 		float[][] matrixAArray = {{16, 15, 14, 13}, {12, 10, 10, 9}, {8, 7, 6.054f, 5}, {4, 3, 2, 1}};
 		Matrix b = new Matrix(matrixAArray);
 		//float[][] matrixBArray = {{5, 4, 3, 2}};

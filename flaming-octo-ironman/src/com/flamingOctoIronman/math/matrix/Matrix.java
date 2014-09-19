@@ -13,24 +13,20 @@ public class Matrix {
 	 * It stores the actual matrix values in a two dimensional floating point array
 	 */
 	private float[][] matrix;
-	private DecimalFormat dec;
+	private static DecimalFormat format;	//Decimal format is static to ensure the project uses the same format
 	
-	public Matrix(int rows, int columns, DecimalFormat dec){
+	public Matrix(int rows, int columns){
 		this.matrix = new float[rows][columns];
-		this.dec = dec;
 	}
-	public Matrix(float[][] matrix, DecimalFormat dec){
+	public Matrix(float[][] matrix){
 		this.matrix = matrix;
-		this.dec = dec;
 	}
-	public Matrix(int rows, int columns, Matrix m, DecimalFormat dec){
+	public Matrix(int rows, int columns, Matrix m){
 		this.matrix = m.getMatrix();
 		this.matrix[rows][columns] = this.matrix[rows][columns];
-		this.dec = dec;
 	}
-	public Matrix(Matrix m, DecimalFormat dec){
+	public Matrix(Matrix m){
 		this.matrix = m.getMatrix();
-		this.dec = dec;
 	}
 	
 	//Methods
@@ -53,6 +49,12 @@ public class Matrix {
 	}
 	
 	//Get and set methods
+	public static void setDecimalFormat(DecimalFormat dec){
+		format = dec;
+	}
+	public static DecimalFormat getDecimalFormat(){
+		return format;
+	}
 	public void setMatrix(float[][] m){
 		this.matrix = m;
 	}
