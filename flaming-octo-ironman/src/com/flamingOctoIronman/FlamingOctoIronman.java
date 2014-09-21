@@ -1,10 +1,13 @@
 package com.flamingOctoIronman;
 
+import com.flamingOctoIronman.events.EventBus;
+
 public class FlamingOctoIronman {
 	/**
 	 * This is the game instance itself, the top level class
 	 */
 	private static FlamingOctoIronman instance;
+	private static EventBus eventBus;
 	public FlamingOctoIronman(){
 		instance = this;
 	}
@@ -17,7 +20,7 @@ public class FlamingOctoIronman {
 		return 0;
 	}
 	private void init(){
-		
+		eventBus = new EventBus();
 	}
 	private void startUp(){
 		
