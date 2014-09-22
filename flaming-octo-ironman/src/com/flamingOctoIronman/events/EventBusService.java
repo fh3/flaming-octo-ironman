@@ -1,5 +1,6 @@
 package com.flamingOctoIronman.events;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.ServiceLoader;
@@ -35,20 +36,18 @@ public class EventBusService {
 		Method[] methods;
 		CoreEvent event;
 		//Loop through the CoreEvents
-		for(Iterator<CoreEvent> iterator = loader.iterator(); iterator.hasNext();){
+		Iterator<CoreEvent> iterator = loader.iterator();
+		while(iterator.hasNext()){
 			event = iterator.next();
 			methods = subscriber.getClass().getMethods();
 			//Loop through all the methods in the subscriber
 			for(Method method : methods){
 				//If the given method has the EventHandler annotation
-				if(method.getAnnotation(EventHandler.class) != null){
-					//Loop through the parameters for the method
-					for(Class c : method.getParameterTypes()){
-						//If one of them is equal to the CoreEvent's class
-						if(event.getClass() == c){
-							//Subscribe to the event
-							event.subscribe(subscriber);
-						}
+				if(method.isAnnotationPresent(CoreEventHandler.class)){
+					//If one of them is equal to the CoreEvent's class
+					if(event.getClass().getSimpleName().equals(method.getAnnotation(CoreEventHandler.class).event())){
+						//Subscribe to the event
+						event.subscribe(subscriber);
 					}
 				}
 			}
@@ -58,11 +57,22 @@ public class EventBusService {
 	 * Publish a core event
 	 * @param event
 	 */
-	public static void publishCore(CoreEvent event){
+	public static void publishCore(Class event){
 		for(Iterator<CoreEvent> iterator = loader.iterator(); iterator.hasNext();){
 			CoreEvent iter = iterator.next();
-			if(iter.getClass() == event.getClass()){
-				iter.publish();
+			if(iter.getClass() == event){
+				try {
+					iter.publish();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 	}

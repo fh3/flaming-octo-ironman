@@ -1,14 +1,12 @@
 package com.flamingOctoIronman.coreSystems.ResourceManager;
 
-import com.flamingOctoIronman.events.InitializationEvent;
-import com.flamingOctoIronman.events.InitializationListener;
+import com.flamingOctoIronman.events.CoreEventHandler;
 
-public class ResourceManager implements InitializationListener {
+public class ResourceManager {
 
-	@Override
-	public void initialization(InitializationEvent e) {
-		// TODO Auto-generated method stub
-		
+	@CoreEventHandler(event = "InitializationEvent")
+	public void initialization() {
+		System.out.println("Handled");
 	}
 
 }

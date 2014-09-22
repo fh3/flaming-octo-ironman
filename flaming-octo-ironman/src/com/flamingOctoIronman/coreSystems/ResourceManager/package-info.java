@@ -1,7 +1,6 @@
 /**
+ * This is a package for the Resource subsystem.
  * 
- */
-/**
  * @author Quint
  *
  */

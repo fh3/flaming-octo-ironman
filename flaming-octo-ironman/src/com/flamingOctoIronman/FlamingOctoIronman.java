@@ -3,6 +3,7 @@ package com.flamingOctoIronman;
 import com.flamingOctoIronman.coreSystems.ResourceManager.ResourceManager;
 import com.flamingOctoIronman.events.CoreEvent;
 import com.flamingOctoIronman.events.EventBusService;
+import com.flamingOctoIronman.events.InitializationEvent;
 
 public class FlamingOctoIronman {
 	/**
@@ -24,6 +25,7 @@ public class FlamingOctoIronman {
 		EventBusService eventBusService = EventBusService.getInstance();
 		ResourceManager rm = new ResourceManager();
 		EventBusService.subscribeCore(rm);
+		EventBusService.publishCore(InitializationEvent.class);
 	}
 	private void startUp(){
 		
