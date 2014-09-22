@@ -1,14 +1,15 @@
 package com.flamingOctoIronman;
 
-import com.flamingOctoIronman.events.EventBus;
+import com.flamingOctoIronman.coreSystems.ResourceManager.ResourceManager;
+import com.flamingOctoIronman.events.CoreEvent;
+import com.flamingOctoIronman.events.EventBusService;
 
 public class FlamingOctoIronman {
 	/**
-	 * This is the game instance itself, the top level class
+	 * This uses the singleton design pattern
 	 */
 	private static FlamingOctoIronman instance;
-	private static EventBus eventBus;
-	public FlamingOctoIronman(){
+	private FlamingOctoIronman(){
 		instance = this;
 	}
 	public int startGame(){
@@ -20,7 +21,9 @@ public class FlamingOctoIronman {
 		return 0;
 	}
 	private void init(){
-		eventBus = new EventBus();
+		EventBusService eventBusService = EventBusService.getInstance();
+		ResourceManager rm = new ResourceManager();
+		EventBusService.subscribeCore(rm);
 	}
 	private void startUp(){
 		
@@ -35,6 +38,9 @@ public class FlamingOctoIronman {
 		
 	}
 	public static FlamingOctoIronman getInstance(){
+		if(instance == null){
+			instance = new FlamingOctoIronman();
+		}
 		return instance;
 	}
 }

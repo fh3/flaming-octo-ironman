@@ -1,5 +1,6 @@
 package com.flamingOctoIronman.events;
 
-public interface InitializationListener extends Listener {
-	public static final String name = "asdf";
+
+public interface InitializationListener extends CoreListener {
+	public void initialization(InitializationEvent e);
 }
