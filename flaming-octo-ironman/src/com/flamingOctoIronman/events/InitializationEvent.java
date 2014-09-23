@@ -1,48 +1,24 @@
 package com.flamingOctoIronman.events;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-
-
-public class InitializationEvent implements CoreEvent {
-	private List<Object> handlers;
+/**
+ * This <code>CoreEvent</code> is published during the initialization part of the game's life.
+ * @author Quint
+ *
+ */
+public final class InitializationEvent extends CoreEvent {
 	
 	public InitializationEvent(){
-		handlers = new ArrayList<Object>();
-	}
-	@Override
-	public boolean hasPendingEvents() {
-		// TODO Auto-generated method stub
-		return false;
+		super();
 	}
 
 	@Override
-	public void publish() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		Method[] methods;
-		for(Object subscriber : handlers){
-			methods = subscriber.getClass().getMethods();
-			for(Method method : methods){
-				if(method.isAnnotationPresent(CoreEventHandler.class)){
-					if(method.getAnnotation(CoreEventHandler.class).event().equals(InitializationEvent.class.getSimpleName())){
-						method.invoke(subscriber);
-					}
-				}
-			}
+	public boolean compareClass(String s) {
+		if(s.equals(InitializationEvent.class.getSimpleName())){
+			return true;
+		} else{
+			return false;
 		}
-		
 	}
 
-	@Override
-	public void subscribe(Object subscriber) {
-		handlers.add(subscriber);
-		System.out.println();
-	}
 
-	@Override
-	public void unsubscribe(Object subscriber) {
-		handlers.remove(subscriber);
-		
-	}
 }
