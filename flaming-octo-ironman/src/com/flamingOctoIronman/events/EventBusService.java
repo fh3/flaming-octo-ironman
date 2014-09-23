@@ -1,6 +1,7 @@
 package com.flamingOctoIronman.events;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
@@ -38,7 +39,7 @@ public class EventBusService {
 	 * @param subscriber <code>Object</code> that is subscribing to an event.
 	 */
 	public static void subscribeCore(Object subscriber){
-		//Temp variables
+		//Temporary variables
 		Method[] methods;
 		CoreEvent event;
 		//Loop through the CoreEvents
@@ -48,8 +49,35 @@ public class EventBusService {
 			methods = subscriber.getClass().getMethods();
 			//Loop through all the methods in the subscriber
 			for(Method method : methods){
-				//If the given method has the EventHandler annotation
-				if(method.isAnnotationPresent(CoreEventHandler.class)){
+				//If the given method has the EventHandler annotation and the modifier isn't static
+				if(method.isAnnotationPresent(CoreEventHandler.class) && !Modifier.isStatic(method.getModifiers())){
+					//If one of them is equal to the CoreEvent's class
+					if(event.getClass().getSimpleName().equals(method.getAnnotation(CoreEventHandler.class).event())){
+						//Subscribe to the event
+						event.subscribe(subscriber);
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Subscribes a class's static method to a core event.
+	 * @param subscriber <code>Class</code> that is subscribing to an event.
+	 */
+	public static void subscribeCore(Class subscriber){
+		//Temporary variables
+		Method[] methods;
+		CoreEvent event;
+		//Loop through the CoreEvents
+		Iterator<CoreEvent> iterator = loader.iterator();
+		while(iterator.hasNext()){
+			event = iterator.next();
+			methods = subscriber.getMethods();
+			//Loop through all the methods in the subscriber
+			for(Method method : methods){
+				//If the given method has the EventHandler annotation, and the object is static
+				if(method.isAnnotationPresent(CoreEventHandler.class) && Modifier.isStatic(method.getModifiers())){
 					//If one of them is equal to the CoreEvent's class
 					if(event.getClass().getSimpleName().equals(method.getAnnotation(CoreEventHandler.class).event())){
 						//Subscribe to the event

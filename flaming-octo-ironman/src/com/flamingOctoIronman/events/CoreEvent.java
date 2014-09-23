@@ -27,11 +27,19 @@ public abstract class CoreEvent implements Event{
 	public void publish() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		Method[] methods;
 		for(Object subscriber : handlers){
-			methods = subscriber.getClass().getMethods();
+			if(subscriber instanceof Class){
+				methods = ((Class) subscriber).getMethods();
+			} else{
+				methods = subscriber.getClass().getMethods();
+			}
 			for(Method method : methods){
 				if(method.isAnnotationPresent(CoreEventHandler.class)){
 					if(method.getAnnotation(CoreEventHandler.class).event().equals(getName())){
-						System.out.println(String.format("%s: %s", getName(), subscriber.getClass().getSimpleName()));
+						if(subscriber instanceof Class){
+							System.out.println(String.format("%s: %s", getName(), ((Class) subscriber).getSimpleName()));
+						} else{
+							System.out.println(String.format("%s: %s", getName(), subscriber.getClass().getSimpleName()));
+						}
 						method.invoke(subscriber);
 					}
 				}
