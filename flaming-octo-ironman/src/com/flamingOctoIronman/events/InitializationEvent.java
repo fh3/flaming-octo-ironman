@@ -10,14 +10,10 @@ public final class InitializationEvent extends CoreEvent {
 	public InitializationEvent(){
 		super();
 	}
-
+	
 	@Override
-	public boolean compareClass(String s) {
-		if(s.equals(InitializationEvent.class.getSimpleName())){
-			return true;
-		} else{
-			return false;
-		}
+	public String getName() {
+		return InitializationEvent.class.getSimpleName();
 	}
 
 

@@ -4,4 +4,5 @@
  * @author Quint
  *
  */
+//TODO Maybe create a subpackage for actual events?
 package com.flamingOctoIronman.events;

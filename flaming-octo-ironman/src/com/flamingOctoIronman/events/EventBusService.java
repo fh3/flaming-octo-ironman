@@ -61,7 +61,7 @@ public class EventBusService {
 	}
 	/**
 	 * Publishes a core event.
-	 * @param event <code>Class</code> of the event that is being published.
+	 * @param event <code>Class</code> simple name of the event that is being published.
 	 */
 	public static void publishCore(Class event){
 		Iterator<CoreEvent> iterator = loader.iterator();	//Gets the iterator from the loader

@@ -30,7 +30,8 @@ public abstract class CoreEvent implements Event{
 			methods = subscriber.getClass().getMethods();
 			for(Method method : methods){
 				if(method.isAnnotationPresent(CoreEventHandler.class)){
-					if(compareClass(method.getAnnotation(CoreEventHandler.class).event())){
+					if(method.getAnnotation(CoreEventHandler.class).event().equals(getName())){
+						System.out.println(String.format("%s: %s", getName(), subscriber.getClass().getSimpleName()));
 						method.invoke(subscriber);
 					}
 				}

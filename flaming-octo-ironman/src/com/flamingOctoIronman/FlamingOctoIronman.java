@@ -2,7 +2,10 @@ package com.flamingOctoIronman;
 
 import com.flamingOctoIronman.coreSystems.ResourceManager.ResourceManager;
 import com.flamingOctoIronman.events.EventBusService;
+import com.flamingOctoIronman.events.GameLoopEvent;
 import com.flamingOctoIronman.events.InitializationEvent;
+import com.flamingOctoIronman.events.ShutDownEvent;
+import com.flamingOctoIronman.events.StartUpEvent;
 
 public class FlamingOctoIronman {
 	/**
@@ -27,13 +30,13 @@ public class FlamingOctoIronman {
 		EventBusService.publishCore(InitializationEvent.class);
 	}
 	private void startUp(){
-		
+		EventBusService.publishCore(StartUpEvent.class);
 	}
 	private static void gameLoop(){
-		
+		EventBusService.publishCore(GameLoopEvent.class);
 	}
 	private static void shutDown(){
-		
+		EventBusService.publishCore(ShutDownEvent.class);
 	}
 	private static void exit(){
 		

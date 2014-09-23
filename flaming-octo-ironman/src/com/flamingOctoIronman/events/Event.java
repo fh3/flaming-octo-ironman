@@ -28,11 +28,8 @@ public interface Event {
 	 */
 	public void unsubscribe(Object subscriber);
 	/**
-	 * Compares the <code>String</code> to the name of the class that implements this method.
-	 * <p>
-	 * This should ALWAYS only be implemented by a <code>final</code> class.
-	 * @param s simplified name of the <code>Class</code> to compare to.
-	 * @return Whether or not the <code>String</code>s are the same
+	 * Calls getSimpleName() on the class to return the name of the class
+	 * @return The simplified name of the class
 	 */
-	public boolean compareClass(String s);
+	public String getName();
 }
