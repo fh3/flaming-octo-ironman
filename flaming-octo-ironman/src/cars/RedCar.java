@@ -5,4 +5,7 @@ public class RedCar extends Car{
 		super("red", 4, 4);
 		//aighdiouiosdfuigodaudilda kafkls jf;kj a
 	}
+	public void redCarMethod(){
+		
+	}
 }

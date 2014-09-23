@@ -2,10 +2,10 @@ package cars;
 
 public class Car {
 	static int engineCount = 1;
-	String color;
+	protected String color;
 	int size;
 	int wheelCount;
-	private int trunkSize;
+	private int trunkSize = 4;
 	
 	public Car(String c, int s, int w){
 		color = c;
@@ -38,5 +38,12 @@ public class Car {
 	}
 	public int getTrunkSize(){
 		return trunkSize;
+	}
+	public void turnLeft(){
+		System.out.println("turningLeft");
+	}
+	public void turnRight(){
+		System.out.println("turningRight");
+		
 	}
 }
