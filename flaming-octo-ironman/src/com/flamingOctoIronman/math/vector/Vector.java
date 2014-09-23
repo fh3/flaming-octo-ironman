@@ -10,7 +10,7 @@ public class Vector {
 	//Variables
 	private float location[];		//This is the value of the vector
 	private boolean isDirectional;	//This is the vector type, either directional or positional
-	private float magnitude;
+	private float magnitude;	//This is the magnitude of the vector
 	
 	//Constructors
 	public Vector(boolean isDirectional){			//Constructor chaining is used here to provide a number of options

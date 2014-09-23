@@ -16,6 +16,7 @@ public class FlamingOctoIronman implements Runnable{
 	private static Thread instanceThread = null;	//The instance of the thread the game is running in (not really sure if I need this)
 	private static float frequency = 60;	//The frequency in Hertz that the game will be running at
 	private static float period = 1 / frequency;	//The game's period
+	
 	private FlamingOctoIronman(){
 		instance = this;
 	}

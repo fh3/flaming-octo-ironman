@@ -1,7 +1,6 @@
 package com.flamingOctoIronman.math.matrix;
 
 import java.text.DecimalFormat;
-
 import info.yeppp.Core;
 
 
