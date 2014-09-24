@@ -6,6 +6,7 @@ import com.flamingOctoIronman.events.GameLoopEvent;
 import com.flamingOctoIronman.events.InitializationEvent;
 import com.flamingOctoIronman.events.ShutDownEvent;
 import com.flamingOctoIronman.events.StartUpEvent;
+import com.flamingOctoIronman.timer.Timer;
 
 public class FlamingOctoIronman implements Runnable{
 	/**
