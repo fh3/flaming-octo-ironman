@@ -6,6 +6,7 @@ import com.flamingOctoIronman.events.GameLoopEvent;
 import com.flamingOctoIronman.events.InitializationEvent;
 import com.flamingOctoIronman.events.ShutDownEvent;
 import com.flamingOctoIronman.events.StartUpEvent;
+import com.flamingOctoIronman.timer.TickCalculator;
 import com.flamingOctoIronman.timer.Timer;
 
 public class FlamingOctoIronman implements Runnable{
@@ -15,15 +16,18 @@ public class FlamingOctoIronman implements Runnable{
 	private static FlamingOctoIronman instance;	//The sole instance of the game
 	private static boolean running = false;	//Whether or not the game is currently running
 	private static Thread instanceThread = null;	//The instance of the thread the game is running in (not really sure if I need this)
+<<<<<<< HEAD
 	private static float frequency = 60;	//The frequency in Hertz that the game will be running at
 	private static float period = 1 / frequency;	//The game's period
 	private static long waitPeriodTime = (long) (1000 * period); 	//The game's period in millisecond
 	private static long previousTime = 0;	//The time the last frame ended
 	private static long waitTime = 0;	//Actual time to wait
 	private static long overtime = 0;	//Time that the cycle ran over/under
+=======
+>>>>>>> branch 'master' of https://github.com/fh3/flaming-octo-ironman.git
 	
 	private FlamingOctoIronman(){
-		instance = this;
+		
 	}
 	/**
 	 * Starts the game's life
@@ -60,6 +64,7 @@ public class FlamingOctoIronman implements Runnable{
 		running = true;	//Start the engine
 		previousTime = System.currentTimeMillis();	//Get the current time in ms from the CPU
 		while(running){
+<<<<<<< HEAD
 			EventBusService.publishCore(GameLoopEvent.class);	//Publish the ticking event
 			//Calculate sleep time stuff
 			waitTime = waitPeriodTime - (System.currentTimeMillis() - previousTime) + overtime; //The time to sleep equals the FPS wait time minus the time the last frame took plus the overtime
@@ -80,6 +85,14 @@ public class FlamingOctoIronman implements Runnable{
 					EventBusService.publishCore(GameLoopEvent.class);	//Publish the ticking event
 					overtime =+ waitPeriodTime;	//Add the standard tick time to overtime
 				}
+=======
+			EventBusService.publishCore(GameLoopEvent.class);
+			try {
+				Thread.sleep(TickCalculator.getInstance().getSleepTimer());
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				running = false;
+>>>>>>> branch 'master' of https://github.com/fh3/flaming-octo-ironman.git
 			}
 			
 			
