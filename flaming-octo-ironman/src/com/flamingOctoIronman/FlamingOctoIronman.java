@@ -6,6 +6,7 @@ import com.flamingOctoIronman.events.GameLoopEvent;
 import com.flamingOctoIronman.events.InitializationEvent;
 import com.flamingOctoIronman.events.ShutDownEvent;
 import com.flamingOctoIronman.events.StartUpEvent;
+import com.flamingOctoIronman.timer.TickCalculator;
 import com.flamingOctoIronman.timer.Timer;
 
 public class FlamingOctoIronman implements Runnable{
@@ -15,11 +16,9 @@ public class FlamingOctoIronman implements Runnable{
 	private static FlamingOctoIronman instance;	//The sole instance of the game
 	private static boolean running = false;	//Whether or not the game is currently running
 	private static Thread instanceThread = null;	//The instance of the thread the game is running in (not really sure if I need this)
-	private static float frequency = 60;	//The frequency in Hertz that the game will be running at
-	private static float period = 1 / frequency;	//The game's period
 	
 	private FlamingOctoIronman(){
-		instance = this;
+		
 	}
 	/**
 	 * Starts the game's life
@@ -57,7 +56,7 @@ public class FlamingOctoIronman implements Runnable{
 		while(running){
 			EventBusService.publishCore(GameLoopEvent.class);
 			try {
-				Thread.sleep((long)(period * 1000));
+				Thread.sleep(TickCalculator.getInstance().getSleepTimer());
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 				running = false;

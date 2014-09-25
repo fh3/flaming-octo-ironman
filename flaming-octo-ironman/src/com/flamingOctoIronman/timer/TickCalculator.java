@@ -6,19 +6,27 @@ import java.util.Queue;
 import com.flamingOctoIronman.events.CoreEventHandler;
 
 public class TickCalculator {
+	private static TickCalculator instance;
 	private Timer timer;
 	private float frequency;
 	private Queue<Long> queue;
 	private long lastTime = 0;
 	private long timePassed;
 	
-	public TickCalculator(){
+	private TickCalculator(){
 		timer = new Timer();
 		queue = new LinkedList<Long>();
 	}
 	
+	public static TickCalculator getInstance(){
+		if(instance == null){
+			instance = new TickCalculator();
+		}
+		return instance;
+	}
+	
 	public long getSleepTimer(){
-		return (Long) null;
+		return getStaticSleepTimeMs();
 	}
 	
 	public void setFrequency(float hertz){
@@ -36,6 +44,7 @@ public class TickCalculator {
 	@CoreEventHandler(event = "GameTickEvent")
 	public void updateRealTimer(){
 		timePassed = System.nanoTime() - lastTime;
+		queue.remove();
 		queue.add(timePassed);
 		lastTime = System.nanoTime();
 	}
@@ -45,7 +54,7 @@ public class TickCalculator {
 	}
 	
 	public long getAverageTime(){
-		long sum;
+		long sum = 0;
 		for(long time : (Long[])queue.toArray()){
 			sum =+ time;
 		}
