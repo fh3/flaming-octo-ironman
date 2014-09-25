@@ -17,6 +17,10 @@ public class FlamingOctoIronman implements Runnable{
 	private static Thread instanceThread = null;	//The instance of the thread the game is running in (not really sure if I need this)
 	private static float frequency = 60;	//The frequency in Hertz that the game will be running at
 	private static float period = 1 / frequency;	//The game's period
+	private static long waitPeriodTime = (long) (1000 * period); 	//The game's period in millisecond
+	private static long previousTime = 0;	//The time the last frame ended
+	private static long waitTime = 0;	//Actual time to wait
+	private static long overtime = 0;	//Time that the cycle ran over/under
 	
 	private FlamingOctoIronman(){
 		instance = this;
@@ -53,15 +57,32 @@ public class FlamingOctoIronman implements Runnable{
 	 * The main game loop
 	 */
 	private static void gameLoop(){
-		running = true;
+		running = true;	//Start the engine
+		previousTime = System.currentTimeMillis();	//Get the current time in ms from the CPU
 		while(running){
-			EventBusService.publishCore(GameLoopEvent.class);
-			try {
-				Thread.sleep((long)(period * 1000));
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-				running = false;
+			EventBusService.publishCore(GameLoopEvent.class);	//Publish the ticking event
+			//Calculate sleep time stuff
+			waitTime = waitPeriodTime - (System.currentTimeMillis() - previousTime) + overtime; //The time to sleep equals the FPS wait time minus the time the last frame took plus the overtime
+			previousTime = System.currentTimeMillis();	//Update the next frame's previous time to the current time
+			
+			//If there is time left in the frame, sleep
+			if(waitTime < 0){
+				//Sleep
+				try {
+					Thread.sleep(waitTime);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					running = false;	//End the engine if an exception is thrown
+				}
+			} else{	//Otherwise, calculate overtime and don't sleep (hurry to catch up) until the engine has caught up
+				overtime = waitTime; //Overtime is set to the remaining time
+				while((-1 * overtime) >= waitPeriodTime){
+					EventBusService.publishCore(GameLoopEvent.class);	//Publish the ticking event
+					overtime =+ waitPeriodTime;	//Add the standard tick time to overtime
+				}
 			}
+			
+			
 		}
 	}
 	/**

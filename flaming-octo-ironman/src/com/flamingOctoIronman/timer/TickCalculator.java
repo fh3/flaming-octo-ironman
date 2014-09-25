@@ -45,7 +45,7 @@ public class TickCalculator {
 	}
 	
 	public long getAverageTime(){
-		long sum;
+		long sum = 0;
 		for(long time : (Long[])queue.toArray()){
 			sum =+ time;
 		}
