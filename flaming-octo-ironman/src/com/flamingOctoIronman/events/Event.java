@@ -1,6 +1,9 @@
 package com.flamingOctoIronman.events;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This interface requires that events have certain methods that are required to ensure proper subscribing and publishing
@@ -9,27 +12,50 @@ import java.lang.reflect.InvocationTargetException;
  * @author Quint
  * @see CoreEvent
  */
-public interface Event {
-	/**
-	 * Publish this <code>Event</code> to all of it's subscribers.
-	 * @throws IllegalAccessException This should never occur but is checked
-	 * @throws IllegalArgumentException This should never occur but is checked
-	 * @throws InvocationTargetException This should never occur but is checked
-	 */
-	public void publish() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException;
-	/**
-	 * Adds the <code>Object</code> to the list of objects that will get notified when the event is published.
-	 * @param subscriber <code>Object</code> that is subscribing to the event
-	 */
-	public void subscribe(Object subscriber);
-	/**
-	 * Removes the <code>Object</code> from the list of objects taht will get notified when the event is published
-	 * @param subscriber <code>Object</code> to be removed
-	 */
-	public void unsubscribe(Object subscriber);
-	/**
-	 * Calls getSimpleName() on the class to return the name of the class
-	 * @return The simplified name of the class
-	 */
-	public String getName();
+public abstract class Event {
+	private List<Object> handlers;
+	private Class annotationClass;
+	
+	public Event(Class annotation){
+		handlers = new ArrayList<Object>();
+		annotationClass = annotation;
+	}
+	
+	public void subscribe(Object subscriber) {
+		handlers.add(subscriber);
+		
+	}
+	
+	public void publish() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		Method[] methods;
+		for(Object subscriber : handlers){
+			if(subscriber instanceof Class){
+				methods = ((Class) subscriber).getMethods();
+			} else{
+				methods = subscriber.getClass().getMethods();
+			}
+			for(Method method : methods){
+				if(method.isAnnotationPresent(annotationClass)){
+					if(compareNames(method)){
+						if(subscriber instanceof Class){
+							System.out.println(String.format("%s: %s", getName(), ((Class) subscriber).getSimpleName()));
+						} else{
+							System.out.println(String.format("%s: %s", getName(), subscriber.getClass().getSimpleName()));
+						}
+						method.invoke(subscriber);
+					}
+				}
+			}
+		}
+		
+	}
+
+	public void unsubscribe(Object subscriber) {
+		handlers.remove(subscriber);
+		
+	}
+	
+	public abstract String getName();
+	
+	public abstract boolean compareNames(Method m);
 }

@@ -11,39 +11,28 @@ import java.util.ServiceLoader;
  * @author Quint
  *
  */
-public class EventBusService {
-	private static EventBusService instance;	//Sole instance of this class
-	private static ServiceLoader<CoreEvent> loader;	//Loads all core events
+public abstract class EventBusService<T extends Event> {
+	private ServiceLoader<T> loader;	//Loads all core events
+	private T nullInstance;
 	
 	/**
 	 * Standard constructor, set to private to only allow for one instance of this class to be created.
 	 */
-	private EventBusService(){
-		loader = ServiceLoader.load(CoreEvent.class);	//Loads all events that implement interface CoreEvent.class
-	}
-	
-	/**
-	 * Create an instance of this class if it doesn't exist then return said instance
-	 * @return
-	 */
-	public static EventBusService getInstance(){
-		//If the instance hasn't been created, then create it
-		if(instance == null){
-			instance = new EventBusService();
-		}
-		return instance;
+	@SuppressWarnings("unchecked")
+	public EventBusService(T nullInstance){
+		loader = (ServiceLoader<T>) ServiceLoader.load(nullInstance.getClass());	//Loads all events that implement interface CoreEvent.class
 	}
 	
 	/**
 	 * Subscribes an object to a core event.
 	 * @param subscriber <code>Object</code> that is subscribing to an event.
 	 */
-	public static void subscribeCore(Object subscriber){
+	public void subscribeCore(Object subscriber){
 		//Temporary variables
 		Method[] methods;
 		CoreEvent event;
 		//Loop through the CoreEvents
-		Iterator<CoreEvent> iterator = loader.iterator();
+		Iterator<T> iterator = loader.iterator();
 		while(iterator.hasNext()){
 			event = iterator.next();
 			methods = subscriber.getClass().getMethods();
@@ -65,7 +54,7 @@ public class EventBusService {
 	 * Subscribes a class's static method to a core event.
 	 * @param subscriber <code>Class</code> that is subscribing to an event.
 	 */
-	public static void subscribeCore(Class subscriber){
+	public void subscribeCore(Class subscriber){
 		//Temporary variables
 		Method[] methods;
 		CoreEvent event;
@@ -91,7 +80,7 @@ public class EventBusService {
 	 * Publishes a core event.
 	 * @param event <code>Class</code> simple name of the event that is being published.
 	 */
-	public static void publishCore(Class event){
+	public void publishCore(Class event){
 		Iterator<CoreEvent> iterator = loader.iterator();	//Gets the iterator from the loader
 		CoreEvent iteratorEvent;	//Variable to hold CoreEvents from the loader's iterator
 		while(iterator.hasNext()){		//While there's an event left in the loader's iterator
