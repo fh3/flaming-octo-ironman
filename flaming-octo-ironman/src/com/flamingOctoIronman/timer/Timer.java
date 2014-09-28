@@ -3,7 +3,7 @@
  */
 package com.flamingOctoIronman.timer;
 
-import com.flamingOctoIronman.events.CoreEventHandler;
+import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
 
 /**
  * @author Quint

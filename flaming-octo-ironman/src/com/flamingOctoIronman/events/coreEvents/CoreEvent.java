@@ -1,10 +1,12 @@
-package com.flamingOctoIronman.events;
+package com.flamingOctoIronman.events.coreEvents;
 
 import java.lang.reflect.Method;
 
+import com.flamingOctoIronman.events.Event;
+
 /**
  * This class is an abstract implementation of <code>Event</code>. It provides all methods required by <code>Event</code>
- * except for <code>compareClass()</code>.
+ * except for <code>getName()</code>.
  * @author Quint
  *
  */

@@ -1,36 +1,47 @@
 package com.flamingOctoIronman;
 
 import com.flamingOctoIronman.coreSystems.ResourceManager.ResourceManager;
-import com.flamingOctoIronman.events.EventBusService;
-import com.flamingOctoIronman.events.GameLoopEvent;
-import com.flamingOctoIronman.events.InitializationEvent;
-import com.flamingOctoIronman.events.ShutDownEvent;
-import com.flamingOctoIronman.events.StartUpEvent;
+import com.flamingOctoIronman.events.coreEvents.CoreEventBusService;
+import com.flamingOctoIronman.events.coreEvents.GameLoopEvent;
+import com.flamingOctoIronman.events.coreEvents.InitializationEvent;
+import com.flamingOctoIronman.events.coreEvents.ShutDownEvent;
+import com.flamingOctoIronman.events.coreEvents.StartUpEvent;
 import com.flamingOctoIronman.timer.TickCalculator;
 import com.flamingOctoIronman.timer.Timer;
 
+/**
+ * The game engine's main class. Contains the main loop and is what is first created when the game is ran.
+ */
 public class FlamingOctoIronman implements Runnable{
-	/**
-	 * This uses the singleton design pattern
-	 */
+	//Variables		//It doesn't really matter whether or not these are static because this is a singleton class
+	
+	//Instance/most important variables
 	private static FlamingOctoIronman instance;	//The sole instance of the game
 	private static boolean running = false;	//Whether or not the game is currently running
 	private static Thread instanceThread = null;	//The instance of the thread the game is running in (not really sure if I need this)
-	private static float frequency = 60;	//The frequency in Hertz that the game will be running at
-	private static float period = 1 / frequency;	//The game's period
-	private static long waitPeriodTime = (long) (1000 * period); 	//The game's period in millisecond
-	private static long previousTime = 0;	//The time the last frame ended
-	private static long waitTime = 0;	//Actual time to wait
-	private static long overtime = 0;	//Time that the cycle ran over/under
 	
+	//Timing stuff
+	private static float frequency = 60;	//The frequency in Hertz that the game will be running at
+	private float period = 1 / frequency;	//The game's period
+	
+	//Event stuff
+	private CoreEventBusService coreBus;
+	
+	//Managers/Subsystems
+	private ResourceManager resourceManager;
+	
+	/**
+	 * Private, as there should only ever be one instance of this class.
+	 */
 	private FlamingOctoIronman(){
 		
 	}
+	
 	/**
 	 * Starts the game's life
 	 * @return A result code based on how the game exited
 	 */
-	public static int startGame(){
+	private int startGame(){
 		init();
 		startUp();
 		gameLoop();
@@ -38,30 +49,41 @@ public class FlamingOctoIronman implements Runnable{
 		exit();
 		return 0;
 	}
+	
 	/**
 	 * Initialization of the game
 	 */
-	private static void init(){
-		EventBusService.getInstance();	//Ensures that an EventBusService instance is created
-		ResourceManager rm = new ResourceManager();
-		EventBusService.subscribeCore(rm);
-		EventBusService.subscribeCore(Timer.class);
-		EventBusService.publishCore(InitializationEvent.class);
+	private void init(){
+		coreBus = CoreEventBusService.getInstance();	//Ensures that an EventBusService instance is created
+		resourceManager = new ResourceManager();
+		coreBus.subscribeCore(resourceManager);
+		coreBus.subscribeCore(Timer.class);
+		coreBus.publishCore(InitializationEvent.class);
 	}
+	
 	/**
 	 * Start up of the game
 	 */
-	private static void startUp(){
-		EventBusService.publishCore(StartUpEvent.class);
+	private void startUp(){
+		coreBus.publishCore(StartUpEvent.class);
 	}
+	
 	/**
 	 * The main game loop
 	 */
-	private static void gameLoop(){
+	private void gameLoop(){
+		//Variables
+		long waitPeriodTime = (long) (1000 * period); 	//The game's period in millisecond
+		long previousTime = 0;	//The time the last frame ended
+		long waitTime = 0;	//Actual time to wait
+		long overtime = 0;	//Time that the cycle ran over/under
+		
 		running = true;	//Start the engine
 		previousTime = System.currentTimeMillis();	//Get the current time in ms from the CPU
+		
+		//Main game loop
 		while(running){
-			EventBusService.publishCore(GameLoopEvent.class);	//Publish the ticking event
+			coreBus.publishCore(GameLoopEvent.class);	//Publish the ticking event
 			//Calculate sleep time stuff
 			waitTime = waitPeriodTime - (System.currentTimeMillis() - previousTime) + overtime; //The time to sleep equals the FPS wait time minus the time the last frame took plus the overtime
 			previousTime = System.currentTimeMillis();	//Update the next frame's previous time to the current time
@@ -78,10 +100,10 @@ public class FlamingOctoIronman implements Runnable{
 			} else{	//Otherwise, calculate overtime and don't sleep (hurry to catch up) until the engine has caught up
 				overtime = waitTime; //Overtime is set to the remaining time
 				while((-1 * overtime) >= waitPeriodTime){
-					EventBusService.publishCore(GameLoopEvent.class);	//Publish the ticking event
+					coreBus.publishCore(GameLoopEvent.class);	//Publish the ticking event
 					overtime =+ waitPeriodTime;	//Add the standard tick time to overtime
 				}
-				EventBusService.publishCore(GameLoopEvent.class);
+				coreBus.publishCore(GameLoopEvent.class);
 				try {
 					Thread.sleep(TickCalculator.getInstance().getSleepTimer());
 				} catch (InterruptedException e) {
@@ -91,18 +113,21 @@ public class FlamingOctoIronman implements Runnable{
 			}			
 		}
 	}
+	
 	/**
 	 * Shut down of the game
 	 */
-	private static void shutDown(){
-		EventBusService.publishCore(ShutDownEvent.class);
+	private void shutDown(){
+		coreBus.publishCore(ShutDownEvent.class);
 	}
+	
 	/**
 	 * Called when the game exits
 	 */
-	private static void exit(){
+	private void exit(){
 		
 	}
+	
 	/**
 	 * Returns the game's instance. Creates and returns the instance if it is null.
 	 * 
@@ -114,6 +139,7 @@ public class FlamingOctoIronman implements Runnable{
 		}
 		return instance;
 	}
+	
 	/**
 	 * Starts the game and the game's thread.
 	 * 
@@ -124,6 +150,7 @@ public class FlamingOctoIronman implements Runnable{
 		instanceThread = new Thread(FlamingOctoIronman.getInstance());
 		instanceThread.start();
 	}
+	
 	/**
 	 * Starts the thread and calls {@link #startGame()}
 	 * 
@@ -132,5 +159,12 @@ public class FlamingOctoIronman implements Runnable{
 	@Override
 	public void run() {
 		startGame();
+	}
+	
+	/**
+	 * Shuts the game down peacefully
+	 */
+	public static void stopGame(){
+		running = false;
 	}
 }

@@ -5,22 +5,24 @@ import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
+import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
+
 /**
- * This class is used to handle the subscribing and publishing of events. It is a singleton class,
- * call <code>EventBusService.getInstance()</code> to create and get an instance of this class.
+ * This class is used to handle the subscribing and publishing of events. It provides the basic framework
+ * to create an event bus for a given module.
  * @author Quint
  *
  */
-public abstract class EventBusService<T extends Event> {
-	private ServiceLoader<T> loader;	//Loads all core events
-	private T nullInstance;
+public abstract class EventBusService {
+	private ServiceLoader<Event> loader;	//Loads all core events
 	
 	/**
-	 * Standard constructor, set to private to only allow for one instance of this class to be created.
+	 * This constructor loads all the events into the <code>ServiceLoader</code>.
+	 * @param event Any <code>Class</code> that extends Event, this needs to extends the <code>Event</code> class
 	 */
 	@SuppressWarnings("unchecked")
-	public EventBusService(T nullInstance){
-		loader = (ServiceLoader<T>) ServiceLoader.load(nullInstance.getClass());	//Loads all events that implement interface CoreEvent.class
+	public EventBusService(Class<? extends Event> event){
+		loader = (ServiceLoader<Event>) ServiceLoader.load(event);	//Loads all events that implement interface CoreEvent.class
 	}
 	
 	/**
@@ -30,9 +32,9 @@ public abstract class EventBusService<T extends Event> {
 	public void subscribeCore(Object subscriber){
 		//Temporary variables
 		Method[] methods;
-		CoreEvent event;
+		Event event;
 		//Loop through the CoreEvents
-		Iterator<T> iterator = loader.iterator();
+		Iterator<Event> iterator = loader.iterator();
 		while(iterator.hasNext()){
 			event = iterator.next();
 			methods = subscriber.getClass().getMethods();
@@ -57,9 +59,9 @@ public abstract class EventBusService<T extends Event> {
 	public void subscribeCore(Class subscriber){
 		//Temporary variables
 		Method[] methods;
-		CoreEvent event;
+		Event event;
 		//Loop through the CoreEvents
-		Iterator<CoreEvent> iterator = loader.iterator();
+		Iterator<Event> iterator = loader.iterator();
 		while(iterator.hasNext()){
 			event = iterator.next();
 			methods = subscriber.getMethods();
@@ -81,8 +83,8 @@ public abstract class EventBusService<T extends Event> {
 	 * @param event <code>Class</code> simple name of the event that is being published.
 	 */
 	public void publishCore(Class event){
-		Iterator<CoreEvent> iterator = loader.iterator();	//Gets the iterator from the loader
-		CoreEvent iteratorEvent;	//Variable to hold CoreEvents from the loader's iterator
+		Iterator<Event> iterator = loader.iterator();	//Gets the iterator from the loader
+		Event iteratorEvent;	//Variable to hold CoreEvents from the loader's iterator
 		while(iterator.hasNext()){		//While there's an event left in the loader's iterator
 			iteratorEvent = iterator.next();	//Get the next CoreEvent
 			if(iteratorEvent.getClass() == event){	//If the iteratorEvent is an instance of event

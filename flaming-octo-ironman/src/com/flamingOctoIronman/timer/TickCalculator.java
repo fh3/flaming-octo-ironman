@@ -3,7 +3,7 @@ package com.flamingOctoIronman.timer;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import com.flamingOctoIronman.events.CoreEventHandler;
+import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
 
 public class TickCalculator {
 	private static TickCalculator instance;

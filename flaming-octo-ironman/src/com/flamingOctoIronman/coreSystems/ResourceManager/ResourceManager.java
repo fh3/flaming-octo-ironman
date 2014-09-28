@@ -1,6 +1,6 @@
 package com.flamingOctoIronman.coreSystems.ResourceManager;
 
-import com.flamingOctoIronman.events.CoreEventHandler;
+import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
 
 /**
  * This is the main class that loads and unloads files.
