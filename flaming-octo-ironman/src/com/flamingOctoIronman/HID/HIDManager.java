@@ -50,7 +50,7 @@ public class HIDManager implements KeyListener{
 		this.keyMap.putPressMap(e.getExtendedKeyCode(), false);
 	}
 	
-	public InputMapper getKeyMap(){
-		return this.keyMap;
+	public boolean isPressed(String UID){
+		return this.keyMap.isPressed(UID);
 	}
 }

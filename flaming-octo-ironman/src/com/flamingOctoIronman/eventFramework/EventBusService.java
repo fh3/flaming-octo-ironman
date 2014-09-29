@@ -55,7 +55,7 @@ public abstract class EventBusService {
 	 * Subscribes a class's static method to a core event.
 	 * @param subscriber <code>Class</code> that is subscribing to an event.
 	 */
-	public void subscribe(Class subscriber){
+	public void subscribe(Class<?> subscriber){
 		//Temporary variables
 		Method[] methods;
 		Event event;
@@ -81,7 +81,7 @@ public abstract class EventBusService {
 	 * Publishes a core event.
 	 * @param event <code>Class</code> simple name of the event that is being published.
 	 */
-	public void publish(Class event){
+	public void publish(Class<? extends Event> event){
 		Iterator<Event> iterator = loader.iterator();	//Gets the iterator from the loader
 		Event iteratorEvent;	//Variable to hold CoreEvents from the loader's iterator
 		while(iterator.hasNext()){		//While there's an event left in the loader's iterator

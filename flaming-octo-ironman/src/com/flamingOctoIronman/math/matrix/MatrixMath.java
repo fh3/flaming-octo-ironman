@@ -84,12 +84,14 @@ public class MatrixMath {
 	}
 	//Private methods for Gaussian Elimination
 	//Swaps two rows in a matrix
+	@SuppressWarnings("unused")
 	private void RowOp1(Matrix m, int row1, int row2){
 		float[] buffer = m.getMatrixRow(row1);
 		m.setMatrixRow(row1, m.getMatrixRow(row2));
 		m.setMatrixRow(row2, buffer);;
 	}
 	//Multiplies a row in a matrix by a scalar (only one row, not the whole matrix)
+	@SuppressWarnings("unused")
 	private static void RowOp2(Matrix m, int row, float scalar){
 		Core.Multiply_IV32fS32f_IV32f(m.getMatrixRow(row), 0, scalar, m.getRows());
 	}
