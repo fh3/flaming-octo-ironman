@@ -1,9 +1,9 @@
 /**
  * 
  */
-package com.flamingOctoIronman;
+package com.flamingOctoIronman.timer;
 
-import com.flamingOctoIronman.events.CoreEventHandler;
+import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
 
 /**
  * @author Quint
@@ -19,7 +19,7 @@ public class Timer {
 	/**
 	 * Called on every tick, increase the tick count
 	 */
-	@CoreEventHandler(event = "GameLoopEvent")
+	@CoreEventHandler(event = "GameTickEvent")
 	public static void tickEvent(){
 		tickCount++;
 		System.out.println(String.format("Tick: %.0f", tickCount));

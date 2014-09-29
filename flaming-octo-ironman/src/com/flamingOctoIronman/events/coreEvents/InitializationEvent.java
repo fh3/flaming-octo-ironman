@@ -1,4 +1,5 @@
-package com.flamingOctoIronman.events;
+package com.flamingOctoIronman.events.coreEvents;
+
 
 /**
  * This <code>CoreEvent</code> is published during the initialization part of the game's life.
