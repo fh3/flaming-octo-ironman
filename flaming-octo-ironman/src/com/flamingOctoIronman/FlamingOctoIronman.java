@@ -8,6 +8,8 @@ import com.flamingOctoIronman.events.coreEvents.ShutDownEvent;
 import com.flamingOctoIronman.events.coreEvents.StartUpEvent;
 import com.flamingOctoIronman.timer.TickCalculator;
 import com.flamingOctoIronman.timer.Timer;
+import com.flamingOctoIronman.visualTest.MyWindow;
+import com.flamingOctoIronman.HID.HIDManager;
 
 /**
  * The game engine's main class. Contains the main loop and is what is first created when the game is ran.
@@ -29,6 +31,8 @@ public class FlamingOctoIronman implements Runnable{
 	
 	//Managers/Subsystems
 	private ResourceManager resourceManager;
+	private HIDManager inputManager;
+	private MyWindow window;
 	
 	/**
 	 * Private, as there should only ever be one instance of this class.
@@ -56,16 +60,22 @@ public class FlamingOctoIronman implements Runnable{
 	private void init(){
 		coreBus = CoreEventBusService.getInstance();	//Ensures that an EventBusService instance is created
 		resourceManager = new ResourceManager();
-		coreBus.subscribeCore(resourceManager);
-		coreBus.subscribeCore(Timer.class);
-		coreBus.publishCore(InitializationEvent.class);
+		inputManager = new HIDManager();
+		window = new MyWindow();
+		
+		coreBus.subscribe(resourceManager);
+		coreBus.subscribe(Timer.class);
+		
+		coreBus.publish(InitializationEvent.class);
+		
 	}
 	
 	/**
 	 * Start up of the game
 	 */
 	private void startUp(){
-		coreBus.publishCore(StartUpEvent.class);
+		inputManager.registerFrame(window);
+		coreBus.publish(StartUpEvent.class);
 	}
 	
 	/**
@@ -83,13 +93,13 @@ public class FlamingOctoIronman implements Runnable{
 		
 		//Main game loop
 		while(running){
-			coreBus.publishCore(GameLoopEvent.class);	//Publish the ticking event
+			coreBus.publish(GameLoopEvent.class);	//Publish the ticking event
 			//Calculate sleep time stuff
 			waitTime = waitPeriodTime - (System.currentTimeMillis() - previousTime) + overtime; //The time to sleep equals the FPS wait time minus the time the last frame took plus the overtime
 			previousTime = System.currentTimeMillis();	//Update the next frame's previous time to the current time
 			
 			//If there is time left in the frame, sleep
-			if(waitTime < 0){
+			if(waitTime > 0){
 				//Sleep
 				try {
 					Thread.sleep(waitTime);
@@ -100,10 +110,10 @@ public class FlamingOctoIronman implements Runnable{
 			} else{	//Otherwise, calculate overtime and don't sleep (hurry to catch up) until the engine has caught up
 				overtime = waitTime; //Overtime is set to the remaining time
 				while((-1 * overtime) >= waitPeriodTime){
-					coreBus.publishCore(GameLoopEvent.class);	//Publish the ticking event
+					coreBus.publish(GameLoopEvent.class);	//Publish the ticking event
 					overtime =+ waitPeriodTime;	//Add the standard tick time to overtime
 				}
-				coreBus.publishCore(GameLoopEvent.class);
+				coreBus.publish(GameLoopEvent.class);
 				try {
 					Thread.sleep(TickCalculator.getInstance().getSleepTimer());
 				} catch (InterruptedException e) {
@@ -118,7 +128,7 @@ public class FlamingOctoIronman implements Runnable{
 	 * Shut down of the game
 	 */
 	private void shutDown(){
-		coreBus.publishCore(ShutDownEvent.class);
+		coreBus.publish(ShutDownEvent.class);
 	}
 	
 	/**

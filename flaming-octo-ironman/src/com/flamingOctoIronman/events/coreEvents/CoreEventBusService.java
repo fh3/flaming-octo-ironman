@@ -1,6 +1,8 @@
 package com.flamingOctoIronman.events.coreEvents;
 
-import com.flamingOctoIronman.events.EventBusService;
+import java.util.ServiceLoader;
+
+import com.flamingOctoIronman.eventFramework.EventBusService;
 
 /**
  * This event bus is for the engine's core events. Only one instance of this class is ever created.
@@ -11,7 +13,7 @@ public class CoreEventBusService extends EventBusService {
 	private static CoreEventBusService instance;
 	
 	private CoreEventBusService() {
-		super(CoreEvent.class);
+		super(ServiceLoader.load(CoreEvent.class));
 	}
 	
 	public static CoreEventBusService getInstance(){

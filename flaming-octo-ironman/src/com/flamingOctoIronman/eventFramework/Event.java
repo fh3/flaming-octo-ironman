@@ -1,4 +1,4 @@
-package com.flamingOctoIronman.events;
+package com.flamingOctoIronman.eventFramework;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
