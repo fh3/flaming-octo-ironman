@@ -10,8 +10,6 @@ import javax.swing.JFrame;
 
 import com.flamingOctoIronman.HID.inputEvents.InputEventBusService;
 import com.flamingOctoIronman.HID.inputEvents.InputMapper;
-import com.flamingOctoIronman.HID.inputEvents.KeyPressEvent;
-import com.flamingOctoIronman.HID.inputEvents.KeyReleaseEvent;
 import com.flamingOctoIronman.HID.inputEvents.KeyTypedEvent;
 
 /**
@@ -44,13 +42,15 @@ public class HIDManager implements KeyListener{
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		keyMap.getMap(e).getPressed().invoke(obj, args)
-		
+		this.keyMap.putPressMap(e.getExtendedKeyCode(), true);		
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
+		this.keyMap.putPressMap(e.getExtendedKeyCode(), false);
+	}
+	
+	public InputMapper getKeyMap(){
+		return this.keyMap;
 	}
 }

@@ -1,7 +1,5 @@
 package com.flamingOctoIronman.HID.inputEvents;
 
-import java.awt.event.KeyEvent;
-import java.lang.reflect.Method;
 import java.util.Hashtable;
 
 /**
@@ -10,44 +8,42 @@ import java.util.Hashtable;
  *
  */
 public class InputMapper {
-	//This maps the KeyInput to the Method that should be called when the key is pressed
-	private Hashtable<KeyInput, KeyMethods> keyMap;
+	private Hashtable<Integer, Boolean> pressMap;
+	private Hashtable<String, Integer> keyMap;
 	
-	/**
-	 * Create a new empty key map
-	 */
 	public InputMapper(){
-		this.keyMap = new Hashtable<KeyInput, KeyMethods>();
+		this.pressMap = new Hashtable<Integer, Boolean>();
+		this.keyMap = new Hashtable<String, Integer>();
 	}
 	
-	/**
-	 * Creates a new key map with the given map
-	 * @param map the map pre-loaded with <code>KeyInput</code>s and <code>Methods</code>
-	 */
-	public InputMapper(Hashtable<KeyInput, KeyMethods> map){
-		this.keyMap = map;
+	public InputMapper(Hashtable<Integer, Boolean> pressMap, Hashtable<String, Integer> keyMap){
+		if(pressMap == null){
+			this.pressMap = new Hashtable<Integer, Boolean>();
+		} else{
+			this.pressMap = pressMap;
+		}
+		
+		if(keyMap == null){
+			this.keyMap = keyMap;
+		} else{
+			this.keyMap = new Hashtable<String, Integer>();
+		}
+	}
+
+	public void putPressMap(int pressedKey, boolean pressed){
+		this.pressMap.put(pressedKey, pressed);
+	}
+
+	public boolean isPressed(int pressedKey){
+		return this.pressMap.get(pressedKey);
 	}
 	
-	/**
-	 * Adds a key/method set to the map
-	 * @param pressedKey the pressed key
-	 * @param pressed the method to call when pressed
-	 * @param released the method to call when released
-	 */
-	public void putMap(KeyInput pressedKey, Method pressed, Method released){
-		this.keyMap.put(pressedKey, new KeyMethods(pressed, released));
+	public void putKeyMap(String UID, int key){
+		this.keyMap.put(UID, key);
 	}
 	
-	/**
-	 * Retrieves a method from the map with the given key
-	 * @param pressedKey the key pressed
-	 * @return the KeyMethod object that stores the press and release methods
-	 */
-	public KeyMethods getMap(KeyInput pressedKey){
-		return this.keyMap.get(pressedKey);
+	public boolean isPressed(String UID){
+		return this.pressMap.get(keyMap.get(UID));
 	}
-	
-	public KeyMethods getMap(KeyEvent e){
-		return this.keyMap.get(new KeyInput(e));
-	}
+
 }
