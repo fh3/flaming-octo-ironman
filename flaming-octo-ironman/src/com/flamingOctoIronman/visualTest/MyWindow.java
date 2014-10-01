@@ -1,20 +1,22 @@
 package com.flamingOctoIronman.visualTest;
 
+import java.awt.Frame;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
-import javax.swing.JWindow;
-
 import com.flamingOctoIronman.FlamingOctoIronman;
 
 public class MyWindow extends JFrame implements WindowListener {
 	public MyWindow(){
 		super("FLAMING OCTO IRONMAN");
 		this.setSize(800, 640);
-		this.setVisible(true);
 		this.requestFocusInWindow();
 		this.addWindowListener(this);
+		//this.setExtendedState(Frame.MAXIMIZED_BOTH);  
+		//this.setUndecorated(true);
+		
+		this.setVisible(true);
 	}
 
 	@Override
@@ -25,7 +27,6 @@ public class MyWindow extends JFrame implements WindowListener {
 
 	@Override
 	public void windowClosed(WindowEvent arg0) {
-		FlamingOctoIronman.stopGame();
 		
 	}
 

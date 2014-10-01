@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import com.flamingOctoIronman.HID.inputEvents.InputEventBusService;
 import com.flamingOctoIronman.HID.inputEvents.InputMapper;
 import com.flamingOctoIronman.HID.inputEvents.KeyTypedEvent;
+import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
 
 /**
  * This class manages all input and output systems for the game.
@@ -26,6 +27,8 @@ import com.flamingOctoIronman.HID.inputEvents.KeyTypedEvent;
 public class HIDManager implements KeyListener, MouseListener, MouseWheelListener, MouseMotionListener{
 	private InputEventBusService inputEventBus;	//Hold and load all of the input events
 	private InputMapper keyMap;	//Map the keys to a function
+	private MouseEvent mouseEvent; //The last mouse event that occurred
+	private boolean mouseEventThisTick; //True if there was an event on this tick
 	
 	/**
 	 * Constructs a new instance of HIDManager
@@ -33,6 +36,15 @@ public class HIDManager implements KeyListener, MouseListener, MouseWheelListene
 	public HIDManager(){
 		inputEventBus = new InputEventBusService();
 		keyMap = new InputMapper();
+		mouseEventThisTick = false;
+	}
+	
+	/**
+	 * Handle stuff for each tick
+	 */
+	@CoreEventHandler(event = "GameLoopEvent")
+	public void gameTick(){
+		mouseEventThisTick = false;
 	}
 	
 	/**
@@ -40,8 +52,14 @@ public class HIDManager implements KeyListener, MouseListener, MouseWheelListene
 	 * @param frame The frame to register
 	 */
 	public void registerFrame(JFrame frame){
+		//Add keyboard listeners to the frame
 		frame.addKeyListener(this);
 		frame.setFocusTraversalKeysEnabled(false);
+		
+		//Add mouse listeners to the frame
+		frame.addMouseListener(this);
+		frame.addMouseMotionListener(this);
+		frame.addMouseWheelListener(this);
 	}
 	
 	/**
@@ -84,52 +102,90 @@ public class HIDManager implements KeyListener, MouseListener, MouseWheelListene
 	public void putKeyMap(String UID, int Key){
 		this.keyMap.putKeyMap(UID, Key);
 	}
+	
+	/**
+	 * 
+	 * @return The last <code>MouseEvent</code> to occur
+	 */
+	public MouseEvent getMouseEvent(){
+		return mouseEvent;
+	}
+	
+	/**
+	 * 
+	 * @return If there was a <code>MouseEvent</code> on this tick
+	 */
+	public boolean mouseEventThisTick(){
+		return mouseEventThisTick;
+	}
 
+	//TODO this needs testing, may flop
+	/**
+	 * Handles mouse events.
+	 */
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		mouseEvent = e;
+		mouseEventThisTick = true;
 	}
 
+	/**
+	 * Handles mouse events.
+	 */
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		mouseEvent = e;
+		mouseEventThisTick = true;
 	}
 
+	/**
+	 * Handles mouse events.
+	 */
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		// TODO Auto-generated method stub
-		
+		mouseEvent = e;
+		mouseEventThisTick = true;
 	}
 
+	/**
+	 * Handles mouse events.
+	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		mouseEvent = e;
+		mouseEventThisTick = true;
 	}
 
+	/**
+	 * Handles mouse events.
+	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		mouseEvent = e;
+		mouseEventThisTick = true;
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		mouseEvent = e;
+		mouseEventThisTick = true;
 	}
 
+	/**
+	 * Handles mouse events.
+	 */
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		mouseEvent = e;
+		mouseEventThisTick = true;
 	}
 
+	/**
+	 * Handles mouse events.
+	 */
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		mouseEvent = e;
+		mouseEventThisTick = true;
 	}
 }

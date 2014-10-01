@@ -58,16 +58,19 @@ public class FlamingOctoIronman implements Runnable{
 	 * Initialization of the game
 	 */
 	private void init(){
+		//Initialize managers
 		coreBus = CoreEventBusService.getInstance();	//Ensures that an EventBusService instance is created
 		resourceManager = new ResourceManager();
 		inputManager = new HIDManager();
 		window = new MyWindow();
 		
+		//Register managers
 		coreBus.subscribe(resourceManager);
+		coreBus.subscribe(inputManager);
 		coreBus.subscribe(Timer.class);
 		
+		//Public the event for this method
 		coreBus.publish(InitializationEvent.class);
-		
 	}
 	
 	/**
@@ -94,6 +97,7 @@ public class FlamingOctoIronman implements Runnable{
 		//Main game loop
 		while(running){
 			coreBus.publish(GameLoopEvent.class);	//Publish the ticking event
+			
 			//Calculate sleep time stuff
 			waitTime = waitPeriodTime - (System.currentTimeMillis() - previousTime) + overtime; //The time to sleep equals the FPS wait time minus the time the last frame took plus the overtime
 			previousTime = System.currentTimeMillis();	//Update the next frame's previous time to the current time
@@ -157,8 +161,8 @@ public class FlamingOctoIronman implements Runnable{
 	 * @see Thread
 	 */
 	public static void main(String args[]){
-		instanceThread = new Thread(FlamingOctoIronman.getInstance());
-		instanceThread.start();
+		instanceThread = new Thread(FlamingOctoIronman.getInstance());	//Create a new instance of the game in a new thread
+		instanceThread.start();	//Start the thread
 	}
 	
 	/**
