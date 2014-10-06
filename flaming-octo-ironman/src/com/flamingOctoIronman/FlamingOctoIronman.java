@@ -33,7 +33,7 @@ public class FlamingOctoIronman implements Runnable{
 	//Managers/Subsystems
 	private ResourceManager resourceManager;
 	private HIDManager inputManager;
-	private DebuggingManager dubuggingManager;
+	private DebuggingManager debuggingManager;
 	private MyWindow window;
 	
 	/**
@@ -64,13 +64,13 @@ public class FlamingOctoIronman implements Runnable{
 		coreBus = CoreEventBusService.getInstance();	//Ensures that an EventBusService instance is created
 		resourceManager = new ResourceManager();
 		inputManager = new HIDManager();
-		dubuggingManager = DebuggingManager.getInstance();
+		debuggingManager = DebuggingManager.getInstance();
 		window = new MyWindow();
 		
 		//Register managers
 		coreBus.subscribe(resourceManager);
 		coreBus.subscribe(inputManager);
-		coreBus.subscribe(dubuggingManager);
+		coreBus.subscribe(debuggingManager);
 		coreBus.subscribe(Timer.class);
 		
 		//Public the event for this method
@@ -189,6 +189,14 @@ public class FlamingOctoIronman implements Runnable{
 	//Get/set methods
 	
 	public ResourceManager getResourceManager(){
-		
+		return resourceManager;
+	}
+	
+	public HIDManager getHIDManager(){
+		return inputManager;
+	}
+	
+	public DebuggingManager getDebuggingManager(){
+		return debuggingManager;
 	}
 }
