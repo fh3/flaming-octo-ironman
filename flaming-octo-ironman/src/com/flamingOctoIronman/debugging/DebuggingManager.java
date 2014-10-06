@@ -3,15 +3,17 @@ package com.flamingOctoIronman.debugging;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
-public class DebuggingManager {
+import com.flamingOctoIronman.Manager;
+
+public class DebuggingManager extends Manager{
 	private ArrayList<PrintStream> outStream;
 	private static DebuggingManager instance;
 	private PrintStreamInterceptor outCapture;
-	private String name;
 	
 	private DebuggingManager(){
 		System.setOut(outCapture);
 		outStream = new ArrayList<>();
+		outStream.add(outCapture);
 	}
 	
 	public static DebuggingManager getInstance(){
@@ -28,7 +30,7 @@ public class DebuggingManager {
 	
 	public void println(String s){
 		for(PrintStream stream : outStream){
-			stream.println();
+			stream.println(s);
 		}
 	}
 }

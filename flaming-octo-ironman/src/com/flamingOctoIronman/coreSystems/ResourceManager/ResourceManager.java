@@ -1,5 +1,6 @@
 package com.flamingOctoIronman.coreSystems.ResourceManager;
 
+import com.flamingOctoIronman.Manager;
 import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
 
 /**
@@ -8,7 +9,7 @@ import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
  *
  */
 
-public class ResourceManager {
+public class ResourceManager extends Manager{
 	
 	/**
 	 * This method runs whatever needs to be run at the initialization stage of the game's life.

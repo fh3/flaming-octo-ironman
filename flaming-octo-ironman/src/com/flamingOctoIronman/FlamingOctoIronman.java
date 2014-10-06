@@ -1,6 +1,7 @@
 package com.flamingOctoIronman;
 
 import com.flamingOctoIronman.coreSystems.ResourceManager.ResourceManager;
+import com.flamingOctoIronman.debugging.DebuggingManager;
 import com.flamingOctoIronman.events.coreEvents.CoreEventBusService;
 import com.flamingOctoIronman.events.coreEvents.GameLoopEvent;
 import com.flamingOctoIronman.events.coreEvents.InitializationEvent;
@@ -32,6 +33,7 @@ public class FlamingOctoIronman implements Runnable{
 	//Managers/Subsystems
 	private ResourceManager resourceManager;
 	private HIDManager inputManager;
+	private DebuggingManager dubuggingManager;
 	private MyWindow window;
 	
 	/**
@@ -62,11 +64,13 @@ public class FlamingOctoIronman implements Runnable{
 		coreBus = CoreEventBusService.getInstance();	//Ensures that an EventBusService instance is created
 		resourceManager = new ResourceManager();
 		inputManager = new HIDManager();
+		dubuggingManager = DebuggingManager.getInstance();
 		window = new MyWindow();
 		
 		//Register managers
 		coreBus.subscribe(resourceManager);
 		coreBus.subscribe(inputManager);
+		coreBus.subscribe(dubuggingManager);
 		coreBus.subscribe(Timer.class);
 		
 		//Public the event for this method
@@ -180,5 +184,11 @@ public class FlamingOctoIronman implements Runnable{
 	 */
 	public static void stopGame(){
 		running = false;
+	}
+	
+	//Get/set methods
+	
+	public ResourceManager getResourceManager(){
+		
 	}
 }
