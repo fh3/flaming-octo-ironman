@@ -8,12 +8,13 @@ import com.flamingOctoIronman.Manager;
 public class DebuggingManager extends Manager{
 	private ArrayList<PrintStream> outStream;
 	private static DebuggingManager instance;
-	private PrintStreamInterceptor outCapture;
+	private Verbosity level = Verbosity.HIGH;
+	private ErrorStreamIntercepter errorIntercept;
 	
 	private DebuggingManager(){
-		System.setOut(outCapture);
 		outStream = new ArrayList<>();
-		outStream.add(outCapture);
+		errorIntercept = new ErrorStreamIntercepter();
+		System.setErr(errorIntercept);
 	}
 	
 	public static DebuggingManager getInstance(){
@@ -29,8 +30,26 @@ public class DebuggingManager extends Manager{
 	}
 	
 	public void println(String s){
+		if(level == Verbosity.HIGH){
+			for(PrintStream stream : outStream){
+				stream.println(s);
+			}
+		}
+	}
+	
+	public void printError(String s){
 		for(PrintStream stream : outStream){
 			stream.println(s);
 		}
+	}
+
+	public void println(int i) {
+		for(PrintStream stream : outStream){
+			stream.println(i);
+		}
+	}
+	
+	public void setVerbosity(Verbosity v){
+		level = v;
 	}
 }

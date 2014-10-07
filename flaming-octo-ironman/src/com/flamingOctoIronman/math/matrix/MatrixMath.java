@@ -1,16 +1,21 @@
 package com.flamingOctoIronman.math.matrix;
 
+import com.flamingOctoIronman.FlamingOctoIronman;
+import com.flamingOctoIronman.debugging.DebuggingManager;
+
 import info.yeppp.Core;
 
+/**
+ * Class information:
+ * This class is 
+ * used to perform math where the result is a new matrix
+ * or where two or more matrices are being operated on
+ * 
+ * All classes are to be static
+ */
 public class MatrixMath {
-	/*
-	 * Class information:
-	 * This class is 
-	 * used to perform math where the result is a new matrix
-	 * or where two or more matrices are being operated on
-	 * 
-	 * All classes are to be static
-	 */
+	private static DebuggingManager debuggingManager = FlamingOctoIronman.getInstance().getDebuggingManager(); //Use this to make things a little easier to read
+	
 	public static Matrix multipyMatrices(Matrix a, Matrix b){
 		//Multiples matrices so product P = AB
 		
@@ -24,7 +29,7 @@ public class MatrixMath {
 			}
 			return new Matrix(p);
 		}else{
-			System.out.println("Resultant matrix not defined");
+			debuggingManager.println("Resultant matrix not defined");
 			return null;
 		}
 	}
@@ -38,7 +43,7 @@ public class MatrixMath {
 			}
 			return new Matrix(matrixArray);
 		} else{
-			System.out.println("Matrices not of equal sides");
+			debuggingManager.println("Matrices not of equal sides");
 			return null;
 		}
 	}

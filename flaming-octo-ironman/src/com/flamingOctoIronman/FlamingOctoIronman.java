@@ -1,5 +1,9 @@
 package com.flamingOctoIronman;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
+
 import com.flamingOctoIronman.coreSystems.ResourceManager.ResourceManager;
 import com.flamingOctoIronman.debugging.DebuggingManager;
 import com.flamingOctoIronman.events.coreEvents.CoreEventBusService;
@@ -65,6 +69,12 @@ public class FlamingOctoIronman implements Runnable{
 		resourceManager = new ResourceManager();
 		inputManager = new HIDManager();
 		debuggingManager = DebuggingManager.getInstance();
+		try {
+			debuggingManager.addStreamToOutput(new PrintStream(new File("/Users/fh3/logfile.txt")));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		window = new MyWindow();
 		
 		//Register managers

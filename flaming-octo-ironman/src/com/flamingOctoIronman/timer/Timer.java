@@ -3,6 +3,8 @@
  */
 package com.flamingOctoIronman.timer;
 
+import com.flamingOctoIronman.FlamingOctoIronman;
+import com.flamingOctoIronman.debugging.DebuggingManager;
 import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
 
 /**
@@ -10,6 +12,8 @@ import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
  *
  */
 public class Timer {
+	private static DebuggingManager debuggingManager = FlamingOctoIronman.getInstance().getDebuggingManager(); //Use this to make things a little easier to read
+
 	private static float tickCount = 0;
 	private float passedTicks;
 	public Timer(){
@@ -22,7 +26,7 @@ public class Timer {
 	@CoreEventHandler(event = "GameTickEvent")
 	public static void tickEvent(){
 		tickCount++;
-		System.out.println(String.format("Tick: %.0f", tickCount));
+		debuggingManager.println(String.format("Tick: %.0f", tickCount));
 	}
 	
 	/**
