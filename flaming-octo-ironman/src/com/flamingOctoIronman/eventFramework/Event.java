@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.flamingOctoIronman.FlamingOctoIronman;
 import com.flamingOctoIronman.debugging.DebuggingManager;
+import com.flamingOctoIronman.debugging.StreamManager;
 import com.flamingOctoIronman.events.coreEvents.CoreEvent;
 
 /**
@@ -18,7 +19,7 @@ import com.flamingOctoIronman.events.coreEvents.CoreEvent;
 public abstract class Event {
 	private List<Object> handlers;
 	private Class annotationClass;
-	private DebuggingManager debuggingManager = FlamingOctoIronman.getInstance().getDebuggingManager(); //Use this to make things a little easier to read
+	private StreamManager streams = FlamingOctoIronman.getInstance().getDebuggingManager().getStreamManager(); //Use this to make things a little easier to read
 	
 	public Event(Class annotation){
 		handlers = new ArrayList<Object>();
@@ -52,9 +53,9 @@ public abstract class Event {
 				if(method.isAnnotationPresent(annotationClass)){
 					if(compareNames(method)){
 						if(subscriber instanceof Class){
-							debuggingManager.println((String.format("%s: %s", getName(), ((Class<?>) subscriber).getSimpleName())));
+							streams.println((String.format("%s: %s", getName(), ((Class<?>) subscriber).getSimpleName())));
 						} else{
-							debuggingManager.println(String.format("%s: %s", getName(), subscriber.getClass().getSimpleName()));
+							streams.println(String.format("%s: %s", getName(), subscriber.getClass().getSimpleName()));
 						}
 						method.invoke(subscriber);
 					}

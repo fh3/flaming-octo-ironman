@@ -1,20 +1,18 @@
 package com.flamingOctoIronman.debugging;
 
-import java.io.PrintStream;
-import java.util.ArrayList;
-
+import com.flamingOctoIronman.CrashReport;
+import com.flamingOctoIronman.FlamingOctoIronman;
 import com.flamingOctoIronman.Manager;
+import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
 
 public class DebuggingManager extends Manager{
-	private ArrayList<PrintStream> outStream;
+	private StreamManager streams;
+	
 	private static DebuggingManager instance;
-	private Verbosity level = Verbosity.HIGH;
-	private ErrorStreamIntercepter errorIntercept;
+	
 	
 	private DebuggingManager(){
-		outStream = new ArrayList<>();
-		errorIntercept = new ErrorStreamIntercepter();
-		System.setErr(errorIntercept);
+		streams = new StreamManager();
 	}
 	
 	public static DebuggingManager getInstance(){
@@ -25,31 +23,12 @@ public class DebuggingManager extends Manager{
 		return instance;
 	}
 	
-	public void addStreamToOutput(PrintStream toAdd){
-		outStream.add(toAdd);
+	public StreamManager getStreamManager(){
+		return streams;
 	}
 	
-	public void println(String s){
-		if(level == Verbosity.HIGH){
-			for(PrintStream stream : outStream){
-				stream.println(s);
-			}
-		}
-	}
-	
-	public void printError(String s){
-		for(PrintStream stream : outStream){
-			stream.println(s);
-		}
-	}
-
-	public void println(int i) {
-		for(PrintStream stream : outStream){
-			stream.println(i);
-		}
-	}
-	
-	public void setVerbosity(Verbosity v){
-		level = v;
+	@CoreEventHandler(event = "ShutDownEvent")
+	public void shutDown(){
+		new CrashReport(FlamingOctoIronman.getInstance().getDeathReason());
 	}
 }

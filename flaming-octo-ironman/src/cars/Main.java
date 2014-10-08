@@ -27,6 +27,7 @@ public class Main {
 		red.turnRight();
 		GreenCar green = new GreenCar();
 		green.driveForward();	//Car is driving forward
+		driveCarForward(f150);
 		
 		/*
 		 * ashdjgahjf
@@ -40,6 +41,10 @@ public class Main {
 		
 		
 				
+	}
+	
+	public static void driveCarForward(Car toDriveForward){
+		toDriveForward.driveForward();
 	}
 
 }

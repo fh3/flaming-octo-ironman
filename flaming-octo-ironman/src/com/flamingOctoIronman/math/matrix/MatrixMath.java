@@ -2,6 +2,7 @@ package com.flamingOctoIronman.math.matrix;
 
 import com.flamingOctoIronman.FlamingOctoIronman;
 import com.flamingOctoIronman.debugging.DebuggingManager;
+import com.flamingOctoIronman.debugging.StreamManager;
 
 import info.yeppp.Core;
 
@@ -14,7 +15,7 @@ import info.yeppp.Core;
  * All classes are to be static
  */
 public class MatrixMath {
-	private static DebuggingManager debuggingManager = FlamingOctoIronman.getInstance().getDebuggingManager(); //Use this to make things a little easier to read
+	private static StreamManager streams = FlamingOctoIronman.getInstance().getDebuggingManager().getStreamManager(); //Use this to make things a little easier to read
 	
 	public static Matrix multipyMatrices(Matrix a, Matrix b){
 		//Multiples matrices so product P = AB
@@ -29,7 +30,7 @@ public class MatrixMath {
 			}
 			return new Matrix(p);
 		}else{
-			debuggingManager.println("Resultant matrix not defined");
+			streams.println("Resultant matrix not defined");
 			return null;
 		}
 	}
@@ -43,7 +44,7 @@ public class MatrixMath {
 			}
 			return new Matrix(matrixArray);
 		} else{
-			debuggingManager.println("Matrices not of equal sides");
+			streams.println("Matrices not of equal sides");
 			return null;
 		}
 	}

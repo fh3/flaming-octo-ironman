@@ -46,4 +46,7 @@ public class Car {
 		System.out.println("turningRight");
 		
 	}
+	public void driveForward(int distance){
+		this.driveForward();
+	}
 }

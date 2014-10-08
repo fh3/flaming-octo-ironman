@@ -6,6 +6,7 @@ import java.io.PrintStream;
 
 import com.flamingOctoIronman.coreSystems.ResourceManager.ResourceManager;
 import com.flamingOctoIronman.debugging.DebuggingManager;
+import com.flamingOctoIronman.debugging.Verbosity;
 import com.flamingOctoIronman.events.coreEvents.CoreEventBusService;
 import com.flamingOctoIronman.events.coreEvents.GameLoopEvent;
 import com.flamingOctoIronman.events.coreEvents.InitializationEvent;
@@ -40,6 +41,9 @@ public class FlamingOctoIronman implements Runnable{
 	private DebuggingManager debuggingManager;
 	private MyWindow window;
 	
+	//Death
+	private static DeathReason reason = null;
+	
 	/**
 	 * Private, as there should only ever be one instance of this class.
 	 */
@@ -69,8 +73,9 @@ public class FlamingOctoIronman implements Runnable{
 		resourceManager = new ResourceManager();
 		inputManager = new HIDManager();
 		debuggingManager = DebuggingManager.getInstance();
+		//TODO Work on resource manager and add a method to provide a file object
 		try {
-			debuggingManager.addStreamToOutput(new PrintStream(new File("/Users/fh3/logfile.txt")));
+			debuggingManager.getStreamManager().addStreamToOutput(new PrintStream(new File("/Users/fh3/logfile.txt")));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -192,7 +197,8 @@ public class FlamingOctoIronman implements Runnable{
 	/**
 	 * Shuts the game down peacefully
 	 */
-	public static void stopGame(){
+	public static void stopGame(DeathReason forDying){
+		reason = forDying;
 		running = false;
 	}
 	
@@ -208,5 +214,9 @@ public class FlamingOctoIronman implements Runnable{
 	
 	public DebuggingManager getDebuggingManager(){
 		return debuggingManager;
+	}
+	
+	public DeathReason getDeathReason(){
+		return reason;
 	}
 }

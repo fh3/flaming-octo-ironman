@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 
 import com.flamingOctoIronman.FlamingOctoIronman;
 import com.flamingOctoIronman.debugging.DebuggingManager;
+import com.flamingOctoIronman.debugging.StreamManager;
 
 import info.yeppp.Core;
 
@@ -17,7 +18,7 @@ public class Matrix {
 	 */
 	private float[][] matrix;
 	private static DecimalFormat format;	//Decimal format is static to ensure the project uses the same format
-	private DebuggingManager debuggingManager = FlamingOctoIronman.getInstance().getDebuggingManager(); //Use this to make things a little easier to read
+	private StreamManager streams = FlamingOctoIronman.getInstance().getDebuggingManager().getStreamManager(); //Use this to make things a little easier to read
 	
 	public Matrix(int rows, int columns){
 		this.matrix = new float[rows][columns];
@@ -75,7 +76,7 @@ public class Matrix {
 		if(this.matrix[--rowNumber].length == row.length){
 			this.matrix[rowNumber] = row;
 		} else{
-			debuggingManager.println("Row of wrong size");
+			streams.println("Row of wrong size");
 		}
 	}
 	public float[] getMatrixRow(int row){
@@ -85,11 +86,11 @@ public class Matrix {
 	public void setMatrixColumn(int columnNumber, float[] column){
 		if(this.getColumns() == column.length){
 			for(int i = 0; i < column.length; i++){
-				debuggingManager.println(columnNumber);
+				streams.println(columnNumber);
 				this.getMatrixRow(i)[columnNumber] = column[i];
 			}
 		} else{
-			debuggingManager.println("Column of wrong size");
+			streams.println("Column of wrong size");
 		}
 	}
 	public float[] getMatrixColumn(int columnNumber){
