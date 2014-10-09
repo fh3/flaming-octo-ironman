@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+   <project name="flaming-octo-ironman" default="info">
+   <target name="info">
+      <echo>Compiling Lua files</echo>
+   </target>
+   <target name="compileLua">
+   	
+   </target>
+   <target name="compileJava" depends="compileLua">
+   
+   </target>
+</project>
