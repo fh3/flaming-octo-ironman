@@ -9,6 +9,7 @@ import com.flamingOctoIronman.timer.Timer;
 
 public class CrashReport {
 	private FileWriter writer;
+	
 	public CrashReport(DeathReason deathReason) {
 		// TODO Auto-generated constructor stub
 		//TODO Call resource manager to get a new file printstream

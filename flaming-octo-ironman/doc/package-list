@@ -4,6 +4,7 @@ com.flamingOctoIronman
 com.flamingOctoIronman.HID
 com.flamingOctoIronman.HID.inputEvents
 com.flamingOctoIronman.coreSystems.ResourceManager
+com.flamingOctoIronman.debugging
 com.flamingOctoIronman.eventFramework
 com.flamingOctoIronman.events.coreEvents
 com.flamingOctoIronman.math

@@ -28,6 +28,7 @@ public class Main {
 		GreenCar green = new GreenCar();
 		green.driveForward();	//Car is driving forward
 		driveCarForward(f150);
+		f150.driveForward(10);
 		
 		/*
 		 * ashdjgahjf
