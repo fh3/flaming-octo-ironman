@@ -6,12 +6,12 @@ import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
 
 public class DebuggingManager extends Manager{
 	private StreamManager streams;
-	
 	private static DebuggingManager instance;
-	
-	
+	private LuaManager luaManager;
+
 	private DebuggingManager(){
 		streams = new StreamManager();
+		luaManager = new LuaManager();
 	}
 	
 	public static DebuggingManager getInstance(){
@@ -29,5 +29,14 @@ public class DebuggingManager extends Manager{
 	@CoreEventHandler(event = "ShutDownEvent")
 	public void shutDown(){
 		new CrashReport(FlamingOctoIronman.getInstance().getDeathReason());
+	}
+	
+	@CoreEventHandler(event = "GameLoopEvent")
+	public void tick(){
+		luaManager.evaluate();
+	}
+	
+	public LuaManager getLuaManager(){
+		return this.luaManager;
 	}
 }

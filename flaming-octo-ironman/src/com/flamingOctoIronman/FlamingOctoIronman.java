@@ -70,9 +70,10 @@ public class FlamingOctoIronman implements Runnable{
 	private void init(){
 		//Initialize managers
 		coreBus = CoreEventBusService.getInstance();	//Ensures that an EventBusService instance is created
+		debuggingManager = DebuggingManager.getInstance();
 		resourceManager = new ResourceManager();
 		inputManager = new HIDManager();
-		debuggingManager = DebuggingManager.getInstance();
+
 		//TODO Work on resource manager and add a method to provide a file object
 		try {
 			debuggingManager.getStreamManager().addStreamToOutput(new PrintStream(new File("/Users/fh3/logfile.txt")));
