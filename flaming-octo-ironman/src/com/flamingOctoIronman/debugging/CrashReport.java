@@ -1,10 +1,11 @@
-package com.flamingOctoIronman;
+package com.flamingOctoIronman.debugging;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.flamingOctoIronman.DeathReason;
 import com.flamingOctoIronman.timer.Timer;
 
 public class CrashReport {
@@ -22,6 +23,8 @@ public class CrashReport {
 			this.println("Reason for death: " + deathReason);
 			this.println("Crash occoured at: " + new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()));
 			this.println("Ticks passed since start: " + Timer.getTickCount());
+			this.println("Max JVM memory: " + Runtime.getRuntime().maxMemory());
+			this.println("Free memory: " + Runtime.getRuntime().freeMemory());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

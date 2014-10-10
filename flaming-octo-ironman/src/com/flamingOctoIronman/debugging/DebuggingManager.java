@@ -1,6 +1,5 @@
 package com.flamingOctoIronman.debugging;
 
-import com.flamingOctoIronman.CrashReport;
 import com.flamingOctoIronman.FlamingOctoIronman;
 import com.flamingOctoIronman.Manager;
 import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
