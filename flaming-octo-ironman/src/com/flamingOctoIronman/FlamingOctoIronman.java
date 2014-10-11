@@ -71,10 +71,10 @@ public class FlamingOctoIronman implements Runnable{
 		debuggingManager = DebuggingManager.getInstance();
 		resourceManager = new ResourceManager();
 		inputManager = new HIDManager();
-		
-		PrintStream stream = ResourceManager.getPrintStream("logs/log.txt");
-		debuggingManager.getStreamManager().addStreamToOutput(stream);
+				
 		window = new MyWindow();
+		
+		debuggingManager.initializeManager();
 		
 		//Register managers
 		coreBus.subscribe(resourceManager);
@@ -92,6 +92,7 @@ public class FlamingOctoIronman implements Runnable{
 	private void startUp(){
 		inputManager.registerFrame(window);
 		debuggingManager.getLuaManager().loadFile(ResourceManager.getFileDir("/scripts/source/Test.lua"));
+		debuggingManager.getStreamManager().addStreamToOutput(ResourceManager.getPrintStream("logs/log.txt"));
 		
 		coreBus.publish(StartUpEvent.class);
 	}

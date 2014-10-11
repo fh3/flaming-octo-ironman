@@ -10,7 +10,7 @@ public class DebuggingManager extends Manager{
 	private LuaManager luaManager;
 
 	private DebuggingManager(){
-		
+		streams = new StreamManager();
 	}
 	
 	public static DebuggingManager getInstance(){
@@ -25,9 +25,7 @@ public class DebuggingManager extends Manager{
 		return streams;
 	}
 	
-	@CoreEventHandler(event = "StartUpEvent")
-	public void startUp(){
-		streams = new StreamManager();
+	public void initializeManager(){
 		luaManager = new LuaManager();
 	}
 	

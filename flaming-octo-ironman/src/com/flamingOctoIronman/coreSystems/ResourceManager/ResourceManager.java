@@ -26,6 +26,7 @@ public class ResourceManager extends Manager{
 	 */
 	@CoreEventHandler(event = "InitializationEvent")
 	public void initialization() {
+		
 	}
 	@CoreEventHandler(event = "StartUpEvent")
 	public void startUpEvent(){
