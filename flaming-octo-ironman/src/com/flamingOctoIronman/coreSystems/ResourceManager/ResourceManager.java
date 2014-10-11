@@ -1,5 +1,11 @@
 package com.flamingOctoIronman.coreSystems.ResourceManager;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import com.flamingOctoIronman.Manager;
 import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
 
@@ -10,6 +16,10 @@ import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
  */
 
 public class ResourceManager extends Manager{
+	private static String classDir = System.getProperty("java.class.path").substring(0, System.getProperty("java.class.path").indexOf("bin"));
+	public ResourceManager(){
+		
+	}
 	
 	/**
 	 * This method runs whatever needs to be run at the initialization stage of the game's life.
@@ -20,6 +30,38 @@ public class ResourceManager extends Manager{
 	@CoreEventHandler(event = "StartUpEvent")
 	public void startUpEvent(){
 		
+	}
+	
+	public static Path getPathDir(String relativePath){
+		return Paths.get(classDir, relativePath);
+	}
+	
+	public static File getFileDir(String relativePath){
+		return getPathDir(relativePath).toFile();
+	}
+	
+	public static Path getPathFile(String relativePath, String filename){
+		return getPathDir(relativePath);
+	}
+	
+	public static PrintStream getPrintStream(File ofStream){
+		try {
+			return new PrintStream(ofStream);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static PrintStream getPrintStream(String locationOfStream){
+		try {
+			return new PrintStream(getFileDir(locationOfStream));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 }

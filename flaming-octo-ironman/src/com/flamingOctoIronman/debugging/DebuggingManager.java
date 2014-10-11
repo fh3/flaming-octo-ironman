@@ -10,8 +10,7 @@ public class DebuggingManager extends Manager{
 	private LuaManager luaManager;
 
 	private DebuggingManager(){
-		streams = new StreamManager();
-		luaManager = new LuaManager();
+		
 	}
 	
 	public static DebuggingManager getInstance(){
@@ -26,14 +25,20 @@ public class DebuggingManager extends Manager{
 		return streams;
 	}
 	
-	@CoreEventHandler(event = "ShutDownEvent")
-	public void shutDown(){
-		new CrashReport(FlamingOctoIronman.getInstance().getDeathReason());
+	@CoreEventHandler(event = "StartUpEvent")
+	public void startUp(){
+		streams = new StreamManager();
+		luaManager = new LuaManager();
 	}
 	
 	@CoreEventHandler(event = "GameLoopEvent")
 	public void tick(){
 		luaManager.evaluate();
+	}
+	
+	@CoreEventHandler(event = "ShutDownEvent")
+	public void shutDown(){
+		new CrashReport(FlamingOctoIronman.getInstance().getDeathReason());
 	}
 	
 	public LuaManager getLuaManager(){

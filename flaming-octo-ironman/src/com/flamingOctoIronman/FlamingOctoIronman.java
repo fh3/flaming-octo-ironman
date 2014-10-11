@@ -1,12 +1,9 @@
 package com.flamingOctoIronman;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.PrintStream;
 
 import com.flamingOctoIronman.coreSystems.ResourceManager.ResourceManager;
 import com.flamingOctoIronman.debugging.DebuggingManager;
-import com.flamingOctoIronman.debugging.Verbosity;
 import com.flamingOctoIronman.events.coreEvents.CoreEventBusService;
 import com.flamingOctoIronman.events.coreEvents.GameLoopEvent;
 import com.flamingOctoIronman.events.coreEvents.InitializationEvent;
@@ -65,7 +62,8 @@ public class FlamingOctoIronman implements Runnable{
 	}
 	
 	/**
-	 * Initialization of the game
+	 * Initialization of the game. In this method, the core event bus and managers are initialized, and some 
+	 * additional setup may be done here. No cross-module interfacing is allowed, except for static methods.
 	 */
 	private void init(){
 		//Initialize managers
@@ -73,14 +71,9 @@ public class FlamingOctoIronman implements Runnable{
 		debuggingManager = DebuggingManager.getInstance();
 		resourceManager = new ResourceManager();
 		inputManager = new HIDManager();
-
-		//TODO Work on resource manager and add a method to provide a file object
-		try {
-			debuggingManager.getStreamManager().addStreamToOutput(new PrintStream(new File("/Users/fh3/logfile.txt")));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		PrintStream stream = ResourceManager.getPrintStream("logs/log.txt");
+		debuggingManager.getStreamManager().addStreamToOutput(stream);
 		window = new MyWindow();
 		
 		//Register managers
@@ -94,10 +87,12 @@ public class FlamingOctoIronman implements Runnable{
 	}
 	
 	/**
-	 * Start up of the game
+	 * Start up of the game. Cross-module interfacing is allowed here. Start up sub-modules.
 	 */
 	private void startUp(){
 		inputManager.registerFrame(window);
+		debuggingManager.getLuaManager().loadFile(ResourceManager.getFileDir("/scripts/source/Test.lua"));
+		
 		coreBus.publish(StartUpEvent.class);
 	}
 	
