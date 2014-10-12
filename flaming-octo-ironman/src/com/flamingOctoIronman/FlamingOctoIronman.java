@@ -25,7 +25,6 @@ public class FlamingOctoIronman implements Runnable{
 	
 	//Timing stuff
 	private static float frequency = 60;	//The frequency in Hertz that the game will be running at
-	private float period = 1 / frequency;	//The game's period
 	
 	//Core stuff
 	private CoreEventBusService coreBus;
@@ -88,15 +87,13 @@ public class FlamingOctoIronman implements Runnable{
 	
 	private void postinit(){
 		coreBus.publish(PostInitializationEvent.class);
+		coreManagerManager.postInitialize(coreBus);
 	}
 	
 	/**
 	 * Start up of the game. Cross-module interfacing is allowed here. Start up sub-modules.
 	 */
-	private void startUp(){
-		//debuggingManager.getLuaManager().loadFile(ResourceManager.getFileDir("/scripts/source/Test.lua"));
-		//debuggingManager.getStreamManager()
-		
+	private void startUp(){		
 		coreBus.publish(StartUpEvent.class);
 	}
 	
@@ -129,7 +126,6 @@ public class FlamingOctoIronman implements Runnable{
 				//Sleep
 				try {
 					Thread.sleep(waitTime);
-					this.streamManager.println(waitTime);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 					running = false;	//End the engine if an exception is thrown
@@ -143,7 +139,6 @@ public class FlamingOctoIronman implements Runnable{
 				coreBus.publish(GameLoopEvent.class);
 				try {
 					Thread.sleep(TickCalculator.getInstance().getSleepTimer());
-					this.streamManager.println(TickCalculator.getInstance().getSleepTimer());
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 					running = false;

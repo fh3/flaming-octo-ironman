@@ -8,6 +8,7 @@ import java.util.List;
 import com.flamingOctoIronman.FlamingOctoIronman;
 import com.flamingOctoIronman.debugging.DebuggingManager;
 import com.flamingOctoIronman.debugging.StreamManager;
+import com.flamingOctoIronman.debugging.Verbosity;
 import com.flamingOctoIronman.events.coreEvents.CoreEvent;
 
 /**
@@ -20,6 +21,7 @@ public abstract class Event {
 	private StreamManager streams = FlamingOctoIronman.getInstance().getStreamManager(); //Use this to make things a little easier to read
 	private ArrayList<Method> methodList;
 	private ArrayList<Object> objectList;
+	private Verbosity level;
 	
 	public Event(Class annotation){
 		methodList = new ArrayList<Method>();
@@ -43,7 +45,9 @@ public abstract class Event {
 	 */
 	public void publish() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		for(int i = 0; i < methodList.size(); i++){
-			streams.println(objectList.get(i).getClass().getSimpleName() + ": " + this.getName());
+			if(getVerbosity() != Verbosity.HIGH){
+				streams.println(objectList.get(i).getClass().getSimpleName() + ": " + this.getName());
+			}
 			methodList.get(i).invoke(objectList.get(i));
 		}
 	}
@@ -68,4 +72,8 @@ public abstract class Event {
 	 * @return True if the name of the class is the same as the method's annotation, otherwise false
 	 */
 	public abstract boolean compareNames(Method m);
+	
+	public Verbosity getVerbosity(){
+		return Verbosity.MEDIUM;
+	}
 }

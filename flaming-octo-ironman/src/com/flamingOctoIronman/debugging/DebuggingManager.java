@@ -28,6 +28,12 @@ public class DebuggingManager extends CoreManager{
 		return streams;
 	}
 	
+	@Override
+	public Object[] getSubManagers(){
+		Object[] list = {luaManager, streams};
+		return list;
+	}
+	
 	@CoreEventHandler(event = "PostInitializationEvent")
 	public void postInitialization(){
 		streams = FlamingOctoIronman.getInstance().getStreamManager();

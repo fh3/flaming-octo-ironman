@@ -1,5 +1,7 @@
 package com.flamingOctoIronman.events.coreEvents;
 
+import com.flamingOctoIronman.debugging.Verbosity;
+
 
 public class GameLoopEvent extends CoreEvent{
 	public GameLoopEvent() {
@@ -9,5 +11,10 @@ public class GameLoopEvent extends CoreEvent{
 	@Override
 	public String getName() {
 		return GameLoopEvent.class.getSimpleName();
+	}
+	
+	@Override
+	public Verbosity getVerbosity(){
+		return Verbosity.HIGH;
 	}
 }

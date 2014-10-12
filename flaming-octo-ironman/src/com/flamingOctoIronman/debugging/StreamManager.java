@@ -5,14 +5,14 @@ import java.util.ArrayList;
 
 public class StreamManager {
 	private ArrayList<PrintStream> outStream;
-	private Verbosity level = Verbosity.HIGH;
+	private Verbosity level = Verbosity.MEDIUM;
 	private ErrorStreamIntercepter errorIntercept;
 	
 	public StreamManager(){
 		outStream = new ArrayList<>();
 		outStream.add(System.out);
 		errorIntercept = new ErrorStreamIntercepter();
-		//System.setErr(errorIntercept);
+		System.setErr(errorIntercept);
 	}
 	
 	public void addStreamToOutput(PrintStream toAdd){
@@ -20,7 +20,7 @@ public class StreamManager {
 	}
 	
 	public void println(String s){
-		if(level == Verbosity.HIGH){
+		if(level == Verbosity.HIGH || level == Verbosity.MEDIUM){
 			for(PrintStream stream : outStream){
 				stream.println(s);
 			}
@@ -41,6 +41,10 @@ public class StreamManager {
 	
 	public void setVerbosity(Verbosity v){
 		level = v;
+	}
+	
+	public Verbosity getVerbosity(){
+		return level;
 	}
 
 	public void println(long l) {

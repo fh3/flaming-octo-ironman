@@ -12,6 +12,8 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import com.flamingOctoIronman.FlamingOctoIronman;
+import com.flamingOctoIronman.coreSystems.ResourceManager.ResourceManager;
+import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
 
 //TODO I might need to make this a separate thread
 public class LuaManager {
@@ -26,10 +28,12 @@ public class LuaManager {
 	public LuaManager(){
 		out = ((DebuggingManager) FlamingOctoIronman.getInstance().getCoreManagerManager().getCoreManager(DebuggingManager.class.getSimpleName())).getStreamManager();
 		
+		out.println("***************Lua Engine***************");
 		out.println( "Engine name: " +f.getEngineName() );
         out.println( "Engine Version: " +f.getEngineVersion() );
         out.println( "Language Name: " +f.getLanguageName() );
         out.println( "Language Version: " +f.getLanguageVersion() );
+        out.println("****************************************");
 	}
 	
 	public void registerObjects(String[] luaName, Object[] javaObject){
@@ -38,11 +42,18 @@ public class LuaManager {
 		}
 	}
 	
+	@CoreEventHandler(event = "StartUpEvent")
+	public void startUp(){
+		this.evaluate("print 'Loading Scripts'");
+		this.loadFile(ResourceManager.getFileDir("/scripts/source/Test.lua"));
+	}
+	
 	public void registerObject(String luaName, Object javaObject){
 		e.put(luaName, javaObject);
 	}
 	
 	//TODO might change the way this works later
+	@CoreEventHandler(event = "GameLoopEvent")
 	public void evaluate(){
 		if(streamScanner != null){
 			try {
@@ -54,7 +65,7 @@ public class LuaManager {
 		}
 	}
 	
-	public void evalutate(String toEvaluate){
+	public void evaluate(String toEvaluate){
 		try {
 			e.eval(toEvaluate);
 		} catch (ScriptException e) {

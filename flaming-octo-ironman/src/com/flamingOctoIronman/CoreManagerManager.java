@@ -37,16 +37,37 @@ public class CoreManagerManager {
 		}
 		
 		CoreEvent event;
-		Iterator<CoreEvent> iterator2= busService.getEventIterator();
+		Iterator<CoreEvent> iterator2 = busService.getEventIterator();
 		while(iterator2.hasNext()){	//For every event in the CoreEventBusService,
 			event = iterator2.next();
 			for(CoreManager manager : classMap.values()){	//For each manager in the manager map
-				for(Method method : manager.getClass().getMethods()){	//For each method in each manager
-					if(method.isAnnotationPresent(CoreEventHandler.class)){	//If the name of the annotation on the method is equal to the event's handler
-						if(event.compareNames(method)){	//If the event parameter is equal to the event's name
-							event.subscribe(method, manager);	//Then subscribe the method and the object to the event
-						}
+				checkMethodsAndSubscribe(manager, event);
+			}
+			
+		}
+	}
+	
+	public void postInitialize(CoreEventBusService busService){
+		CoreEvent event;
+		Iterator<CoreEvent> iterator = busService.getEventIterator();
+		while(iterator.hasNext()){	//For every event in the CoreEventBusService,
+			event = iterator.next();
+			for(CoreManager manager : classMap.values()){	//For each manager in the manager map
+				if(manager.getSubManagers() != null){
+					for(Object object : manager.getSubManagers()){
+						checkMethodsAndSubscribe(object, event);
 					}
+				}
+			}
+			
+		}
+	}
+	
+	private void checkMethodsAndSubscribe(Object object, CoreEvent event){
+		for(Method method : object.getClass().getMethods()){	//For each method in each manager
+			if(method.isAnnotationPresent(CoreEventHandler.class)){	//If the name of the annotation on the method is equal to the event's handler
+				if(event.compareNames(method)){	//If the event parameter is equal to the event's name
+					event.subscribe(method, object);	//Then subscribe the method and the object to the event
 				}
 			}
 		}
