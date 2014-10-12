@@ -15,30 +15,54 @@ import com.flamingOctoIronman.visualTest.MyWindow;
 
 /**
  * The game engine's main class. Contains the main loop and is what is first created when the game is ran.
+ * To start, create a new <code>Thread</code> from a new instance of this class and start it.
  */
 public class FlamingOctoIronman implements Runnable{
-	//Variables		//It doesn't really matter whether or not these are static because this is a singleton class
+	//Variables
 	
 	//Instance/most important variables
-	private static FlamingOctoIronman instance;	//The sole instance of the game
-	private static boolean running = false;	//Whether or not the game is currently running
+	/**
+	 * The sole instance of the game
+	 */
+	private static FlamingOctoIronman instance;
+	/**
+	 * Whether or not the game is currently running
+	 */
+	private boolean running = false;
 	
 	//Timing stuff
-	private static float frequency = 60;	//The frequency in Hertz that the game will be running at
+	/**
+	 * The frequency in Hertz that the game will be running at
+	 */
+	private static float frequency = 60;
 	
 	//Core stuff
+	/**
+	 * The main {@link CoreEventBusService} that handles all the {@link CoreEvent}s
+	 */
 	private CoreEventBusService coreBus;
+	/**
+	 * The main {@link CoreManagerManager} that handles all the {@link CoreManager}s and sub-managers
+	 */
 	private CoreManagerManager coreManagerManager;
-	
-	//Manager
-	//This is the one manager that should be in this class. It's here to allow for stream output before the whole 
-	//engine starts up
-	//The preferred method of referencing this is through the DebuggingManager once it's been created
+
+	/**
+	 * Handles all the output logging for the game.
+	 * This is the one manager that should be in this class. It's here to allow for stream output before the whole 
+	 * engine starts up
+	 * The preferred method of referencing this is through the DebuggingManager once it's been created
+	 */
 	private StreamManager streamManager;
 	
+	/**
+	 * The {@link JFrame} window, is only used for testing and will be removed later
+	 */
 	private MyWindow window;
 	
 	//Death
+	/**
+	 * The reason the game died
+	 */
 	private static DeathReason reason = null;
 	
 	/**
@@ -49,10 +73,10 @@ public class FlamingOctoIronman implements Runnable{
 	}
 	
 	/**
-	 * Starts the game's life
-	 * @return A result code based on how the game exited
+	 * Starts and ends the game's life
+	 * @return A result enum based on how the game exited
 	 */
-	private int startGame(){
+	private DeathReason startGame(){
 		preinit();
 		init();
 		postinit();
@@ -60,22 +84,60 @@ public class FlamingOctoIronman implements Runnable{
 		gameLoop();
 		shutDown();
 		exit();
-		return 0;
+		return reason;
 	}
 	
+	/**
+	 * The pre-initialization stage of the game's life. 
+	 * <h2>In this stage:</h2>
+	 * <ul>
+	 * <li>The stream manager is created</li>
+	 * <li>The main log file is added to the stream manager</li>
+	 * <li>The core bus is created</li>
+	 * <li>The core manager manager is created</li>
+	 * </ul>
+	 * <h2>Events fired:</h2>
+	 * This method does not fire any events.
+	 * <h2>What this method is used for</h2>
+	 * This method is used to initialize and get a copy of the {@link StreamManager}, {@link CoreEventBusService}, and
+	 * the {@link CoreManagerManager}.
+	 * No managers other than the stream manager (with the exception of static methods) may be used here.
+	 * No cross-module communication is allowed here.
+	 * 
+	 * @see com.flamingOctoIronman.debugging.StreamManager
+	 * @see com.flamingOctoIronman.CoreEventBusService
+	 * @see com.flaminoctoironman.CoreManagerManager
+	 */
 	private void preinit(){
-		streamManager = new StreamManager();
+		streamManager = new StreamManager();	//Create a new StreamManager object
 		streamManager.addStreamToOutput(ResourceManager.getPrintStream("logs/log.txt"));	//I can access ResourceManager here because the method is static, which doesn't require the manager to be initialized for me to use it
 		
 		streamManager.println("Starting the game");
 		
-		coreBus = CoreEventBusService.getInstance();	//Ensures that an EventBusService instance is created
-		coreManagerManager = CoreManagerManager.getInstance();
+		coreBus = CoreEventBusService.getInstance();	//Gets the copy of the CoreEventBusService
+		coreManagerManager = CoreManagerManager.getInstance();	//Gets the copy of the CoreManagerManager
 	}
 	
 	/**
 	 * Initialization of the game. In this method, the core event bus and managers are initialized, and some 
 	 * additional setup may be done here. No cross-module interfacing is allowed, except for static methods.
+	 */
+	/**
+	 * The initialization stage of the game's life.
+	 * <h2>In this stage:</h2>
+	 * <ul>
+	 * <li>{@link CoreManagerManager#initialize(CoreEventBusService)} is called</li>
+	 * <li>A new window is created by calling {@link MyWindow#MyWindow()}</li> (temporary)
+	 * <li>An event is published</li>
+	 * </ul>
+	 * <h2>Events fired:</h2>
+	 * {@link InitializationEvent}
+	 * 
+	 * <h2>What this method is used for</h2>
+	 * This method is used to create all the managers, and register their methods with the <code>CoreEventBusService</code>.
+	 * No cross-module communication is allowed here.
+	 * 
+	 * @see com.flaminoctoironman.CoreManagerManager
 	 */
 	private void init(){
 		coreManagerManager.initialize(coreBus);	
@@ -85,20 +147,52 @@ public class FlamingOctoIronman implements Runnable{
 		coreBus.publish(InitializationEvent.class);
 	}
 	
+	/**
+	 * The post-initialization stage of the game's life.
+	 * <h2>In this stage:</h2>
+	 * <ul>
+	 * <li>An event is published</li>
+	 * <li>Sub-module's methods are registered with the CoreEventBus via {@link CoreManagerManager#postInitialize(CoreEventBusService coreBus)}</li>
+	 * </ul>
+	 * <h2>Events fired:</h2>
+	 * <p>{@link PostInitializationEvent}</p>
+	 * <h2>What this method is used for</h2>
+	 * This method is used for the final initialization of the managers and sub-managers. Cross-module interfacing is allowed here.
+	 */
 	private void postinit(){
 		coreBus.publish(PostInitializationEvent.class);
 		coreManagerManager.postInitialize(coreBus);
 	}
 	
 	/**
-	 * Start up of the game. Cross-module interfacing is allowed here. Start up sub-modules.
+	 * The start-up stage of the game's life.
+	 * <h2>In this stage:</h2>
+	 * <ul>
+	 * <li>An event is published</li>
+	 * </ul>
+	 * <h2>Events fired:</h2>
+	 * {@link StartUpEvent}
+	 * <h2>What this method is used for</h2>
+	 * This method is used to start any systems required by the game's overlaying framework. Game mechanics should be
+	 * implemented here. Cross-module communication is allowed here.
 	 */
 	private void startUp(){		
 		coreBus.publish(StartUpEvent.class);
 	}
 	
 	/**
-	 * The main game loop
+	 * The game loop stage of the game's life.
+	 * <h2>In this stage:</h2>
+	 * <ul>
+	 * <li>The main game loop is ran</li>
+	 * <li>An event is published</li>
+	 * <li>Any remaining time left in the tick is slept through to ensure a constant framerate</li>
+	 * </ul>
+	 * <h2>Events fired:</h2>
+	 * {@link GameLoopEvent} - Published every tick
+	 * <h2>What this method is used for</h2>
+	 * This method is used to fire an event on every tick in the game's life. Anything that needs to be dynamically updated
+	 * should be annotated for this event. Cross-module communication is allowed here.
 	 */
 	private void gameLoop(){
 		TickCalculator.getInstance().setFrequency(frequency);
@@ -125,10 +219,10 @@ public class FlamingOctoIronman implements Runnable{
 			if(waitTime > 0){
 				//Sleep
 				try {
-					Thread.sleep(waitTime);
+					Thread.sleep(waitTime);	//Try and sleep
 				} catch (InterruptedException e) {
 					e.printStackTrace();
-					running = false;	//End the engine if an exception is thrown
+					this.stopGame(DeathReason.EXCEPTION);	//End the engine if an exception is thrown
 				}
 			} else{	//Otherwise, calculate overtime and don't sleep (hurry to catch up) until the engine has caught up
 				overtime = waitTime; //Overtime is set to the remaining time
@@ -138,24 +232,40 @@ public class FlamingOctoIronman implements Runnable{
 				}
 				coreBus.publish(GameLoopEvent.class);
 				try {
-					Thread.sleep(TickCalculator.getInstance().getSleepTimer());
+					Thread.sleep(TickCalculator.getInstance().getSleepTimer());	//Try and sleep
 				} catch (InterruptedException e) {
 					e.printStackTrace();
-					running = false;
+					this.stopGame(DeathReason.EXCEPTION);	//End the engine if an exception is thrown
 				}
 			}			
 		}
 	}
-	
 	/**
-	 * Shut down of the game
+	 * The shut-down stage of the game's life.
+	 * <h2>In this stage:</h2>
+	 * <ul>
+	 * <li>An event is published</li>
+	 * </ul>
+	 * <h2>Events fired:</h2>
+	 * {@link ShutDownEvent}
+	 * <h2>What this method is used for</h2>
+	 * This method is used for notifying the managers and sub-systems that the game is being shut down.
+	 * Cross module communication is allowed here, but may fail due to systems shutting down.
 	 */
 	private void shutDown(){
 		coreBus.publish(ShutDownEvent.class);
 	}
 	
 	/**
-	 * Called when the game exits
+	 * The exit stage of the game's life.
+	 * <h2>In this stage:</h2>
+	 * <ul>
+	 * <li>The game actually ends</li>
+	 * </ul>
+	 * <h2>Events fired:</h2>
+	 * This method does not fire any events.
+	 * <h2>What this method is used for</h2>
+	 * Any core finalization that needs to run right before the game shuts down.
 	 */
 	private void exit(){
 		
@@ -177,7 +287,7 @@ public class FlamingOctoIronman implements Runnable{
 	 * Starts the game and the game's thread.
 	 * 
 	 * @param args Arguments passed from the command line
-	 * @see Thread
+	 * @see java.lang.Thread
 	 */
 	public static void main(String args[]){
 		new Thread(FlamingOctoIronman.getInstance()).start();;	//Create a new instance of the game in a new thread and start it
@@ -185,8 +295,6 @@ public class FlamingOctoIronman implements Runnable{
 	
 	/**
 	 * Starts the thread and calls {@link #startGame()}
-	 * 
-	 * @see {@link #gameStart()}
 	 */
 	@Override
 	public void run() {
@@ -196,7 +304,7 @@ public class FlamingOctoIronman implements Runnable{
 	/**
 	 * Shuts the game down peacefully
 	 */
-	public static void stopGame(DeathReason forDying){
+	public void stopGame(DeathReason forDying){
 		reason = forDying;
 		running = false;
 	}
