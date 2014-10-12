@@ -24,7 +24,7 @@ public class LuaManager {
 	private Scanner streamScanner = null;
 	
 	public LuaManager(){
-		out = FlamingOctoIronman.getInstance().getDebuggingManager().getStreamManager();
+		out = ((DebuggingManager) FlamingOctoIronman.getInstance().getCoreManagerManager().getCoreManager(DebuggingManager.class.getSimpleName())).getStreamManager();
 		
 		out.println( "Engine name: " +f.getEngineName() );
         out.println( "Engine Version: " +f.getEngineVersion() );

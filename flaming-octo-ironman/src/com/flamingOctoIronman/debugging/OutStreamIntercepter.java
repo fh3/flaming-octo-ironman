@@ -6,6 +6,6 @@ public class OutStreamIntercepter extends PrintStreamIntercepter {
 	
 	@Override
 	public void println(String s){
-		FlamingOctoIronman.getInstance().getDebuggingManager().getStreamManager().println(s);
+		FlamingOctoIronman.getInstance().getStreamManager().println(s);
 	}
 }

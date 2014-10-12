@@ -8,10 +8,6 @@ package com.flamingOctoIronman.events.coreEvents;
  */
 public final class InitializationEvent extends CoreEvent {
 	
-	public InitializationEvent(){
-		super();
-	}
-	
 	@Override
 	public String getName() {
 		return InitializationEvent.class.getSimpleName();

@@ -9,7 +9,7 @@ import com.flamingOctoIronman.eventFramework.EventBusService;
  * @author Quint Heinecke
  *
  */
-public class CoreEventBusService extends EventBusService {
+public class CoreEventBusService extends EventBusService<CoreEvent> {
 	private static CoreEventBusService instance;
 	
 	private CoreEventBusService() {

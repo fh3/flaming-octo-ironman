@@ -2,6 +2,7 @@ package com.flamingOctoIronman.eventFramework;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
@@ -13,15 +14,27 @@ import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
  * @author Quint
  *
  */
-public abstract class EventBusService {
-	private ServiceLoader<Event> loader;	//Loads all core events
+public abstract class  EventBusService<T extends Event> {
+	private ServiceLoader<T> loader;	//Loads all core events
+	private HashMap<String, T> eventMap;
 	
 	/**
+	 * @param <T>
 	 * @param event A service loader with the events loaded
 	 */
-	@SuppressWarnings("unchecked")
-	public EventBusService(ServiceLoader<? extends Event> loader){
-		this.loader = (ServiceLoader<Event>) loader;
+	public EventBusService(ServiceLoader<T> loader){
+		this.loader = (ServiceLoader<T>) loader;
+		this.eventMap = new HashMap<String, T>();
+		T event;
+		Iterator<T> iterator = loader.iterator();
+		while(iterator.hasNext()){
+			event = iterator.next();
+			eventMap.put(event.getName(), event);
+		}
+	}
+	
+	public Iterator<T> getEventIterator(){
+		return loader.iterator();
 	}
 	
 	/**
@@ -33,7 +46,7 @@ public abstract class EventBusService {
 		Method[] methods;
 		Event event;
 		//Loop through the CoreEvents
-		Iterator<Event> iterator = loader.iterator();
+		Iterator<T> iterator = loader.iterator();
 		while(iterator.hasNext()){
 			event = iterator.next();
 			methods = subscriber.getClass().getMethods();
@@ -44,7 +57,7 @@ public abstract class EventBusService {
 					//If one of them is equal to the CoreEvent's class
 					if(event.getClass().getSimpleName().equals(method.getAnnotation(CoreEventHandler.class).event())){
 						//Subscribe to the event
-						event.subscribe(subscriber);
+						event.subscribe(method, subscriber);
 					}
 				}
 			}
@@ -60,7 +73,7 @@ public abstract class EventBusService {
 		Method[] methods;
 		Event event;
 		//Loop through the CoreEvents
-		Iterator<Event> iterator = loader.iterator();
+		Iterator<T> iterator = loader.iterator();
 		while(iterator.hasNext()){
 			event = iterator.next();
 			methods = subscriber.getMethods();
@@ -71,7 +84,7 @@ public abstract class EventBusService {
 					//If one of them is equal to the CoreEvent's class
 					if(event.getClass().getSimpleName().equals(method.getAnnotation(CoreEventHandler.class).event())){
 						//Subscribe to the event
-						event.subscribe(subscriber);
+						event.subscribe(method, subscriber);
 					}
 				}
 			}
@@ -82,8 +95,8 @@ public abstract class EventBusService {
 	 * @param event <code>Class</code> simple name of the event that is being published.
 	 */
 	public void publish(Class<? extends Event> event){
-		Iterator<Event> iterator = loader.iterator();	//Gets the iterator from the loader
 		Event iteratorEvent;	//Variable to hold CoreEvents from the loader's iterator
+		Iterator<? extends Event> iterator = loader.iterator();
 		while(iterator.hasNext()){		//While there's an event left in the loader's iterator
 			iteratorEvent = iterator.next();	//Get the next CoreEvent
 			if(iteratorEvent.getClass() == event){	//If the iteratorEvent is an instance of event

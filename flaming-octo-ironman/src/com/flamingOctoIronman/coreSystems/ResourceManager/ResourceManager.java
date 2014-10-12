@@ -6,7 +6,7 @@ import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import com.flamingOctoIronman.Manager;
+import com.flamingOctoIronman.CoreManager;
 import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
 
 /**
@@ -15,7 +15,7 @@ import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
  *
  */
 
-public class ResourceManager extends Manager{
+public class ResourceManager extends CoreManager{
 	private static String classDir = System.getProperty("java.class.path").substring(0, System.getProperty("java.class.path").indexOf("bin"));
 	public ResourceManager(){
 		
@@ -63,6 +63,11 @@ public class ResourceManager extends Manager{
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	@Override
+	public String getName() {
+		return this.getClass().getSimpleName();
 	}
 
 }

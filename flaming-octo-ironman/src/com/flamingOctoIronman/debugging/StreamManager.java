@@ -42,4 +42,10 @@ public class StreamManager {
 	public void setVerbosity(Verbosity v){
 		level = v;
 	}
+
+	public void println(long l) {
+		for(PrintStream stream : outStream){
+			stream.println(l);
+		}
+	}
 }

@@ -1,18 +1,17 @@
 package com.flamingOctoIronman;
 
-import java.io.PrintStream;
+import javax.swing.JFrame;
 
 import com.flamingOctoIronman.coreSystems.ResourceManager.ResourceManager;
-import com.flamingOctoIronman.debugging.DebuggingManager;
+import com.flamingOctoIronman.debugging.StreamManager;
 import com.flamingOctoIronman.events.coreEvents.CoreEventBusService;
 import com.flamingOctoIronman.events.coreEvents.GameLoopEvent;
 import com.flamingOctoIronman.events.coreEvents.InitializationEvent;
+import com.flamingOctoIronman.events.coreEvents.PostInitializationEvent;
 import com.flamingOctoIronman.events.coreEvents.ShutDownEvent;
 import com.flamingOctoIronman.events.coreEvents.StartUpEvent;
 import com.flamingOctoIronman.timer.TickCalculator;
-import com.flamingOctoIronman.timer.Timer;
 import com.flamingOctoIronman.visualTest.MyWindow;
-import com.flamingOctoIronman.HID.HIDManager;
 
 /**
  * The game engine's main class. Contains the main loop and is what is first created when the game is ran.
@@ -23,19 +22,21 @@ public class FlamingOctoIronman implements Runnable{
 	//Instance/most important variables
 	private static FlamingOctoIronman instance;	//The sole instance of the game
 	private static boolean running = false;	//Whether or not the game is currently running
-	private static Thread instanceThread = null;	//The instance of the thread the game is running in (not really sure if I need this)
 	
 	//Timing stuff
 	private static float frequency = 60;	//The frequency in Hertz that the game will be running at
 	private float period = 1 / frequency;	//The game's period
 	
-	//Event stuff
+	//Core stuff
 	private CoreEventBusService coreBus;
+	private CoreManagerManager coreManagerManager;
 	
-	//Managers/Subsystems
-	private ResourceManager resourceManager;
-	private HIDManager inputManager;
-	private DebuggingManager debuggingManager;
+	//Manager
+	//This is the one manager that should be in this class. It's here to allow for stream output before the whole 
+	//engine starts up
+	//The preferred method of referencing this is through the DebuggingManager once it's been created
+	private StreamManager streamManager;
+	
 	private MyWindow window;
 	
 	//Death
@@ -53,7 +54,9 @@ public class FlamingOctoIronman implements Runnable{
 	 * @return A result code based on how the game exited
 	 */
 	private int startGame(){
+		preinit();
 		init();
+		postinit();
 		startUp();
 		gameLoop();
 		shutDown();
@@ -61,38 +64,38 @@ public class FlamingOctoIronman implements Runnable{
 		return 0;
 	}
 	
+	private void preinit(){
+		streamManager = new StreamManager();
+		streamManager.addStreamToOutput(ResourceManager.getPrintStream("logs/log.txt"));	//I can access ResourceManager here because the method is static, which doesn't require the manager to be initialized for me to use it
+		
+		streamManager.println("Starting the game");
+		
+		coreBus = CoreEventBusService.getInstance();	//Ensures that an EventBusService instance is created
+		coreManagerManager = CoreManagerManager.getInstance();
+	}
+	
 	/**
 	 * Initialization of the game. In this method, the core event bus and managers are initialized, and some 
 	 * additional setup may be done here. No cross-module interfacing is allowed, except for static methods.
 	 */
 	private void init(){
-		//Initialize managers
-		coreBus = CoreEventBusService.getInstance();	//Ensures that an EventBusService instance is created
-		debuggingManager = DebuggingManager.getInstance();
-		resourceManager = new ResourceManager();
-		inputManager = new HIDManager();
-				
+		coreManagerManager.initialize(coreBus);	
 		window = new MyWindow();
-		
-		debuggingManager.initializeManager();
-		
-		//Register managers
-		coreBus.subscribe(resourceManager);
-		coreBus.subscribe(inputManager);
-		coreBus.subscribe(debuggingManager);
-		coreBus.subscribe(Timer.class);
-		
+						
 		//Public the event for this method
 		coreBus.publish(InitializationEvent.class);
+	}
+	
+	private void postinit(){
+		coreBus.publish(PostInitializationEvent.class);
 	}
 	
 	/**
 	 * Start up of the game. Cross-module interfacing is allowed here. Start up sub-modules.
 	 */
 	private void startUp(){
-		inputManager.registerFrame(window);
-		debuggingManager.getLuaManager().loadFile(ResourceManager.getFileDir("/scripts/source/Test.lua"));
-		debuggingManager.getStreamManager().addStreamToOutput(ResourceManager.getPrintStream("logs/log.txt"));
+		//debuggingManager.getLuaManager().loadFile(ResourceManager.getFileDir("/scripts/source/Test.lua"));
+		//debuggingManager.getStreamManager()
 		
 		coreBus.publish(StartUpEvent.class);
 	}
@@ -101,14 +104,17 @@ public class FlamingOctoIronman implements Runnable{
 	 * The main game loop
 	 */
 	private void gameLoop(){
+		TickCalculator.getInstance().setFrequency(frequency);
+		
 		//Variables
-		long waitPeriodTime = (long) (1000 * period); 	//The game's period in millisecond
+		long waitPeriodTime = TickCalculator.getInstance().getStaticSleepTimeMs(); 	//The game's period in millisecond
 		long previousTime = 0;	//The time the last frame ended
 		long waitTime = 0;	//Actual time to wait
 		long overtime = 0;	//Time that the cycle ran over/under
 		
 		running = true;	//Start the engine
 		previousTime = System.currentTimeMillis();	//Get the current time in ms from the CPU
+
 		
 		//Main game loop
 		while(running){
@@ -123,6 +129,7 @@ public class FlamingOctoIronman implements Runnable{
 				//Sleep
 				try {
 					Thread.sleep(waitTime);
+					this.streamManager.println(waitTime);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 					running = false;	//End the engine if an exception is thrown
@@ -136,6 +143,7 @@ public class FlamingOctoIronman implements Runnable{
 				coreBus.publish(GameLoopEvent.class);
 				try {
 					Thread.sleep(TickCalculator.getInstance().getSleepTimer());
+					this.streamManager.println(TickCalculator.getInstance().getSleepTimer());
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 					running = false;
@@ -177,8 +185,7 @@ public class FlamingOctoIronman implements Runnable{
 	 * @see Thread
 	 */
 	public static void main(String args[]){
-		instanceThread = new Thread(FlamingOctoIronman.getInstance());	//Create a new instance of the game in a new thread
-		instanceThread.start();	//Start the thread
+		new Thread(FlamingOctoIronman.getInstance()).start();;	//Create a new instance of the game in a new thread and start it
 	}
 	
 	/**
@@ -200,20 +207,24 @@ public class FlamingOctoIronman implements Runnable{
 	}
 	
 	//Get/set methods
-	
-	public ResourceManager getResourceManager(){
-		return resourceManager;
-	}
-	
-	public HIDManager getHIDManager(){
-		return inputManager;
-	}
-	
-	public DebuggingManager getDebuggingManager(){
-		return debuggingManager;
+		
+	public JFrame getWindow(){
+		return window;
 	}
 	
 	public DeathReason getDeathReason(){
 		return reason;
+	}
+	
+	protected CoreEventBusService getCoreEventBusService(){
+		return coreBus;
+	}
+	
+	public CoreManagerManager getCoreManagerManager(){
+		return coreManagerManager;
+	}
+	
+	public StreamManager getStreamManager(){
+		return streamManager;
 	}
 }

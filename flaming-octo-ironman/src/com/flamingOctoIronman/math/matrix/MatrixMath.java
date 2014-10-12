@@ -15,7 +15,7 @@ import info.yeppp.Core;
  * All classes are to be static
  */
 public class MatrixMath {
-	private static StreamManager streams = FlamingOctoIronman.getInstance().getDebuggingManager().getStreamManager(); //Use this to make things a little easier to read
+	private static StreamManager streams = ((DebuggingManager) FlamingOctoIronman.getInstance().getCoreManagerManager().getCoreManager(DebuggingManager.class.getSimpleName())).getStreamManager(); //Use this to make things a little easier to read
 	
 	public static Matrix multipyMatrices(Matrix a, Matrix b){
 		//Multiples matrices so product P = AB

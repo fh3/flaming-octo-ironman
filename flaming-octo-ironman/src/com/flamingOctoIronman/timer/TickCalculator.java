@@ -34,7 +34,7 @@ public class TickCalculator {
 	}
 	
 	public float getPeriod(){
-		return 1 / frequency;
+		return (1 / frequency);
 	}
 	
 	public long getStaticSleepTimeMs(){

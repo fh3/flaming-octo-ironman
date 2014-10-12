@@ -1,21 +1,24 @@
 package com.flamingOctoIronman.debugging;
 
 import com.flamingOctoIronman.FlamingOctoIronman;
-import com.flamingOctoIronman.Manager;
+import com.flamingOctoIronman.CoreManager;
 import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
 
-public class DebuggingManager extends Manager{
+public class DebuggingManager extends CoreManager{
 	private StreamManager streams;
 	private static DebuggingManager instance;
 	private LuaManager luaManager;
 
-	private DebuggingManager(){
-		streams = new StreamManager();
+	private DebuggingManager(boolean nil){
+	}
+	
+	public DebuggingManager(){
+		getInstance();
 	}
 	
 	public static DebuggingManager getInstance(){
 		if(instance == null){
-			instance = new DebuggingManager();
+			instance = new DebuggingManager(false);
 		}
 		
 		return instance;
@@ -25,7 +28,9 @@ public class DebuggingManager extends Manager{
 		return streams;
 	}
 	
-	public void initializeManager(){
+	@CoreEventHandler(event = "PostInitializationEvent")
+	public void postInitialization(){
+		streams = FlamingOctoIronman.getInstance().getStreamManager();
 		luaManager = new LuaManager();
 	}
 	
@@ -41,5 +46,10 @@ public class DebuggingManager extends Manager{
 	
 	public LuaManager getLuaManager(){
 		return this.luaManager;
+	}
+	
+	@Override
+	public String getName() {
+		return this.getClass().getSimpleName();
 	}
 }

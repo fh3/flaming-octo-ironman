@@ -17,22 +17,22 @@ import com.flamingOctoIronman.events.coreEvents.CoreEvent;
  * @see CoreEvent
  */
 public abstract class Event {
-	private List<Object> handlers;
-	private Class annotationClass;
-	private StreamManager streams = FlamingOctoIronman.getInstance().getDebuggingManager().getStreamManager(); //Use this to make things a little easier to read
+	private StreamManager streams = FlamingOctoIronman.getInstance().getStreamManager(); //Use this to make things a little easier to read
+	private ArrayList<Method> methodList;
+	private ArrayList<Object> objectList;
 	
 	public Event(Class annotation){
-		handlers = new ArrayList<Object>();
-		annotationClass = annotation;
+		methodList = new ArrayList<Method>();
+		objectList = new ArrayList<Object>();
 	}
 	
 	/**
 	 * Subscribe to the event.
 	 * @param subscriber Object to subscribe
 	 */
-	public void subscribe(Object subscriber) {
-		handlers.add(subscriber);
-		
+	public void subscribe(Method subscriberMethod, Object subscriberObject) {
+		methodList.add(subscriberMethod);
+		objectList.add(subscriberObject);
 	}
 	
 	/**
@@ -42,27 +42,10 @@ public abstract class Event {
 	 * @throws InvocationTargetException This should never be thrown
 	 */
 	public void publish() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		Method[] methods;
-		for(Object subscriber : handlers){
-			if(subscriber instanceof Class){
-				methods = ((Class<?>) subscriber).getMethods();
-			} else{
-				methods = subscriber.getClass().getMethods();
-			}
-			for(Method method : methods){
-				if(method.isAnnotationPresent(annotationClass)){
-					if(compareNames(method)){
-						if(subscriber instanceof Class){
-							streams.println((String.format("%s: %s", getName(), ((Class<?>) subscriber).getSimpleName())));
-						} else{
-							streams.println(String.format("%s: %s", getName(), subscriber.getClass().getSimpleName()));
-						}
-						method.invoke(subscriber);
-					}
-				}
-			}
+		for(int i = 0; i < methodList.size(); i++){
+			streams.println(objectList.get(i).getClass().getSimpleName() + ": " + this.getName());
+			methodList.get(i).invoke(objectList.get(i));
 		}
-		
 	}
 
 	/**
@@ -70,8 +53,7 @@ public abstract class Event {
 	 * @param subscriber Object to unsubscribe from the event
 	 */
 	public void unsubscribe(Object subscriber) {
-		handlers.remove(subscriber);
-		
+		methodList.remove(objectList.indexOf(subscriber));
 	}
 	
 	/**

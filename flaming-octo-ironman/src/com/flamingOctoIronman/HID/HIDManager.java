@@ -13,7 +13,8 @@ import java.awt.event.MouseWheelListener;
 
 import javax.swing.JFrame;
 
-import com.flamingOctoIronman.Manager;
+import com.flamingOctoIronman.CoreManager;
+import com.flamingOctoIronman.FlamingOctoIronman;
 import com.flamingOctoIronman.HID.inputEvents.InputEventBusService;
 import com.flamingOctoIronman.HID.inputEvents.InputMapper;
 import com.flamingOctoIronman.HID.inputEvents.KeyTypedEvent;
@@ -25,7 +26,7 @@ import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
  *
  */
 //TODO Note to self: may need to rework this due to AWT threading model.
-public class HIDManager extends Manager implements KeyListener, MouseListener, MouseWheelListener, MouseMotionListener{
+public class HIDManager extends CoreManager implements KeyListener, MouseListener, MouseWheelListener, MouseMotionListener{
 	private InputEventBusService inputEventBus;	//Hold and load all of the input events
 	private InputMapper keyMap;	//Map the keys to a function
 	private MouseEvent mouseEvent; //The last mouse event that occurred
@@ -38,6 +39,11 @@ public class HIDManager extends Manager implements KeyListener, MouseListener, M
 		inputEventBus = new InputEventBusService();
 		keyMap = new InputMapper();
 		mouseEventThisTick = false;
+	}
+	
+	@CoreEventHandler(event = "StartUpEvent")
+	public void startUp(){
+		this.registerFrame(FlamingOctoIronman.getInstance().getWindow());
 	}
 	
 	/**
@@ -188,5 +194,10 @@ public class HIDManager extends Manager implements KeyListener, MouseListener, M
 	public void mouseExited(MouseEvent e) {
 		mouseEvent = e;
 		mouseEventThisTick = true;
+	}
+	
+	@Override
+	public String getName() {
+		return this.getClass().getSimpleName();
 	}
 }
