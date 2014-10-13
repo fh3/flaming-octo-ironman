@@ -49,4 +49,7 @@ public class Car {
 	public void driveForward(int distance){
 		this.driveForward();
 	}
+	public void accelerate(int amount){
+		System.out.println(amount);
+	}
 }

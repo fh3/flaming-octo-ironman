@@ -27,8 +27,16 @@ public class Main {
 		red.turnRight();
 		GreenCar green = new GreenCar();
 		green.driveForward();	//Car is driving forward
-		driveCarForward(f150);
+		Main.driveCarForward(f150);
+		Main.driveCarForward(green);
 		f150.driveForward(10);
+		Car Jeep = new Car("Yellow", 7, 9);
+		Jeep.accelerate(34);
+		Jeep.popWheel();
+		Jeep.popWheel();
+		Computer Dell = new Computer(2);
+		Dell.turnOn();
+		
 		
 		/*
 		 * ashdjgahjf
