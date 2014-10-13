@@ -13,7 +13,7 @@ import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
  *
  */
 public class Timer {
-	private static StreamManager streams = ((DebuggingManager) FlamingOctoIronman.getInstance().getCoreManagerManager().getCoreManager(DebuggingManager.class.getSimpleName())).getStreamManager(); //Use this to make things a little easier to read
+	private static StreamManager streams = ((DebuggingManager) FlamingOctoIronman.getInstance().getCoreManagerManager().getManager(DebuggingManager.class.getSimpleName())).getStreamManager(); //Use this to make things a little easier to read
 
 	private static float tickCount = 0;
 	private float passedTicks;

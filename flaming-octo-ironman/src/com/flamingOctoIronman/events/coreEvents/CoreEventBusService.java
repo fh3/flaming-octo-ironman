@@ -23,4 +23,9 @@ public class CoreEventBusService extends EventBusService<CoreEvent> {
 		return instance;
 	}
 
+	@Override
+	public Class getHandlerAnnotation() {
+		return CoreEventHandler.class;
+	}
+
 }

@@ -18,7 +18,7 @@ public class Matrix {
 	 */
 	private float[][] matrix;
 	private static DecimalFormat format;	//Decimal format is static to ensure the project uses the same format
-	private StreamManager streams = ((DebuggingManager) FlamingOctoIronman.getInstance().getCoreManagerManager().getCoreManager(DebuggingManager.class.getSimpleName())).getStreamManager(); //Use this to make things a little easier to read
+	private StreamManager streams = ((DebuggingManager) FlamingOctoIronman.getInstance().getCoreManagerManager().getManager(DebuggingManager.class.getSimpleName())).getStreamManager(); //Use this to make things a little easier to read
 	
 	public Matrix(int rows, int columns){
 		this.matrix = new float[rows][columns];

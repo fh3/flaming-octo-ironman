@@ -115,7 +115,7 @@ public class FlamingOctoIronman implements Runnable{
 		streamManager.println("Starting the game");
 		
 		coreBus = CoreEventBusService.getInstance();	//Gets the copy of the CoreEventBusService
-		coreManagerManager = CoreManagerManager.getInstance();	//Gets the copy of the CoreManagerManager
+		coreManagerManager = CoreManagerManager.getInstance(coreBus);	//Gets the copy of the CoreManagerManager
 	}
 	
 	/**
@@ -140,7 +140,7 @@ public class FlamingOctoIronman implements Runnable{
 	 * @see com.flaminoctoironman.CoreManagerManager
 	 */
 	private void init(){
-		coreManagerManager.initialize(coreBus);	
+		coreManagerManager.initialize();	
 		window = new MyWindow();
 						
 		//Public the event for this method
@@ -161,7 +161,7 @@ public class FlamingOctoIronman implements Runnable{
 	 */
 	private void postinit(){
 		coreBus.publish(PostInitializationEvent.class);
-		coreManagerManager.postInitialize(coreBus);
+		coreManagerManager.postInitialize();
 	}
 	
 	/**

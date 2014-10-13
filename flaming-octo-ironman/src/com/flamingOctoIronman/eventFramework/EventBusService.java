@@ -109,4 +109,10 @@ public abstract class  EventBusService<T extends Event> {
 			}
 		}
 	}
+	
+	/**
+	 * Returns the annotation class associated with this <code>EventBusService</code>
+	 * @return
+	 */
+	public abstract Class getHandlerAnnotation();
 }

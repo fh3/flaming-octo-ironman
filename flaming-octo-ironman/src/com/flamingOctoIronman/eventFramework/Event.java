@@ -72,7 +72,7 @@ public abstract class Event {
 	 * @return True if the name of the class is the same as the method's annotation, otherwise false
 	 */
 	public abstract boolean compareNames(Method m);
-	
+		
 	public Verbosity getVerbosity(){
 		return Verbosity.MEDIUM;
 	}
