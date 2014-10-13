@@ -48,7 +48,7 @@ public class LuaManager {
 	public void startUp(){
 		this.evaluate("print 'Loading Scripts'");
 		this.loadFile(ResourceManager.getFileDir("/scripts/source/Test.lua"));
-		this.evaluate("y = thisIsAnError");
+		this.evaluate("main()");
 	}
 	
 	public void registerObject(String luaName, Object javaObject){
