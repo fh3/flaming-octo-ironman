@@ -52,4 +52,11 @@ public class StreamManager {
 			stream.println(l);
 		}
 	}
+	
+	public void printCaughtException(Exception e){
+		this.println("A " + e.getClass().getSimpleName() + "was caught.");
+		this.println("Message: " + e.getMessage());
+		this.println("Cause: " + e.getCause());
+		this.println("Stack trace: " + e.getStackTrace().toString());
+	}
 }

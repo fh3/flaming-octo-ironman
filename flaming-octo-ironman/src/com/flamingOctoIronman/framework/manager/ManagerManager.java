@@ -1,12 +1,12 @@
-package com.flamingOctoIronman.managerFramework;
+package com.flamingOctoIronman.framework.manager;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
-import com.flamingOctoIronman.eventFramework.Event;
-import com.flamingOctoIronman.eventFramework.EventBusService;
+import com.flamingOctoIronman.framework.event.Event;
+import com.flamingOctoIronman.framework.event.EventBusService;
 
 public abstract class ManagerManager<T1 extends Manager, T2 extends Event> {
 	

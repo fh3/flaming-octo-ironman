@@ -11,6 +11,8 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import org.luaj.vm2.LuaError;
+
 import com.flamingOctoIronman.FlamingOctoIronman;
 import com.flamingOctoIronman.core.event.CoreEventHandler;
 import com.flamingOctoIronman.coreSystems.ResourceManager.ResourceManager;
@@ -24,7 +26,7 @@ public class LuaManager {
 	private ScriptEngineFactory f = e.getFactory();
 	
 	private Scanner streamScanner = null;
-	
+		
 	public LuaManager(){
 		out = ((DebuggingManager) FlamingOctoIronman.getInstance().getCoreManagerManager().getManager(DebuggingManager.class.getSimpleName())).getStreamManager();
 		
@@ -46,6 +48,7 @@ public class LuaManager {
 	public void startUp(){
 		this.evaluate("print 'Loading Scripts'");
 		this.loadFile(ResourceManager.getFileDir("/scripts/source/Test.lua"));
+		this.evaluate("y = thisIsAnError");
 	}
 	
 	public void registerObject(String luaName, Object javaObject){
@@ -69,8 +72,19 @@ public class LuaManager {
 		try {
 			e.eval(toEvaluate);
 		} catch (ScriptException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			((DebuggingManager) FlamingOctoIronman.getInstance().getCoreManagerManager().getManager(DebuggingManager.class.getSimpleName())).getStreamManager().printCaughtException(e);
+		} catch(LuaError e){
+			((DebuggingManager) FlamingOctoIronman.getInstance().getCoreManagerManager().getManager(DebuggingManager.class.getSimpleName())).getStreamManager().printCaughtException(e);
+		}
+	}
+	
+	public void addObject(String luaName, Object toAccess){
+		e.put(luaName, toAccess);
+	}
+	
+	public void addObjects(String[] luaNames, Object[] toAccess){
+		for(int i = 0; i < luaNames.length; i++){
+			this.addObject(luaNames[i], toAccess[i]);
 		}
 	}
 	

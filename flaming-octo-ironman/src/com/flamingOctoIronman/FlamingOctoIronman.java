@@ -223,7 +223,7 @@ public class FlamingOctoIronman implements Runnable{
 				try {
 					Thread.sleep(waitTime);	//Try and sleep
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					e.printStackTrace();	//Print the stack trace for the fatal exception
 					this.stopGame(DeathReason.EXCEPTION);	//End the engine if an exception is thrown
 				}
 			} else{	//Otherwise, calculate overtime and don't sleep (hurry to catch up) until the engine has caught up
@@ -232,11 +232,11 @@ public class FlamingOctoIronman implements Runnable{
 					coreBus.publish(GameLoopEvent.class);	//Publish the ticking event
 					overtime =+ waitPeriodTime;	//Add the standard tick time to overtime
 				}
-				coreBus.publish(GameLoopEvent.class);
+				coreBus.publish(GameLoopEvent.class);	//Publish the ticking event
 				try {
 					Thread.sleep(TickCalculator.getInstance().getSleepTimer());	//Try and sleep
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					e.printStackTrace();	//Print the stack trace for the fatal exception
 					this.stopGame(DeathReason.EXCEPTION);	//End the engine if an exception is thrown
 				}
 			}			
@@ -255,7 +255,7 @@ public class FlamingOctoIronman implements Runnable{
 	 * Cross module communication is allowed here, but may fail due to systems shutting down.
 	 */
 	private void shutDown(){
-		coreBus.publish(ShutDownEvent.class);
+		coreBus.publish(ShutDownEvent.class);	//Publish the event
 	}
 	
 	/**
@@ -270,7 +270,7 @@ public class FlamingOctoIronman implements Runnable{
 	 * Any core finalization that needs to run right before the game shuts down.
 	 */
 	private void exit(){
-		
+		//Nothing to see here, move along.
 	}
 	
 	/**
@@ -279,10 +279,10 @@ public class FlamingOctoIronman implements Runnable{
 	 * @return The instance of the game.
 	 */
 	public static FlamingOctoIronman getInstance(){
-		if(instance == null){
-			instance = new FlamingOctoIronman();
+		if(instance == null){	//If the instance hasn't been initialized,
+			instance = new FlamingOctoIronman();	//Create a new instance
 		}
-		return instance;
+		return instance;	//Return the instance
 	}
 	
 	/**
@@ -313,23 +313,55 @@ public class FlamingOctoIronman implements Runnable{
 	
 	//Get/set methods
 		
+	/**
+	 * Return the game's window
+	 * @return	The game's window
+	 */
 	public JFrame getWindow(){
 		return window;
 	}
 	
+	/**
+	 * Returns the reason why the game died	
+	 * @return	Why the game died
+	 */
 	public DeathReason getDeathReason(){
 		return reason;
 	}
 	
+	/**
+	 * Returns the {@link CoreEventBusService} instance for the game
+	 * @return The <code>CoreEventBusService</code> for the game
+	 */
 	protected CoreEventBusService getCoreEventBusService(){
 		return coreBus;
 	}
 	
+	/**
+	 * Returns the {@link CoreManagerManager} instance for the game
+	 * @return	The <code>CoreManagerManager</code> for the game
+	 */
 	public CoreManagerManager getCoreManagerManager(){
 		return coreManagerManager;
 	}
 	
+	/**
+	 * Returns the game's {@link StreamManager}. The preferred way of accessing this is through the {@link DebugginManager} after it has been
+	 * initialized.
+	 * @return The game's <code>StreamManager</code>
+	 */
 	public StreamManager getStreamManager(){
 		return streamManager;
+	}
+	
+	/**
+	 * Get a {@link CoreManager} based on the passed <code>String</code>. This method is mainly for convenience, if called before
+	 * {@link FlamingOctoIronman#init()} is called.
+	 * 
+	 * @param simpleName	The simple name of the class you want to get the instance of.
+	 * @return	The CoreManager associated with the simpleName.
+	 */
+	public static CoreManager getCoreManager(String simpleName){
+		return FlamingOctoIronman.getInstance().getCoreManagerManager().getManager(simpleName);
 	}
 }

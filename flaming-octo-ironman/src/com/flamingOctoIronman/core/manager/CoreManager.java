@@ -1,7 +1,7 @@
 package com.flamingOctoIronman.core.manager;
 
 import com.flamingOctoIronman.FlamingOctoIronman;
-import com.flamingOctoIronman.managerFramework.Manager;
+import com.flamingOctoIronman.framework.manager.Manager;
 
 
 /**

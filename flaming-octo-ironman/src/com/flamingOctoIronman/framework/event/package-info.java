@@ -5,4 +5,4 @@
  *
  */
 //TODO Maybe create a subpackage for actual events?
-package com.flamingOctoIronman.eventFramework;
+package com.flamingOctoIronman.framework.event;

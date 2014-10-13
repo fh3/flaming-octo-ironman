@@ -1,4 +1,4 @@
-package com.flamingOctoIronman.managerFramework;
+package com.flamingOctoIronman.framework.manager;
 
 public abstract class Manager {
 	/**

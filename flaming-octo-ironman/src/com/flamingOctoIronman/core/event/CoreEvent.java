@@ -2,7 +2,7 @@ package com.flamingOctoIronman.core.event;
 
 import java.lang.reflect.Method;
 
-import com.flamingOctoIronman.eventFramework.Event;
+import com.flamingOctoIronman.framework.event.Event;
 
 /**
  * This class is an abstract implementation of <code>Event</code>. It provides all methods required by <code>Event</code>

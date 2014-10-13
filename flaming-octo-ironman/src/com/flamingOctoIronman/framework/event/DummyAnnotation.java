@@ -1,4 +1,4 @@
-package com.flamingOctoIronman.eventFramework;
+package com.flamingOctoIronman.framework.event;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

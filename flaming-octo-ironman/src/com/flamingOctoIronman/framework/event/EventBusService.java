@@ -1,4 +1,4 @@
-package com.flamingOctoIronman.eventFramework;
+package com.flamingOctoIronman.framework.event;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;

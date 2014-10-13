@@ -3,7 +3,7 @@ package com.flamingOctoIronman.HID.inputEvents;
 import java.lang.reflect.Method;
 
 import com.flamingOctoIronman.core.event.CoreEventHandler;
-import com.flamingOctoIronman.eventFramework.Event;
+import com.flamingOctoIronman.framework.event.Event;
 
 public abstract class InputEvent extends Event {
 

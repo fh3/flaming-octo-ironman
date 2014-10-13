@@ -2,7 +2,7 @@ package com.flamingOctoIronman.core.event;
 
 import java.util.ServiceLoader;
 
-import com.flamingOctoIronman.eventFramework.EventBusService;
+import com.flamingOctoIronman.framework.event.EventBusService;
 
 /**
  * This event bus is for the engine's core events. Only one instance of this class is ever created.
