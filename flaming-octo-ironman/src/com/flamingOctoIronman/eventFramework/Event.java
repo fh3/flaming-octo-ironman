@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flamingOctoIronman.FlamingOctoIronman;
+import com.flamingOctoIronman.core.event.CoreEvent;
 import com.flamingOctoIronman.debugging.DebuggingManager;
 import com.flamingOctoIronman.debugging.StreamManager;
 import com.flamingOctoIronman.debugging.Verbosity;
-import com.flamingOctoIronman.events.coreEvents.CoreEvent;
 
 /**
  * This class is the framework for all events. It provides methods to subscribe, unsubscribe, and publish events.

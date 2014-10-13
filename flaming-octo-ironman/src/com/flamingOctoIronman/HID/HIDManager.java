@@ -13,12 +13,12 @@ import java.awt.event.MouseWheelListener;
 
 import javax.swing.JFrame;
 
-import com.flamingOctoIronman.CoreManager;
 import com.flamingOctoIronman.FlamingOctoIronman;
 import com.flamingOctoIronman.HID.inputEvents.InputEventBusService;
 import com.flamingOctoIronman.HID.inputEvents.InputMapper;
 import com.flamingOctoIronman.HID.inputEvents.KeyTypedEvent;
-import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
+import com.flamingOctoIronman.core.event.CoreEventHandler;
+import com.flamingOctoIronman.core.manager.CoreManager;
 
 /**
  * This class manages all input and output systems for the game.

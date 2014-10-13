@@ -1,4 +1,4 @@
-package com.flamingOctoIronman.events.coreEvents;
+package com.flamingOctoIronman.core.event;
 
 import java.util.ServiceLoader;
 

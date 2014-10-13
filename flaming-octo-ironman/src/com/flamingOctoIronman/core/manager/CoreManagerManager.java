@@ -1,7 +1,7 @@
-package com.flamingOctoIronman;
+package com.flamingOctoIronman.core.manager;
 
-import com.flamingOctoIronman.events.coreEvents.CoreEvent;
-import com.flamingOctoIronman.events.coreEvents.CoreEventBusService;
+import com.flamingOctoIronman.core.event.CoreEvent;
+import com.flamingOctoIronman.core.event.CoreEventBusService;
 import com.flamingOctoIronman.managerFramework.ManagerManager;
 
 /**

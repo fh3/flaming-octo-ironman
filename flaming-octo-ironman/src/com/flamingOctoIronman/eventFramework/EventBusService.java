@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
-import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
+import com.flamingOctoIronman.core.event.CoreEventHandler;
 
 /**
  * This class is used to handle the subscribing and publishing of events. It provides the basic framework

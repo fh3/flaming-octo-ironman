@@ -4,9 +4,9 @@
 package com.flamingOctoIronman.timer;
 
 import com.flamingOctoIronman.FlamingOctoIronman;
+import com.flamingOctoIronman.core.event.CoreEventHandler;
 import com.flamingOctoIronman.debugging.DebuggingManager;
 import com.flamingOctoIronman.debugging.StreamManager;
-import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
 
 /**
  * @author Quint

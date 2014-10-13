@@ -2,14 +2,16 @@ package com.flamingOctoIronman;
 
 import javax.swing.JFrame;
 
+import com.flamingOctoIronman.core.event.CoreEventBusService;
+import com.flamingOctoIronman.core.event.GameLoopEvent;
+import com.flamingOctoIronman.core.event.InitializationEvent;
+import com.flamingOctoIronman.core.event.PostInitializationEvent;
+import com.flamingOctoIronman.core.event.ShutDownEvent;
+import com.flamingOctoIronman.core.event.StartUpEvent;
+import com.flamingOctoIronman.core.manager.CoreManager;
+import com.flamingOctoIronman.core.manager.CoreManagerManager;
 import com.flamingOctoIronman.coreSystems.ResourceManager.ResourceManager;
 import com.flamingOctoIronman.debugging.StreamManager;
-import com.flamingOctoIronman.events.coreEvents.CoreEventBusService;
-import com.flamingOctoIronman.events.coreEvents.GameLoopEvent;
-import com.flamingOctoIronman.events.coreEvents.InitializationEvent;
-import com.flamingOctoIronman.events.coreEvents.PostInitializationEvent;
-import com.flamingOctoIronman.events.coreEvents.ShutDownEvent;
-import com.flamingOctoIronman.events.coreEvents.StartUpEvent;
 import com.flamingOctoIronman.timer.TickCalculator;
 import com.flamingOctoIronman.visualTest.MyWindow;
 
@@ -105,8 +107,8 @@ public class FlamingOctoIronman implements Runnable{
 	 * No cross-module communication is allowed here.
 	 * 
 	 * @see com.flamingOctoIronman.debugging.StreamManager
-	 * @see com.flamingOctoIronman.CoreEventBusService
-	 * @see com.flaminoctoironman.CoreManagerManager
+	 * @see com.flamingOctoIronman.core.event.CoreEventBusService
+	 * @see com.flamingOctoIronman.core.manager.flaminoctoironman.CoreManagerManager
 	 */
 	private void preinit(){
 		streamManager = new StreamManager();	//Create a new StreamManager object
@@ -137,7 +139,7 @@ public class FlamingOctoIronman implements Runnable{
 	 * This method is used to create all the managers, and register their methods with the <code>CoreEventBusService</code>.
 	 * No cross-module communication is allowed here.
 	 * 
-	 * @see com.flaminoctoironman.CoreManagerManager
+	 * @see com.flamingOctoIronman.core.manager.flaminoctoironman.CoreManagerManager
 	 */
 	private void init(){
 		coreManagerManager.initialize();	

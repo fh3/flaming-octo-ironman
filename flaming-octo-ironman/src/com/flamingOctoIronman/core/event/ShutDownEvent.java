@@ -1,4 +1,4 @@
-package com.flamingOctoIronman.events.coreEvents;
+package com.flamingOctoIronman.core.event;
 
 
 public class ShutDownEvent extends CoreEvent{

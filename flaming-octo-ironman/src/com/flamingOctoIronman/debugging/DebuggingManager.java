@@ -1,8 +1,8 @@
 package com.flamingOctoIronman.debugging;
 
 import com.flamingOctoIronman.FlamingOctoIronman;
-import com.flamingOctoIronman.CoreManager;
-import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
+import com.flamingOctoIronman.core.event.CoreEventHandler;
+import com.flamingOctoIronman.core.manager.CoreManager;
 
 public class DebuggingManager extends CoreManager{
 	private StreamManager streams;

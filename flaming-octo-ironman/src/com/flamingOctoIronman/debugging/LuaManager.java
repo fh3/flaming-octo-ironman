@@ -12,8 +12,8 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import com.flamingOctoIronman.FlamingOctoIronman;
+import com.flamingOctoIronman.core.event.CoreEventHandler;
 import com.flamingOctoIronman.coreSystems.ResourceManager.ResourceManager;
-import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
 
 //TODO I might need to make this a separate thread
 public class LuaManager {

@@ -1,4 +1,4 @@
-package com.flamingOctoIronman.events.coreEvents;
+package com.flamingOctoIronman.core.event;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

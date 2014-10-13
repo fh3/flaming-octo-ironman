@@ -1,5 +1,0 @@
-com.flamingOctoIronman.events.coreEvents.InitializationEvent
-com.flamingOctoIronman.events.coreEvents.PostInitializationEvent
-com.flamingOctoIronman.events.coreEvents.StartUpEvent
-com.flamingOctoIronman.events.coreEvents.ShutDownEvent
-com.flamingOctoIronman.events.coreEvents.GameLoopEvent

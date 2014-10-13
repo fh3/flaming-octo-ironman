@@ -6,8 +6,8 @@ import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import com.flamingOctoIronman.CoreManager;
-import com.flamingOctoIronman.events.coreEvents.CoreEventHandler;
+import com.flamingOctoIronman.core.event.CoreEventHandler;
+import com.flamingOctoIronman.core.manager.CoreManager;
 
 /**
  * This is the main class that loads and unloads files.
