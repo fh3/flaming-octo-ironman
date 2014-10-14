@@ -13,7 +13,7 @@ import com.flamingOctoIronman.framework.event.Event;
 public abstract class CoreEvent extends Event{
 
 	public CoreEvent() {
-		super(CoreEventHandler.class);
+		super();
 	}
 
 	@Override

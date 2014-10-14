@@ -8,7 +8,7 @@ import com.flamingOctoIronman.framework.event.Event;
 public abstract class InputEvent extends Event {
 
 	public InputEvent() {
-		super(InputHandler.class);
+		super();
 	}
 	
 	@Override
