@@ -83,7 +83,7 @@ public abstract class Event {
 	}
 	
 	/**
-	 * Returns the simple name of the class.
+	 * Calls {@link Class#getSimpleName()} on the class. Returns the simple name of the class.
 	 * @return the simple name of the class.
 	 */
 	public abstract String getName();
