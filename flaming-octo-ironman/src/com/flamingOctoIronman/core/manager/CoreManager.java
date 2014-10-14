@@ -25,6 +25,6 @@ public abstract class CoreManager extends Manager{
 	 * Nothing to see here, move along.
 	 */
 	public CoreManager(){
-		
+		super();
 	}
 }
