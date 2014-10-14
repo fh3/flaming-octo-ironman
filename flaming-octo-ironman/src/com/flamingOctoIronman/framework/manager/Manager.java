@@ -1,5 +1,10 @@
 package com.flamingOctoIronman.framework.manager;
 
+/**
+ * This class shows the {@link ManagerManager} which classes to load.
+ * @author Quint
+ *
+ */
 public abstract class Manager {
 	/**
 	 * Returns the simple name of the class.

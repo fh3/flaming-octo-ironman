@@ -8,50 +8,88 @@ import java.util.ServiceLoader;
 import com.flamingOctoIronman.framework.event.Event;
 import com.flamingOctoIronman.framework.event.EventBusService;
 
+/**
+ * This class handles all the managers. It loads them, then registers them for {@link Event}s.
+ * @author Quint
+ *
+ * @param <T1>	The class that extends {@link Manager}
+ * @param <T2>	The class that extends <code>Event</code>
+ */
 public abstract class ManagerManager<T1 extends Manager, T2 extends Event> {
 	
+	/**
+	 * A reference to the {@link EventServiceBus} that controls all the <code>T2 Event</code>s
+	 */
 	private EventBusService<T2> busService;
 	
+	/**
+	 * Loads all the <code>T1 Manager</code>s
+	 */
 	private ServiceLoader<T1> classLoader;
+	/**
+	 * The top level {@link Class} <code>T1</code> that extends <code>Event</code>
+	 */
 	private Class<T1> toLoad;
 	
+	/**
+	 * A map that relates the simple name of each manager to the <code>Manager</code> instance
+	 */
 	private HashMap<String, T1> classMap;
 	
+	/**
+	 * Creates a new <code>ManagerManager</code>
+	 * @param busService	The <code>EventBusService</code> associated with the <code>Manager</code>
+	 * @param toLoad	The top level <code>Class T1</code> to load with the <code>ServiceLoader</code>. Generics cannot
+	 * be used here to to generic's limitations.
+	 */
 	public ManagerManager(EventBusService<T2> busService, Class<T1> toLoad){
+		//Set the instance's references to the passed arguments
 		this.busService = busService;
 		this.toLoad = toLoad;
 	}
 		
+	/**
+	 * This method loads and instantates each class, adds them to the <code>classMap</code>, then registers them for
+	 * <code>T2 Event</code>s. This is called during {@link com.flamingOctoIronman.FlamingOctoIronman#init()}.
+	 */
 	public void initialize(){
-		classLoader = ServiceLoader.load(toLoad);
-		classMap = new HashMap<String, T1>();
-		T1 manager;
-		Iterator<T1> iterator = classLoader.iterator();
-		while(iterator.hasNext()){
-			manager = iterator.next();
-			classMap.put(manager.getName(), manager);
+		//Create new objects
+		classLoader = ServiceLoader.load(toLoad);	//Load the managers
+		classMap = new HashMap<String, T1>();	//Create a new HashMap
+		
+		//Add the simple name of each manager and each manager into the classMap
+		T1 manager;	//Temporary reference
+		Iterator<T1> iterator = classLoader.iterator();	//Get a new Iterator from the ServiceLoader
+		while(iterator.hasNext()){	//While there's Managers left in the Iterator
+			manager = iterator.next();	//Set the temporary reference to the next Manager
+			classMap.put(manager.getName(), manager);	//And put the simple name of the Manager and the Manager into the classMap
 		}
 		
-		T2 event;
-		Iterator<T2> iterator2 = busService.getEventIterator();
-		while(iterator2.hasNext()){	//For every event in the CoreEventBusService,
-			event = iterator2.next();
-			for(T1 manager2 : classMap.values()){	//For each manager in the manager map
-				checkMethodsAndSubscribe(manager2, event);
+		//Register each Manager for events
+		T2 event;	//Temporary reference
+		Iterator<T2> iterator2 = busService.getEventIterator();	//Get a new Iterator from the ServiceLoader
+		while(iterator2.hasNext()){		//While there's Events left in the Iterator
+			event = iterator2.next();	//Set the temporary reference to the next Event
+			for(T1 manager2 : classMap.values()){	//For each Manager in the classMap
+				checkMethodsAndSubscribe(manager2, event);	//Check for methods that subscribe to the Event and subscribe them
 			}
 			
 		}
 	}
 	
+	/**
+	 * This method registers any submanagers for <code>Event</code>s.
+	 */
 	public void postInitialize(){
-		T2 event;
-		Iterator<T2> iterator = busService.getEventIterator();
-		while(iterator.hasNext()){	//For every event in the CoreEventBusService,
-			event = iterator.next();
-			for(T1 manager : classMap.values()){	//For each manager in the manager map
-				if(manager.getSubManagers() != null){
-					for(Object object : manager.getSubManagers()){
-						checkMethodsAndSubscribe(object, event);
+		//Register submanagers for Events
+		T2 event;	//Temporary reference
+		Iterator<T2> iterator = busService.getEventIterator();//Get a new Iterator from the ServiceLoader
+		while(iterator.hasNext()){	//While there's Events left in the Iterator
+			event = iterator.next();	//Set the temporary reference to the next Event
+			for(T1 manager : classMap.values()){	//For each Manager in the classMap
+				if(manager.getSubManagers() != null){	//If they have submanagers
+					for(Object object : manager.getSubManagers()){	//Go through each submanager
+						checkMethodsAndSubscribe(object, event);	//Subscribe any annotated methods to their respective Events
 					}
 				}
 			}
@@ -59,7 +97,12 @@ public abstract class ManagerManager<T1 extends Manager, T2 extends Event> {
 		}
 	}
 	
-	
+	/**
+	 * Private method to check if methods in an <code>Object</code> are annotated for the <code>Event>, 
+	 * and if they are, subscribe them
+	 * @param object	The <code>Object</code> that contains the methods to be checked
+	 * @param event	The <code>Event</code> the check the methods against
+	 */
 	private void checkMethodsAndSubscribe(Object object, T2 event){
 		for(Method method : object.getClass().getMethods()){	//For each method in each manager
 			if(method.isAnnotationPresent(busService.getHandlerAnnotation())){	//If the name of the annotation on the method is equal to the event's handler
@@ -70,6 +113,11 @@ public abstract class ManagerManager<T1 extends Manager, T2 extends Event> {
 		}
 	}
 	
+	/**
+	 * Returns the <code>Manager</code> based on the simple class name passed
+	 * @param simplifiedName The simple name of a <code>Manager</code>'s class
+	 * @return	A <code>Manager</code> with the simple name <code>simplifiedName</code>
+	 */
 	public T1 getManager(String simplifiedName){
 		return classMap.get(simplifiedName);
 	}
