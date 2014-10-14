@@ -1,6 +1,7 @@
 
 cars
 com.flamingOctoIronman
+com.flamingOctoIronman.core
 com.flamingOctoIronman.core.event
 com.flamingOctoIronman.core.manager
 com.flamingOctoIronman.coreSystems.ResourceManager
