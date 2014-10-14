@@ -1,4 +1,4 @@
-package com.flamingOctoIronman.math.vector;
+package com.flamingOctoIronman.library.math.vector;
 
 import info.yeppp.Core;
 

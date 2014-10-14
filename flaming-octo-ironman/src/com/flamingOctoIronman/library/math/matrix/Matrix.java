@@ -1,4 +1,4 @@
-package com.flamingOctoIronman.math.matrix;
+package com.flamingOctoIronman.library.math.matrix;
 
 import java.text.DecimalFormat;
 

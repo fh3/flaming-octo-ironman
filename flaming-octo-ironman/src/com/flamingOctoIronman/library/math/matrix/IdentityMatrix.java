@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.flamingOctoIronman.math.matrix;
+package com.flamingOctoIronman.library.math.matrix;
 
 /**
  * @author fh3

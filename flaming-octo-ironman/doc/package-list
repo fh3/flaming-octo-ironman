@@ -9,9 +9,10 @@ com.flamingOctoIronman.coreSystems.ResourceManager
 com.flamingOctoIronman.debugging
 com.flamingOctoIronman.framework.event
 com.flamingOctoIronman.framework.manager
-com.flamingOctoIronman.math
-com.flamingOctoIronman.math.matrix
-com.flamingOctoIronman.math.vector
+com.flamingOctoIronman.library
+com.flamingOctoIronman.library.math
+com.flamingOctoIronman.library.math.matrix
+com.flamingOctoIronman.library.math.vector
 com.flamingOctoIronman.timer
 com.flamingOctoIronman.tools
 com.flamingOctoIronman.visualTest
