@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.flamingOctoIronman.timer;
+package com.flamingOctoIronman.subsystem.timer;
 
 import com.flamingOctoIronman.FlamingOctoIronman;
 import com.flamingOctoIronman.core.event.CoreEventHandler;

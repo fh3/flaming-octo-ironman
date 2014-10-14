@@ -1,18 +1,20 @@
 
 cars
 com.flamingOctoIronman
-com.flamingOctoIronman.HID
-com.flamingOctoIronman.HID.inputEvents
 com.flamingOctoIronman.core.event
 com.flamingOctoIronman.core.manager
 com.flamingOctoIronman.coreSystems.ResourceManager
 com.flamingOctoIronman.debugging
+com.flamingOctoIronman.framework
 com.flamingOctoIronman.framework.event
 com.flamingOctoIronman.framework.manager
 com.flamingOctoIronman.library
 com.flamingOctoIronman.library.math
 com.flamingOctoIronman.library.math.matrix
 com.flamingOctoIronman.library.math.vector
-com.flamingOctoIronman.timer
-com.flamingOctoIronman.tools
+com.flamingOctoIronman.subsystem
+com.flamingOctoIronman.subsystem.HID
+com.flamingOctoIronman.subsystem.HID.inputEvents
+com.flamingOctoIronman.subsystem.timer
+com.flamingOctoIronman.subsystem.tools
 com.flamingOctoIronman.visualTest

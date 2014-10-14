@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.flamingOctoIronman.DeathReason;
-import com.flamingOctoIronman.timer.Timer;
+import com.flamingOctoIronman.subsystem.timer.Timer;
 
 public class CrashReport {
 	private FileWriter writer;

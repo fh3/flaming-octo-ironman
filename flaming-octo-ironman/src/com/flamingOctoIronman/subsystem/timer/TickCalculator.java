@@ -1,4 +1,4 @@
-package com.flamingOctoIronman.timer;
+package com.flamingOctoIronman.subsystem.timer;
 
 import java.util.LinkedList;
 import java.util.Queue;

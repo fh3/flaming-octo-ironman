@@ -1,4 +1,4 @@
-package com.flamingOctoIronman.HID.inputEvents;
+package com.flamingOctoIronman.subsystem.HID.inputEvents;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

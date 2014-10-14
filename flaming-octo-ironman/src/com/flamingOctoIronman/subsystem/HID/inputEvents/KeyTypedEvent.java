@@ -1,4 +1,4 @@
-package com.flamingOctoIronman.HID.inputEvents;
+package com.flamingOctoIronman.subsystem.HID.inputEvents;
 
 public class KeyTypedEvent extends InputEvent {
 

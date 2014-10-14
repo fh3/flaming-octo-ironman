@@ -64,7 +64,7 @@ public abstract class Event {
 	 */
 	public void publish() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		for(int i = 0; i < methodList.size(); i++){	//Loop through the ArrayLists until the end is reached
-			if(getVerbosity() != Verbosity.LOW){	//If the verbosity of the object is not low,
+			if(getVerbosity() != Verbosity.HIGH){	//If the verbosity of the object is not high,
 				streams.println(objectList.get(i).getClass().getSimpleName() + ": " + this.getName());	//Print out a line in the format "ObjectName: EventName"
 			}
 			methodList.get(i).invoke(objectList.get(i));	//Invoke the method on the object

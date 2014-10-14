@@ -12,7 +12,7 @@ import com.flamingOctoIronman.core.manager.CoreManager;
 import com.flamingOctoIronman.core.manager.CoreManagerManager;
 import com.flamingOctoIronman.coreSystems.ResourceManager.ResourceManager;
 import com.flamingOctoIronman.debugging.StreamManager;
-import com.flamingOctoIronman.timer.TickCalculator;
+import com.flamingOctoIronman.subsystem.timer.TickCalculator;
 import com.flamingOctoIronman.visualTest.MyWindow;
 
 /**
