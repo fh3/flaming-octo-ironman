@@ -1,3 +1,4 @@
 com.flamingOctoIronman.subsystem.resource.ResourceManager
 com.flamingOctoIronman.subsystem.debugging.DebuggingManager
 com.flamingOctoIronman.subsystem.HID.HIDManager
+com.flamingOctoIronman.subsystem.render.RenderManager

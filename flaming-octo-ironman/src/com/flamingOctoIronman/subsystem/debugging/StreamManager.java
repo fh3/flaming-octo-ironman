@@ -12,7 +12,7 @@ public class StreamManager {
 		outStream = new ArrayList<>();
 		outStream.add(System.out);
 		errorIntercept = new ErrorStreamIntercepter();
-		System.setErr(errorIntercept);
+		//System.setErr(errorIntercept);
 	}
 	
 	public void addStreamToOutput(PrintStream toAdd){
