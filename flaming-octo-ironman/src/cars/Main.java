@@ -36,6 +36,7 @@ public class Main {
 		Jeep.popWheel();
 		Computer Dell = new Computer(2);
 		Dell.turnOn();
+		Dell.activateGayMeter("Oliver");
 		
 		
 		/*

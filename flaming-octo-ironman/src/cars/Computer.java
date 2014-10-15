@@ -7,5 +7,16 @@ public class Computer {
 	
 	public void turnOn(){
 		System.out.println("Computer is now on");
+	
 	}
+	
+		
+	public void activateGayMeter(String name){
+		if (name.equals("Oliver")){
+			System.out.println("Oliver is really gay");
+		}
+		
+	}
+		
+	
 }
