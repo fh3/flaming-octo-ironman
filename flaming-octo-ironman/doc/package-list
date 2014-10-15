@@ -4,8 +4,6 @@ com.flamingOctoIronman
 com.flamingOctoIronman.core
 com.flamingOctoIronman.core.event
 com.flamingOctoIronman.core.manager
-com.flamingOctoIronman.coreSystems.ResourceManager
-com.flamingOctoIronman.debugging
 com.flamingOctoIronman.framework
 com.flamingOctoIronman.framework.event
 com.flamingOctoIronman.framework.manager
@@ -16,6 +14,8 @@ com.flamingOctoIronman.library.math.vector
 com.flamingOctoIronman.subsystem
 com.flamingOctoIronman.subsystem.HID
 com.flamingOctoIronman.subsystem.HID.inputEvents
+com.flamingOctoIronman.subsystem.debugging
+com.flamingOctoIronman.subsystem.resource
 com.flamingOctoIronman.subsystem.timer
 com.flamingOctoIronman.subsystem.tools
 com.flamingOctoIronman.visualTest

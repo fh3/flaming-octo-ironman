@@ -10,8 +10,8 @@ import com.flamingOctoIronman.core.event.ShutDownEvent;
 import com.flamingOctoIronman.core.event.StartUpEvent;
 import com.flamingOctoIronman.core.manager.CoreManager;
 import com.flamingOctoIronman.core.manager.CoreManagerManager;
-import com.flamingOctoIronman.coreSystems.ResourceManager.ResourceManager;
-import com.flamingOctoIronman.debugging.StreamManager;
+import com.flamingOctoIronman.subsystem.debugging.StreamManager;
+import com.flamingOctoIronman.subsystem.resource.ResourceManager;
 import com.flamingOctoIronman.subsystem.timer.TickCalculator;
 import com.flamingOctoIronman.visualTest.MyWindow;
 
@@ -106,7 +106,7 @@ public class FlamingOctoIronman implements Runnable{
 	 * No managers other than the stream manager (with the exception of static methods) may be used here.
 	 * No cross-module communication is allowed here.
 	 * 
-	 * @see com.flamingOctoIronman.debugging.StreamManager
+	 * @see com.flamingOctoIronman.subsystem.debugging.StreamManager
 	 * @see com.flamingOctoIronman.core.event.CoreEventBusService
 	 * @see com.flamingOctoIronman.core.manager.flaminoctoironman.CoreManagerManager
 	 */

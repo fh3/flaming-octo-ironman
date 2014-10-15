@@ -5,4 +5,4 @@
  * @author Quint
  *
  */
-package com.flamingOctoIronman.coreSystems.ResourceManager;
+package com.flamingOctoIronman.subsystem.resource;

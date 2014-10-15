@@ -1,6 +1,6 @@
 package com.flamingOctoIronman.core.event;
 
-import com.flamingOctoIronman.debugging.Verbosity;
+import com.flamingOctoIronman.subsystem.debugging.Verbosity;
 
 /**
  * This {@link CoreEvent} is published whenever there is a tick.

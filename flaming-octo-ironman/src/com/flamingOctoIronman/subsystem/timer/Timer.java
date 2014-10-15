@@ -5,8 +5,8 @@ package com.flamingOctoIronman.subsystem.timer;
 
 import com.flamingOctoIronman.FlamingOctoIronman;
 import com.flamingOctoIronman.core.event.CoreEventHandler;
-import com.flamingOctoIronman.debugging.DebuggingManager;
-import com.flamingOctoIronman.debugging.StreamManager;
+import com.flamingOctoIronman.subsystem.debugging.DebuggingManager;
+import com.flamingOctoIronman.subsystem.debugging.StreamManager;
 
 /**
  * @author Quint

@@ -1,4 +1,4 @@
-package com.flamingOctoIronman.debugging;
+package com.flamingOctoIronman.subsystem.debugging;
 
 import com.flamingOctoIronman.FlamingOctoIronman;
 

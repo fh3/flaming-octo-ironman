@@ -1,4 +1,4 @@
-package com.flamingOctoIronman.debugging;
+package com.flamingOctoIronman.subsystem.debugging;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,7 +15,7 @@ import org.luaj.vm2.LuaError;
 
 import com.flamingOctoIronman.FlamingOctoIronman;
 import com.flamingOctoIronman.core.event.CoreEventHandler;
-import com.flamingOctoIronman.coreSystems.ResourceManager.ResourceManager;
+import com.flamingOctoIronman.subsystem.resource.ResourceManager;
 
 //TODO I might need to make this a separate thread
 public class LuaManager {

@@ -3,8 +3,8 @@ package com.flamingOctoIronman.library.math.matrix;
 import java.text.DecimalFormat;
 
 import com.flamingOctoIronman.FlamingOctoIronman;
-import com.flamingOctoIronman.debugging.DebuggingManager;
-import com.flamingOctoIronman.debugging.StreamManager;
+import com.flamingOctoIronman.subsystem.debugging.DebuggingManager;
+import com.flamingOctoIronman.subsystem.debugging.StreamManager;
 
 import info.yeppp.Core;
 

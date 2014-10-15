@@ -1,4 +1,4 @@
-package com.flamingOctoIronman.debugging;
+package com.flamingOctoIronman.subsystem.debugging;
 
 import java.io.FileWriter;
 import java.io.IOException;
