@@ -33,8 +33,7 @@ public class RenderEngine {
         
 
         // We need a core context with atleast OpenGL 3.2
-        ContextAttribs cattr = new ContextAttribs(3, 2).withForwardCompatible(true)
-                                                       .withProfileCore(true);
+        ContextAttribs cattr = new ContextAttribs(3, 2).withForwardCompatible(true).withProfileCore(true);
 
         // Create the Display
         try {
