@@ -35,7 +35,7 @@ public class MyWindow extends JFrame implements WindowListener {
 
 	@Override
 	public void windowClosing(WindowEvent arg0) {
-		FlamingOctoIronman.getInstance().stopGame(DeathReason.NORMAL);
+		FlamingOctoIronman.getInstance().stopGame(DeathReason.EXCEPTION);
 	}
 
 	@Override

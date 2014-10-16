@@ -1,0 +1,8 @@
+FlamingOctoIronman has crashed!
+
+Reason for death: EXCEPTION
+Crash occoured at: 15/10/2014 20:46:34
+Ticks passed since start: 0.0
+Max JVM memory: 3814064128
+Free memory: 238190672
+Used memory: 3575873456

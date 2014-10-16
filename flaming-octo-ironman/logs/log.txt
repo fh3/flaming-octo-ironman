@@ -10,3 +10,4 @@ Language Version: 5.2
 HIDManager: StartUpEvent
 ResourceManager: StartUpEvent
 LuaManager: StartUpEvent
+DebuggingManager: ShutDownEvent

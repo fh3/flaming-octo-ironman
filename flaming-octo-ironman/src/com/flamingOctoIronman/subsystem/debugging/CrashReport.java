@@ -6,15 +6,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.flamingOctoIronman.DeathReason;
+import com.flamingOctoIronman.subsystem.resource.ResourceManager;
 import com.flamingOctoIronman.subsystem.timer.Timer;
 
 public class CrashReport {
 	private FileWriter writer;
 	
 	public CrashReport(DeathReason deathReason) {
-		// TODO Auto-generated constructor stub
-		//TODO Call resource manager to get a new file printstream
-		FileWriter writer = null;
+		writer = ResourceManager.getFileWriter(ResourceManager.getFileDir("logs/crashlog.txt"));
 		
 		//Output for file
 		try {
@@ -25,8 +24,14 @@ public class CrashReport {
 			this.println("Ticks passed since start: " + Timer.getTickCount());
 			this.println("Max JVM memory: " + Runtime.getRuntime().maxMemory());
 			this.println("Free memory: " + Runtime.getRuntime().freeMemory());
+			this.println("Used memory: " + (Runtime.getRuntime().maxMemory() - Runtime.getRuntime().freeMemory()));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			writer.close();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
