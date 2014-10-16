@@ -3,10 +3,12 @@ package com.flamingOctoIronman.subsystem.render;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.PixelFormat;
 
 import com.flamingOctoIronman.DeathReason;
 import com.flamingOctoIronman.FlamingOctoIronman;
+import com.flamingOctoIronman.core.event.CoreEventHandler;
 import com.flamingOctoIronman.subsystem.debugging.DebuggingManager;
 import com.flamingOctoIronman.subsystem.debugging.StreamManager;
 
@@ -23,6 +25,8 @@ public class RenderEngine {
 	
 	private StreamManager out = ((DebuggingManager) FlamingOctoIronman.getInstance().getCoreManagerManager().getManager(DebuggingManager.class.getSimpleName())).getStreamManager();
 	
+	private DisplayMode[] dm;
+	
 	/**
 	 * The default {@link PixelFormat}
 	 */
@@ -34,6 +38,13 @@ public class RenderEngine {
 
         // We need a core context with atleast OpenGL 3.2
         ContextAttribs cattr = new ContextAttribs(3, 2).withForwardCompatible(true).withProfileCore(true);
+        
+        try {
+			dm = Display.getAvailableDisplayModes();
+		} catch (LWJGLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
         // Create the Display
         try {
@@ -43,6 +54,14 @@ public class RenderEngine {
 			FlamingOctoIronman.getInstance().stopGame(DeathReason.EXCEPTION);
 		}
         Display.setResizable(true);
+        
+	}
+	
+	@CoreEventHandler(event = "PostInitializationEvent")
+	public void postInitialize(){
+		for(DisplayMode mode : dm){
+        	out.println(mode.toString());
+        }
 	}
 	
 	/**
