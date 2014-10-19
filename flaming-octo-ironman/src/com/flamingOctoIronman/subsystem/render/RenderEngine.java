@@ -40,6 +40,10 @@ public class RenderEngine {
 	private PixelFormat pfmt;
 	private ContextAttribs cattr;
 	
+	private int vertexCount;
+	private int vaoId;
+	private int vboId;
+	
 	private RenderEngine(){
 		// Create the default PixelFormat
         
@@ -74,16 +78,16 @@ public class RenderEngine {
         FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertices.length);
         verticesBuffer.put(vertices);
         verticesBuffer.flip();
-        int vertexCount = vertices.length / 3;
+        vertexCount = vertices.length / 3;
         
         // Create a new Vertex Array Object in memory and select it (bind)
         // A VAO can have up to 16 attributes (VBO's) assigned to it by default
-        int vaoId = GL30.glGenVertexArrays();
+        vaoId = GL30.glGenVertexArrays();
         GL30.glBindVertexArray(vaoId);
          
         // Create a new Vertex Buffer Object in memory and select it (bind)
         // A VBO is a collection of Vectors which in this case resemble the location of each vertex.
-        int vboId = GL15.glGenBuffers();
+        vboId = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboId);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, verticesBuffer, GL15.GL_STATIC_DRAW);
         // Put the VBO in the attributes list at index 0
@@ -94,19 +98,7 @@ public class RenderEngine {
         // Deselect (bind to 0) the VAO
         GL30.glBindVertexArray(0);
         
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-        
-        // Bind to the VAO that has all the information about the quad vertices
-        GL30.glBindVertexArray(vaoId);
-        GL20.glEnableVertexAttribArray(0);
-         
-        // Draw the vertices
-        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, vertexCount);
-         
-        // Put everything back to default (deselect)
-        GL20.glDisableVertexAttribArray(0);
-        GL30.glBindVertexArray(0);
-        
+
 	}
 	
 	@CoreEventHandler(event = "PostInitializationEvent")
@@ -132,7 +124,33 @@ public class RenderEngine {
 	
 	@CoreEventHandler(event = "GameLoopEvent")
 	public void update(){
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+        
+        // Bind to the VAO that has all the information about the quad vertices
+        GL30.glBindVertexArray(vaoId);
+        GL20.glEnableVertexAttribArray(0);
+         
+        // Draw the vertices
+        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, vertexCount);
+         
+        // Put everything back to default (deselect)
+        GL20.glDisableVertexAttribArray(0);
+        GL30.glBindVertexArray(0);
 		Display.update();
+	}
+	
+	@CoreEventHandler(event = "ShutDownEvent")
+	public void shutDown(){
+		// Disable the VBO index from the VAO attributes list
+		GL20.glDisableVertexAttribArray(0);
+		 
+		// Delete the VBO
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+		GL15.glDeleteBuffers(vboId);
+		 
+		// Delete the VAO
+		GL30.glBindVertexArray(0);
+		GL30.glDeleteVertexArrays(vaoId);
 	}
 	
 	/**
