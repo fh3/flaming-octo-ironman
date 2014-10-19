@@ -25,7 +25,7 @@ public class RenderManager extends CoreManager{
 	}
 	
 	/**
-	 * @return the {@link RenderEngine} instance
+	 * @return The {@link RenderEngine} instance
 	 */
 	@Override
 	public Object[] getSubManagers(){

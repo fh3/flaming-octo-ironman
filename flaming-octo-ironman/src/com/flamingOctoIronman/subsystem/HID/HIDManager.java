@@ -43,7 +43,7 @@ public class HIDManager extends CoreManager implements KeyListener, MouseListene
 	
 	@CoreEventHandler(event = "StartUpEvent")
 	public void startUp(){
-		this.registerFrame(FlamingOctoIronman.getInstance().getWindow());
+		//this.registerFrame(FlamingOctoIronman.getInstance().getWindow());
 	}
 	
 	/**

@@ -34,8 +34,8 @@ public class DebuggingManager extends CoreManager{
 		return list;
 	}
 	
-	@CoreEventHandler(event = "PostInitializationEvent")
-	public void postInitialization(){
+	@CoreEventHandler(event = "InitializationEvent")
+	public void Initialization(){
 		streams = FlamingOctoIronman.getInstance().getStreamManager();
 		luaManager = new LuaManager();
 	}

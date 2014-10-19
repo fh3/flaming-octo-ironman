@@ -1,8 +1,98 @@
 FlamingOctoIronman has crashed!
 
 Reason for death: EXCEPTION
-Crash occoured at: 15/10/2014 20:46:34
+Crash occurred at: 18/10/2014 19:45:56
 Ticks passed since start: 0.0
 Max JVM memory: 3814064128
-Free memory: 238190672
-Used memory: 3575873456
+Free memory: 238189280
+Used memory: 3575874848
+
+Stack traces: 
+Thread: AWT-Shutdown
+Class java.lang.Object Line -2: wait
+Class java.lang.Object Line 503: wait
+Class sun.awt.AWTAutoShutdown Line -1: run
+Class java.lang.Thread Line -1: run
+
+Thread: Thread-2
+Class sun.awt.windows.WToolkit Line -2: shutdown
+Class sun.awt.windows.WToolkit Line -1: access$200
+Class sun.awt.windows.WToolkit$2$1 Line -1: run
+Class java.lang.Thread Line -1: run
+
+Thread: Attach Listener
+
+Thread: Thread-0
+Class java.lang.Thread Line -2: dumpThreads
+Class java.lang.Thread Line -1: getAllStackTraces
+Class com.flamingOctoIronman.subsystem.debugging.CrashReport Line 32: <init>
+Class com.flamingOctoIronman.subsystem.debugging.DebuggingManager Line 50: shutDown
+Class sun.reflect.NativeMethodAccessorImpl Line -2: invoke0
+Class sun.reflect.NativeMethodAccessorImpl Line -1: invoke
+Class sun.reflect.DelegatingMethodAccessorImpl Line -1: invoke
+Class java.lang.reflect.Method Line -1: invoke
+Class com.flamingOctoIronman.framework.event.Event Line 70: publish
+Class com.flamingOctoIronman.framework.event.EventBusService Line 118: publish
+Class com.flamingOctoIronman.FlamingOctoIronman Line 258: shutDown
+Class com.flamingOctoIronman.FlamingOctoIronman Line 87: startGame
+Class com.flamingOctoIronman.FlamingOctoIronman Line 303: run
+Class java.lang.Thread Line -1: run
+
+Thread: Reference Handler
+Class java.lang.Object Line -2: wait
+Class java.lang.Object Line 503: wait
+Class java.lang.ref.Reference$ReferenceHandler Line -1: run
+
+Thread: Signal Dispatcher
+
+Thread: AWT-EventQueue-0
+Class java.lang.Object Line -2: wait
+Class java.lang.Thread Line -1: join
+Class java.lang.Thread Line -1: join
+Class java.lang.ApplicationShutdownHooks Line -1: runHooks
+Class java.lang.ApplicationShutdownHooks$1 Line -1: run
+Class java.lang.Shutdown Line -1: runHooks
+Class java.lang.Shutdown Line -1: sequence
+Class java.lang.Shutdown Line -1: exit
+Class java.lang.Runtime Line -1: exit
+Class java.lang.System Line -1: exit
+Class javax.swing.JFrame Line -1: processWindowEvent
+Class java.awt.Window Line -1: processEvent
+Class java.awt.Component Line -1: dispatchEventImpl
+Class java.awt.Container Line -1: dispatchEventImpl
+Class java.awt.Window Line -1: dispatchEventImpl
+Class java.awt.Component Line -1: dispatchEvent
+Class java.awt.EventQueue Line -1: dispatchEventImpl
+Class java.awt.EventQueue Line -1: access$200
+Class java.awt.EventQueue$3 Line -1: run
+Class java.awt.EventQueue$3 Line -1: run
+Class java.security.AccessController Line -2: doPrivileged
+Class java.security.ProtectionDomain$1 Line -1: doIntersectionPrivilege
+Class java.security.ProtectionDomain$1 Line -1: doIntersectionPrivilege
+Class java.awt.EventQueue$4 Line -1: run
+Class java.awt.EventQueue$4 Line -1: run
+Class java.security.AccessController Line -2: doPrivileged
+Class java.security.ProtectionDomain$1 Line -1: doIntersectionPrivilege
+Class java.awt.EventQueue Line -1: dispatchEvent
+Class java.awt.EventDispatchThread Line -1: pumpOneEventForFilters
+Class java.awt.EventDispatchThread Line -1: pumpEventsForFilter
+Class java.awt.EventDispatchThread Line -1: pumpEventsForHierarchy
+Class java.awt.EventDispatchThread Line -1: pumpEvents
+Class java.awt.EventDispatchThread Line -1: pumpEvents
+Class java.awt.EventDispatchThread Line -1: run
+
+Thread: Finalizer
+Class java.lang.Object Line -2: wait
+Class java.lang.ref.ReferenceQueue Line -1: remove
+Class java.lang.ref.ReferenceQueue Line -1: remove
+Class java.lang.ref.Finalizer$FinalizerThread Line -1: run
+
+Thread: Java2D Disposer
+Class java.lang.Object Line -2: wait
+Class java.lang.ref.ReferenceQueue Line -1: remove
+Class java.lang.ref.ReferenceQueue Line -1: remove
+Class sun.java2d.Disposer Line -1: run
+Class java.lang.Thread Line -1: run
+
+Thread: DestroyJavaVM
+

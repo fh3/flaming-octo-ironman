@@ -143,7 +143,7 @@ public class FlamingOctoIronman implements Runnable{
 	 */
 	private void init(){
 		coreManagerManager.initialize();	
-		window = new MyWindow();
+		//window = new MyWindow();
 						
 		//Public the event for this method
 		coreBus.publish(InitializationEvent.class);
@@ -162,8 +162,8 @@ public class FlamingOctoIronman implements Runnable{
 	 * This method is used for the final initialization of the managers and sub-managers. Cross-module interfacing is allowed here.
 	 */
 	private void postinit(){
-		coreBus.publish(PostInitializationEvent.class);
 		coreManagerManager.postInitialize();
+		coreBus.publish(PostInitializationEvent.class);
 	}
 	
 	/**
