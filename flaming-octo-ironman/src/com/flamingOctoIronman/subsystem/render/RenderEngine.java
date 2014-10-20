@@ -1,5 +1,9 @@
 package com.flamingOctoIronman.subsystem.render;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -13,6 +17,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.PixelFormat;
 
 import com.flamingOctoIronman.DeathReason;
@@ -20,6 +25,7 @@ import com.flamingOctoIronman.FlamingOctoIronman;
 import com.flamingOctoIronman.core.event.CoreEventHandler;
 import com.flamingOctoIronman.subsystem.debugging.DebuggingManager;
 import com.flamingOctoIronman.subsystem.debugging.StreamManager;
+import com.flamingOctoIronman.subsystem.resource.ResourceManager;
 
 /**
  * This class contains and handles the game.
@@ -43,6 +49,14 @@ public class RenderEngine {
 	private ContextAttribs cattr;
 	
 	private int vertexCount = 0;
+	private int program;
+	
+	private float[] triangle = {
+    		//Illuminati 
+    		0f, 0.5f, 0f,
+    		-0.5f, -0.5f, 0f,
+    		0.5f, -0.5f, 0f,
+    		};;
 	
 	private ArrayList<VertexArrayObject> vaoIDList;	//The list of Vertex Array Objects			//I hate using these in this class, but I don't think I have an alternative.
 //Fortunately I shouldn't be putting objects in them during the render loop.
@@ -58,7 +72,7 @@ public class RenderEngine {
         // Create the Display
         try {
         	Display.setDisplayMode(new DisplayMode(800,600));	//Set the size
-			Display.create();	//Create the display
+			Display.create(pfmt, cattr);	//Create the display
 			//Display.setFullscreen(true);
 		} catch (LWJGLException e) {
 			e.printStackTrace();
@@ -67,21 +81,12 @@ public class RenderEngine {
         Display.setResizable(true);	//Make it resizeable
         Display.setTitle("FLAMING OCTO IRONMAN");	//Set the title
         
-        float[] triangle = {
-        		//Illuminati 
-        		0f, 0.5f, 0f,
-        		-0.5f, -0.5f, 0f,
-        		0.5f, -0.5f, 0f,
-        		};
         float[] quad = {
         		-0.5f, 0.5f, 0f,    // Left top         ID: 0
         		-0.5f, -0.5f, 0f,   // Left bottom      ID: 1
         		0.5f, -0.5f, 0f,    // Right bottom     ID: 2
         		0.5f, 0.5f, 0f  // Right left       ID: 3
         		};
-        
-        //this.renderTriangle(triangle);
-        this.renderQuad(quad);
 	}
 	
 	public void renderQuad(float[] vertices){
@@ -143,6 +148,7 @@ public class RenderEngine {
         	openSlot = vaoIDList.get(i).findEmptyVBO();
         }
         if(openSlot == -1){	//If none were found then
+        	GL30.glGenVertexArrays();
         	vaoIDList.add(new VertexArrayObject(GL30.glGenVertexArrays()));	//Create a new VAO
         	vaoId = vaoIDList.size() - 1;	//Set the VAO to the last one in the VAO list
         	openSlot = 0;	//And use the first VBO slot
@@ -156,6 +162,48 @@ public class RenderEngine {
         vaoIDList.get(vaoId).getUsedList()[openSlot] = GL15.GL_ARRAY_BUFFER;	//Mark the slot as used
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);	//Deselect the VBO
         GL30.glBindVertexArray(0);	//Deselect the VAO
+	}
+	
+	public int loadShaders(File vertex, File fragment){
+		//Compile the shaders
+		int vertexID = this.compileShader(vertex);
+		int fragmentID = this.compileShader(fragment);
+		//Create the shader program
+		int programID = GL20.glCreateProgram();
+		//Attach the shaders
+		GL20.glAttachShader(programID, vertexID);
+		GL20.glAttachShader(programID, fragmentID);
+		//Don't know what this does
+		GL20.glLinkProgram(programID);
+		
+		//Check the shader
+		int result = GL20.glGetProgrami(programID, GL20.GL_LINK_STATUS);
+		String errorMessage = GL20.glGetProgramInfoLog(programID, GL20.glGetProgrami(programID, GL20.GL_INFO_LOG_LENGTH));
+		out.println("Shader error: ");
+		out.println(errorMessage);
+		out.println("Shader result: " + result);
+		GL20.glDeleteShader(vertexID);
+	    GL20.glDeleteShader(fragmentID);
+	    
+	    return programID;
+	}
+	
+	public int compileShader(File ShaderFile){
+		int ShaderID = GL20.glCreateShader(GL20.GL_VERTEX_SHADER);	//Get the shader code
+		String shaderCode = ResourceManager.ReadFile(ShaderFile);	//Read the vertex shader
+		
+		//Compile the vertex shader
+		out.println(String.format("Compiling shader: %s\n", ShaderFile.getName()));
+		GL20.glShaderSource(ShaderID, shaderCode);	//Set the current shader to the vertex shader
+		GL20.glCompileShader(ShaderID);	//Compile the shader
+		
+		//Check the GLSL shader for errors while compiling
+		int result = GL20.glGetShaderi(ShaderID, GL20.GL_COMPILE_STATUS);	//Get the shader result code
+		String errorMessage = GL20.glGetShaderInfoLog(ShaderID, GL20.glGetShaderi(ShaderID, GL20.GL_INFO_LOG_LENGTH));	//Get the shader error message
+		out.println("Shader error: ");
+		out.println(errorMessage);
+		out.println("Shader result: " + result);
+		return ShaderID;
 	}
 		
 	@CoreEventHandler(event = "PostInitializationEvent")
@@ -177,12 +225,16 @@ public class RenderEngine {
 	
 	@CoreEventHandler(event = "StartUpEvent")
 	public void startUp(){
+		this.program = this.loadShaders(ResourceManager.getFileDir("/shaders/vertex_test.glsl"), ResourceManager.getFileDir("/shaders/frag_test.glsl"));
+        this.renderTriangle(triangle);
+        out.println(GL11.glGetString(GL20.GL_SHADING_LANGUAGE_VERSION));
 	}
 	
 	//Remember, we care about speed over everything else here.
 	@CoreEventHandler(event = "GameLoopEvent")
 	public void update(){
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+        GL20.glUseProgram(program);
 		
 		for(int i = 0; i < vaoIDList.size(); i++){
 			GL30.glBindVertexArray(vaoIDList.get(i).getAddress());

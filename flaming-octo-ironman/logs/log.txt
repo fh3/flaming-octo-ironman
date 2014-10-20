@@ -12,3 +12,17 @@ HIDManager: StartUpEvent
 ResourceManager: StartUpEvent
 LuaManager: StartUpEvent
 RenderEngine: StartUpEvent
+Compiling shader: vertex_test.glsl
+
+Shader error: 
+
+Shader result: 1
+Compiling shader: frag_test.glsl
+
+Shader error: 
+
+Shader result: 1
+Shader error: 
+
+Shader result: 1
+4.10

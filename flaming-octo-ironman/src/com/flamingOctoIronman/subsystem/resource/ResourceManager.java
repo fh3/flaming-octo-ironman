@@ -1,10 +1,13 @@
 package com.flamingOctoIronman.subsystem.resource;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.Reader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -92,6 +95,45 @@ public class ResourceManager extends CoreManager{
 			FlamingOctoIronman.getInstance().stopGame(DeathReason.EXCEPTION);
 			return null;
 		}
+	}
+	
+	public static BufferedReader getBufferedReader(String location){
+		Reader reader;
+		try {
+			reader =  new FileReader(location);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			FlamingOctoIronman.getInstance().stopGame(DeathReason.EXCEPTION);
+			reader = null;
+		}
+		
+		return new BufferedReader(reader);
+	}
+	
+	public static BufferedReader getBufferedReader(File location){
+		Reader reader;
+		try {
+			reader =  new FileReader(location);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			FlamingOctoIronman.getInstance().stopGame(DeathReason.EXCEPTION);
+			reader = null;
+		}
+		
+		return new BufferedReader(reader);
+	}
+	
+	public static String ReadFile(File location){
+		String toReturn = "";
+		String line = null;
+		try (BufferedReader shaderReader = ResourceManager.getBufferedReader(location)){
+			while((line = shaderReader.readLine()) != null){
+				toReturn = toReturn + "\n" + line;
+			}
+		} catch (IOException e) {
+			FlamingOctoIronman.getInstance().stopGame(DeathReason.EXCEPTION);
+		}
+		return toReturn;
 	}
 
 }
