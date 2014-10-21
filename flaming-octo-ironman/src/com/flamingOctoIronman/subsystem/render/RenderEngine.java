@@ -1,9 +1,6 @@
 package com.flamingOctoIronman.subsystem.render;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -17,7 +14,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.PixelFormat;
 
 import com.flamingOctoIronman.DeathReason;
@@ -56,10 +52,10 @@ public class RenderEngine {
     		0f, 0.5f, 0f,
     		-0.5f, -0.5f, 0f,
     		0.5f, -0.5f, 0f,
-    		};;
+    		};
 	
 	private ArrayList<VertexArrayObject> vaoIDList;	//The list of Vertex Array Objects			//I hate using these in this class, but I don't think I have an alternative.
-//Fortunately I shouldn't be putting objects in them during the render loop.
+	//Fortunately I shouldn't be putting objects in them during the render loop.
 	
 	private RenderEngine(){
 		//This currently lets me draw up to 256 triangles before stuff starts to get slow.
@@ -165,13 +161,14 @@ public class RenderEngine {
 	}
 	
 	public int loadShaders(File vertex, File fragment){
+		out.println("Compiling shaders...");
 		//Compile the shaders
-		int vertexID = this.compileShader(vertex);
+		//int vertexID = this.compileShader(vertex);
 		int fragmentID = this.compileShader(fragment);
 		//Create the shader program
 		int programID = GL20.glCreateProgram();
 		//Attach the shaders
-		GL20.glAttachShader(programID, vertexID);
+		//GL20.glAttachShader(programID, vertexID);
 		GL20.glAttachShader(programID, fragmentID);
 		//Don't know what this does
 		GL20.glLinkProgram(programID);
@@ -179,12 +176,19 @@ public class RenderEngine {
 		//Check the shader
 		int result = GL20.glGetProgrami(programID, GL20.GL_LINK_STATUS);
 		String errorMessage = GL20.glGetProgramInfoLog(programID, GL20.glGetProgrami(programID, GL20.GL_INFO_LOG_LENGTH));
-		out.println("Shader error: ");
-		out.println(errorMessage);
-		out.println("Shader result: " + result);
-		GL20.glDeleteShader(vertexID);
+		if(!errorMessage.equals("")){
+			out.println("Shader error: ");
+			out.println(errorMessage);
+		}
+		if(result == 1){
+			out.println("Program result: Success");
+		}else{
+			out.println("Program result: Failed with code: " + result);
+		}
+		
+		//GL20.glDeleteShader(vertexID);
 	    GL20.glDeleteShader(fragmentID);
-	    
+	    out.println("Shaders compiled.");
 	    return programID;
 	}
 	
@@ -193,16 +197,22 @@ public class RenderEngine {
 		String shaderCode = ResourceManager.ReadFile(ShaderFile);	//Read the vertex shader
 		
 		//Compile the vertex shader
-		out.println(String.format("Compiling shader: %s\n", ShaderFile.getName()));
+		out.println(String.format("Compiling shader: %s", ShaderFile.getName()));
 		GL20.glShaderSource(ShaderID, shaderCode);	//Set the current shader to the vertex shader
 		GL20.glCompileShader(ShaderID);	//Compile the shader
 		
 		//Check the GLSL shader for errors while compiling
 		int result = GL20.glGetShaderi(ShaderID, GL20.GL_COMPILE_STATUS);	//Get the shader result code
 		String errorMessage = GL20.glGetShaderInfoLog(ShaderID, GL20.glGetShaderi(ShaderID, GL20.GL_INFO_LOG_LENGTH));	//Get the shader error message
-		out.println("Shader error: ");
-		out.println(errorMessage);
-		out.println("Shader result: " + result);
+		if(!errorMessage.equals("")){
+			out.println("Shader error: ");
+			out.println(errorMessage);
+		}
+		if(result == 1){
+			out.println("Shader result: Success");
+		}else{
+			out.println("Shader result: Failed with code:" + result);
+		}
 		return ShaderID;
 	}
 		
@@ -226,15 +236,16 @@ public class RenderEngine {
 	@CoreEventHandler(event = "StartUpEvent")
 	public void startUp(){
 		this.program = this.loadShaders(ResourceManager.getFileDir("/shaders/vertex_test.glsl"), ResourceManager.getFileDir("/shaders/frag_test.glsl"));
-        this.renderTriangle(triangle);
+		this.renderTriangle(triangle);
         out.println(GL11.glGetString(GL20.GL_SHADING_LANGUAGE_VERSION));
 	}
 	
 	//Remember, we care about speed over everything else here.
 	@CoreEventHandler(event = "GameLoopEvent")
 	public void update(){
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-        GL20.glUseProgram(program);
+		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);	//Set color to black
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);	//Clear color and depth buffer
+        GL20.glUseProgram(program);	//Use shader program
 		
 		for(int i = 0; i < vaoIDList.size(); i++){
 			GL30.glBindVertexArray(vaoIDList.get(i).getAddress());
@@ -247,6 +258,8 @@ public class RenderEngine {
 				}
 			}
 		}
+		
+		GL20.glUseProgram(0);	//Clear the used program
 		Display.update();
 		
 		if(Display.isCloseRequested()){

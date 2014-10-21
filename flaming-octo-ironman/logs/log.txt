@@ -12,17 +12,12 @@ HIDManager: StartUpEvent
 ResourceManager: StartUpEvent
 LuaManager: StartUpEvent
 RenderEngine: StartUpEvent
-Compiling shader: vertex_test.glsl
-
-Shader error: 
-
-Shader result: 1
+Compiling shaders...
 Compiling shader: frag_test.glsl
-
+Shader result: Success
 Shader error: 
+WARNING: Output of vertex shader 'outputColor' not read by next stage
 
-Shader result: 1
-Shader error: 
-
-Shader result: 1
+Program result: Success
+Shaders compiled.
 4.10
