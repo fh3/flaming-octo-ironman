@@ -251,8 +251,9 @@ public class RenderEngine {
 			GL30.glBindVertexArray(vaoIDList.get(i).getAddress());
 			for(int vboID = 0; vboID < vaoIDList.get(i).getUsedList().length; vboID++){
 				if(vaoIDList.get(i).getUsedList()[i] != 0){
-					GL20.glEnableVertexAttribArray(i);
+					GL20.glEnableVertexAttribArray(0);	//For shaders
 					GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, vertexCount);
+					GL20.glVertexAttribPointer(0, 4, GL11.GL_FLOAT, false, 0, 0);
 					GL20.glDisableVertexAttribArray(0);
 			        GL30.glBindVertexArray(0);
 				}

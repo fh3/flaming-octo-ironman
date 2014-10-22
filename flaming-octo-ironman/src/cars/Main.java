@@ -56,5 +56,9 @@ public class Main {
 	public static void driveCarForward(Car toDriveForward){
 		toDriveForward.driveForward();
 	}
-
+	Computer Mac = new Computer(3);
+	public static void Mac(String[] Args){
+		
+	}
 }
+
