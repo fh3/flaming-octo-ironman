@@ -48,6 +48,9 @@ public class RenderEngine2{
         Display.setTitle("FLAMING OCTO IRONMAN");	//Set the title
 	}
 	
+	/**
+	 * Initialize the renderer
+	 */
 	@CoreEventHandler(event = "StartUpEvent")
 	public void InitializeVertexBuffer(){
 		//Clearing the screen
@@ -75,6 +78,9 @@ public class RenderEngine2{
 		GL30.glBindVertexArray(GL30.glGenVertexArrays());
 	}
 	
+	/**
+	 * Perform render operations
+	 */
 	@CoreEventHandler(event = "GameLoopEvent")
 	public void render(){
 		//Clear the screen
@@ -86,7 +92,7 @@ public class RenderEngine2{
 		//Prepare the VBO for drawing
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);	//Bind the VBO
 		GL20.glEnableVertexAttribArray(0);	//Enable the attribute at location 0 in the vertex attribute array
-		GL20.glVertexAttribPointer(0, 4, GL11.GL_FLOAT, false, 0, 0);	//Cant remember what this does
+		GL20.glVertexAttribPointer(0, 4, GL11.GL_FLOAT, false, 0, 0);	//Tells OpenGL information about what type of data will be stored at location 0
 		
 		//Draw the triangle
 		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3);
@@ -98,15 +104,34 @@ public class RenderEngine2{
 		//Deselect the shader program
 		GL20.glUseProgram(0);
 		
+		//Handle display resizing
+		if(Display.wasResized()){
+			GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
+		}
+		
+		if(Display.isCloseRequested()){
+			FlamingOctoIronman.getInstance().stopGame(DeathReason.NORMAL);
+		}
+		
 		//Update the display
 		Display.update();
 	}
 	
+	/**
+	 * Create a new <code>FloatBuffer</code> from a list of vertices
+	 * @param vertices	The list of points to create the buffer from
+	 * @return	A <code>FloatBuffer</code> created from the input points
+	 */
 	public static FloatBuffer createFloatBuffer(float[] vertices){
-		FloatBuffer vertexData = BufferUtils.createFloatBuffer(vertices.length);
-		return (FloatBuffer)vertexData.put(vertices).flip();
+		return (FloatBuffer)BufferUtils.createFloatBuffer(vertices.length).put(vertices).flip();	//Create a float buffer, put data into it, flip it, return it
 	}
 	
+	/**
+	 * Load a shader from a given location and compile it based on the type passed
+	 * @param location	Location of the shader source file
+	 * @param type	The type of shader
+	 * @return	The shader's address
+	 */
 	public int loadShader(File location, int type){
 		int shader = GL20.glCreateShader(type);	//Create a new shader of the passed type
 		GL20.glShaderSource(shader, ResourceManager.ReadFile(location));	//Load the shader from the file into the new shader
@@ -118,9 +143,14 @@ public class RenderEngine2{
 			FlamingOctoIronman.getInstance().stopGame(DeathReason.SHADER_COMPILE_ERROR);	//And shutdown the game
 		}
 		
-		return shader;
+		return shader;	//Return the shader
 	}
 	
+	/**
+	 * Create a complete shader program from a list of shaders
+	 * @param shaders	The list of shaders to create the program from
+	 * @return	The program's address
+	 */
 	public int createProgram(int[] shaders){
 		int program = GL20.glCreateProgram();	//Create a new shader
 		for(int shader: shaders){	//Loop through the shaders
@@ -134,9 +164,14 @@ public class RenderEngine2{
 			FlamingOctoIronman.getInstance().stopGame(DeathReason.SHADER_COMPILE_ERROR);	//And shutdown the game
 		}
 		
-		return program;
+		return program;	//Return the program
 	}
 	
+	/**
+	 * Clean up the memory after a program has been created by detaching shaders and removing them
+	 * @param program	The program that contains the shaders
+	 * @param shaders	The list of shaders
+	 */
 	public void detachShaders(int program, int[] shaders){
 		for(int shader : shaders){	//Loop through the shaders
 			GL20.glDetachShader(program, shader);	//Detach the shader from the program
@@ -144,10 +179,14 @@ public class RenderEngine2{
 		}
 	}
 	
+	/**
+	 * Get the <code>RenderEngine2</code> instance
+	 * @return	The instance of this class
+	 */
 	public static RenderEngine2 getInstance(){
-		if(instance == null){
-			instance = new RenderEngine2();
+		if(instance == null){	//If the instance hasn't been initialized
+			instance = new RenderEngine2();		//Then create it
 		}
-		return instance;
+		return instance;	//And return it
 	}
 }

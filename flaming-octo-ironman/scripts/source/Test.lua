@@ -1,4 +1,4 @@
-print 'Hello' 
+print 'Test.lua loaded.'
 
 function returnOne()
 	return 1
@@ -9,5 +9,9 @@ function sayHello()
 end
 
 function main()
-	sayHello()
+	doNothing()
+end
+
+function doNothing()
+	
 end
