@@ -9,11 +9,11 @@ import com.flamingOctoIronman.core.manager.CoreManager;
  */
 public class RenderManager extends CoreManager{
 	
-	private RenderEngine engine;
+	private RenderEngine2 engine;
 	
 	public RenderManager(){
 		super();	//Call to super
-		engine = RenderEngine.getInstance();	//Get the render engien instance
+		engine = RenderEngine2.getInstance();	//Get the render engine instance
 	}
 
 	/**
@@ -29,8 +29,7 @@ public class RenderManager extends CoreManager{
 	 */
 	@Override
 	public Object[] getSubManagers(){
-		Object[] toReturn = {engine};	//Add the submanagers to a return array
-		return toReturn;	//Return the array
+		return new Object[]{engine};	//Return the array
 	}
 
 }

@@ -21,5 +21,9 @@ public enum DeathReason {
 	/**
 	 * This is for an unknown death reason
 	 */
-	OTHER;
+	OTHER,
+	/**
+	 * This is for when a shader failes to compile
+	 */
+	SHADER_COMPILE_ERROR;
 }

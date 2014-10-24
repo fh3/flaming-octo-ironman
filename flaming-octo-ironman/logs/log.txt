@@ -7,17 +7,7 @@ Language Name: lua
 Language Version: 5.2
 ****************************************
 ResourceManager: InitializationEvent
-RenderEngine: PostInitializationEvent
 HIDManager: StartUpEvent
 ResourceManager: StartUpEvent
 LuaManager: StartUpEvent
-RenderEngine: StartUpEvent
-Compiling shaders...
-Compiling shader: frag_test.glsl
-Shader result: Success
-Shader error: 
-WARNING: Output of vertex shader 'outputColor' not read by next stage
-
-Program result: Success
-Shaders compiled.
-4.10
+RenderEngine2: StartUpEvent

@@ -163,12 +163,12 @@ public class RenderEngine {
 	public int loadShaders(File vertex, File fragment){
 		out.println("Compiling shaders...");
 		//Compile the shaders
-		//int vertexID = this.compileShader(vertex);
-		int fragmentID = this.compileShader(fragment);
+		int vertexID = this.compileShader(vertex, GL20.GL_VERTEX_SHADER);
+		int fragmentID = this.compileShader(fragment, GL20.GL_FRAGMENT_SHADER);
 		//Create the shader program
 		int programID = GL20.glCreateProgram();
 		//Attach the shaders
-		//GL20.glAttachShader(programID, vertexID);
+		GL20.glAttachShader(programID, vertexID);
 		GL20.glAttachShader(programID, fragmentID);
 		//Don't know what this does
 		GL20.glLinkProgram(programID);
@@ -186,14 +186,14 @@ public class RenderEngine {
 			out.println("Program result: Failed with code: " + result);
 		}
 		
-		//GL20.glDeleteShader(vertexID);
+		GL20.glDeleteShader(vertexID);
 	    GL20.glDeleteShader(fragmentID);
 	    out.println("Shaders compiled.");
 	    return programID;
 	}
 	
-	public int compileShader(File ShaderFile){
-		int ShaderID = GL20.glCreateShader(GL20.GL_VERTEX_SHADER);	//Get the shader code
+	public int compileShader(File ShaderFile, int ShaderType){
+		int ShaderID = GL20.glCreateShader(ShaderType);	//Get the shader code
 		String shaderCode = ResourceManager.ReadFile(ShaderFile);	//Read the vertex shader
 		
 		//Compile the vertex shader
