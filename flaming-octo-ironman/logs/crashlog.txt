@@ -1,13 +1,20 @@
 FlamingOctoIronman has crashed!
 
 Reason for death: NORMAL
-Crash occurred at: 19/10/2014 17:23:32
+Crash occurred at: 24/10/2014 20:54:06
 Ticks passed since start: 0.0
 Max JVM memory: 3814064128
-Free memory: 244858688
-Used memory: 3569205440
+Free memory: 242199520
+Used memory: 3571864608
 
 Stack traces: 
+Thread: Reference Handler
+Class java.lang.Object Line -2: wait
+Class java.lang.Object Line 503: wait
+Class java.lang.ref.Reference$ReferenceHandler Line -1: run
+
+Thread: DestroyJavaVM
+
 Thread: Finalizer
 Class java.lang.Object Line -2: wait
 Class java.lang.ref.ReferenceQueue Line -1: remove
@@ -16,12 +23,7 @@ Class java.lang.ref.Finalizer$FinalizerThread Line -1: run
 
 Thread: Signal Dispatcher
 
-Thread: DestroyJavaVM
-
-Thread: Reference Handler
-Class java.lang.Object Line -2: wait
-Class java.lang.Object Line 503: wait
-Class java.lang.ref.Reference$ReferenceHandler Line -1: run
+Thread: Attach Listener
 
 Thread: Thread-0
 Class java.lang.Thread Line -2: dumpThreads
@@ -38,6 +40,4 @@ Class com.flamingOctoIronman.FlamingOctoIronman Line 258: shutDown
 Class com.flamingOctoIronman.FlamingOctoIronman Line 87: startGame
 Class com.flamingOctoIronman.FlamingOctoIronman Line 303: run
 Class java.lang.Thread Line -1: run
-
-Thread: Attach Listener
 
