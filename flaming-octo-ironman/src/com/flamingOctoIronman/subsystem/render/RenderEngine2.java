@@ -20,11 +20,6 @@ import com.flamingOctoIronman.core.event.CoreEventHandler;
 import com.flamingOctoIronman.subsystem.resource.ResourceManager;
 
 public class RenderEngine2{
-	private float vertexPositions[] = {
-		    0.75f, 0.75f, 0.0f, 1.0f,
-		    0.75f, -0.75f, 0.0f, 1.0f,
-		    -0.75f, -0.75f, 0.0f, 1.0f
-		};
 	private int vbo;
 	private int program;
 	
@@ -53,6 +48,19 @@ public class RenderEngine2{
 	 */
 	@CoreEventHandler(event = "StartUpEvent")
 	public void InitializeVertexBuffer(){
+		float vertexPositions[] = {
+			    0.75f, 0.75f, 0.0f, 1.0f,
+			    0.75f, -0.75f, 0.0f, 1.0f,
+			    -0.75f, -0.75f, 0.0f, 1.0f
+			};
+		float vertexData[] = {
+			     0.0f,    0.5f, 0.0f, 1.0f,
+			     0.5f, -0.366f, 0.0f, 1.0f,
+			    -0.5f, -0.366f, 0.0f, 1.0f,
+			     1.0f,    0.0f, 0.0f, 1.0f,
+			     0.0f,    1.0f, 0.0f, 1.0f,
+			     0.0f,    0.0f, 1.0f, 1.0f,
+			};
 		//Clearing the screen
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);	//Set the color that will be used when clearing the screen
 		
@@ -66,13 +74,18 @@ public class RenderEngine2{
 		//Remove the shaders
 		this.detachShaders(program, shaders);
 		
+		FloatBuffer tut02 =  createFloatBuffer(vertexData);
+		vbo = GL15.glGenBuffers();		
+		
+		/*
 		//Setup the triangle to be rendered
 		//Create convert the vertex array into a buffer
 		FloatBuffer triangle = createFloatBuffer(vertexPositions);
 		//Setup and initialize the buffer
 		vbo = GL15.glGenBuffers();	//Create a new Vertex Buffer Object
+		*/
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);	//Select the buffer to operate on
-		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, triangle, GL15.GL_STATIC_DRAW);	//Add the points the the VBO
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, tut02, GL15.GL_STATIC_DRAW);	//Add the points the the VBO
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);	//Bind the buffer to 0 (equivalent of setting to null)
 		//Create a Vertex Array Object
 		GL30.glBindVertexArray(GL30.glGenVertexArrays());
@@ -93,6 +106,8 @@ public class RenderEngine2{
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);	//Bind the VBO
 		GL20.glEnableVertexAttribArray(0);	//Enable the attribute at location 0 in the vertex attribute array
 		GL20.glVertexAttribPointer(0, 4, GL11.GL_FLOAT, false, 0, 0);	//Tells OpenGL information about what type of data will be stored at location 0
+		GL20.glEnableVertexAttribArray(1);	//Enable anotehr attribute
+		GL20.glVertexAttribPointer(1, 4, GL11.GL_FLOAT, false, 0, 48);	//Index 0, offset = float(4)*vec4(4)*vertices(3)
 		
 		//Draw the triangle
 		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3);
