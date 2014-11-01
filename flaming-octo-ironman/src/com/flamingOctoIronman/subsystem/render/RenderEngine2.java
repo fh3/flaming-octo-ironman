@@ -24,7 +24,83 @@ public class RenderEngine2{
 	private int program;
 	
 	private static RenderEngine2 instance;
-
+	
+	private final float[] data = {
+			0.25f, 0.25f, -1.25f, 1.0f,
+			0.25f, -0.25f, -1.25f, 1.0f,
+			-0.25f, 0.25f, -1.25f, 1.0f,
+			0.25f, -0.25f, -1.25f, 1.0f,
+			-0.25f, -0.25f, -1.25f, 1.0f,
+			-0.25f, 0.25f, -1.25f, 1.0f,
+			0.25f, 0.25f, -2.75f, 1.0f,
+			-0.25f, 0.25f, -2.75f, 1.0f,
+			0.25f, -0.25f, -2.75f, 1.0f,
+			0.25f, -0.25f, -2.75f, 1.0f,
+			-0.25f, 0.25f, -2.75f, 1.0f,
+			-0.25f, -0.25f, -2.75f, 1.0f,
+			-0.25f, 0.25f, -1.25f, 1.0f,
+			-0.25f, -0.25f, -1.25f, 1.0f,
+			-0.25f, -0.25f, -2.75f, 1.0f,
+			-0.25f, 0.25f, -1.25f, 1.0f,
+			-0.25f, -0.25f, -2.75f, 1.0f,
+			-0.25f, 0.25f, -2.75f, 1.0f,
+			0.25f, 0.25f, -1.25f, 1.0f,
+			0.25f, -0.25f, -2.75f, 1.0f,
+			0.25f, -0.25f, -1.25f, 1.0f,
+			0.25f, 0.25f, -1.25f, 1.0f,
+			0.25f, 0.25f, -2.75f, 1.0f,
+			0.25f, -0.25f, -2.75f, 1.0f,
+			0.25f, 0.25f, -2.75f, 1.0f,
+			0.25f, 0.25f, -1.25f, 1.0f,
+			-0.25f, 0.25f, -1.25f, 1.0f,
+			0.25f, 0.25f, -2.75f, 1.0f,
+			-0.25f, 0.25f, -1.25f, 1.0f,
+			-0.25f, 0.25f, -2.75f, 1.0f,
+			0.25f, -0.25f, -2.75f, 1.0f,
+			-0.25f, -0.25f, -1.25f, 1.0f,
+			0.25f, -0.25f, -1.25f, 1.0f,
+			0.25f, -0.25f, -2.75f, 1.0f,
+			-0.25f, -0.25f, -2.75f, 1.0f,
+			-0.25f, -0.25f, -1.25f, 1.0f,
+			0.0f, 0.0f, 1.0f, 1.0f,
+			0.0f, 0.0f, 1.0f, 1.0f,
+			0.0f, 0.0f, 1.0f, 1.0f,
+			0.0f, 0.0f, 1.0f, 1.0f,
+			0.0f, 0.0f, 1.0f, 1.0f,
+			0.0f, 0.0f, 1.0f, 1.0f,
+			0.8f, 0.8f, 0.8f, 1.0f,
+			0.8f, 0.8f, 0.8f, 1.0f,
+			0.8f, 0.8f, 0.8f, 1.0f,
+			0.8f, 0.8f, 0.8f, 1.0f,
+			0.8f, 0.8f, 0.8f, 1.0f,
+			0.8f, 0.8f, 0.8f, 1.0f,
+			0.0f, 1.0f, 0.0f, 1.0f,
+			0.0f, 1.0f, 0.0f, 1.0f,
+			0.0f, 1.0f, 0.0f, 1.0f,
+			0.0f, 1.0f, 0.0f, 1.0f,
+			0.0f, 1.0f, 0.0f, 1.0f,
+			0.0f, 1.0f, 0.0f, 1.0f,
+			0.5f, 0.5f, 0.0f, 1.0f,
+			0.5f, 0.5f, 0.0f, 1.0f,
+			0.5f, 0.5f, 0.0f, 1.0f,
+			0.5f, 0.5f, 0.0f, 1.0f,
+			0.5f, 0.5f, 0.0f, 1.0f,
+			0.5f, 0.5f, 0.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+			0.0f, 1.0f, 1.0f, 1.0f,
+			0.0f, 1.0f, 1.0f, 1.0f,
+			0.0f, 1.0f, 1.0f, 1.0f,
+			0.0f, 1.0f, 1.0f, 1.0f,
+			0.0f, 1.0f, 1.0f, 1.0f,
+			0.0f, 1.0f, 1.0f, 1.0f
+			};
+	private int offsetUniform;	//The position of the camera offset variable in the VRAM
+	
 	private RenderEngine2(){
 		//Setup display
 		// We need a core context with atleast OpenGL 3.2
@@ -46,6 +122,7 @@ public class RenderEngine2{
 	/**
 	 * Initialize the renderer
 	 */
+	@SuppressWarnings("unused")
 	@CoreEventHandler(event = "StartUpEvent")
 	public void InitializeVertexBuffer(){
 		float vertexPositions[] = {
@@ -61,6 +138,7 @@ public class RenderEngine2{
 			     0.0f,    1.0f, 0.0f, 1.0f,
 			     0.0f,    0.0f, 1.0f, 1.0f,
 			};
+		
 		//Clearing the screen
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);	//Set the color that will be used when clearing the screen
 		
@@ -74,7 +152,25 @@ public class RenderEngine2{
 		//Remove the shaders
 		this.detachShaders(program, shaders);
 		
-		FloatBuffer tut02 =  createFloatBuffer(vertexData);
+		offsetUniform = GL20.glGetUniformLocation(program, "offset");	//Get the location of the "offset" variable in the VRAM and store it for later use
+		
+		//Get the location of variables and store for later use
+		int frustumScaleUniform = GL20.glGetUniformLocation(program, "frustumScale");
+		int zNearUniform = GL20.glGetUniformLocation(program, "zNear");
+		int zFarUniform = GL20.glGetUniformLocation(program, "zFar");
+		
+		//Running the program
+		GL20.glUseProgram(program);
+		
+		//Putting data into the shaders
+		GL20.glUniform1f(frustumScaleUniform, 1f);	//Depth scale? 1 is standard
+		GL20.glUniform1f(zNearUniform, 1);	//Nearest point to be rendered
+		GL20.glUniform1f(zFarUniform, 3);	//Farthest point to be rendered
+		
+		GL20.glUseProgram(0);
+		
+		
+		//FloatBuffer tut02 =  createFloatBuffer(vertexData);
 		vbo = GL15.glGenBuffers();		
 		
 		/*
@@ -85,10 +181,15 @@ public class RenderEngine2{
 		vbo = GL15.glGenBuffers();	//Create a new Vertex Buffer Object
 		*/
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);	//Select the buffer to operate on
-		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, tut02, GL15.GL_STATIC_DRAW);	//Add the points the the VBO
+		//GL15.glBufferData(GL15.GL_ARRAY_BUFFER, tut02, GL15.GL_STATIC_DRAW);	//Add the points the the VBO
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, createFloatBuffer(data), GL15.GL_STATIC_DRAW);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);	//Bind the buffer to 0 (equivalent of setting to null)
 		//Create a Vertex Array Object
 		GL30.glBindVertexArray(GL30.glGenVertexArrays());
+		
+		GL11.glEnable(GL11.GL_CULL_FACE);
+		GL11.glCullFace(GL11.GL_BACK);
+		GL11.glFrontFace(GL11.GL_CW);
 	}
 	
 	/**
@@ -102,18 +203,21 @@ public class RenderEngine2{
 		//Select the shader program to use
 		GL20.glUseProgram(program);
 		
+		GL20.glUniform2f(offsetUniform, 0.5f, 0.5f);
+		
 		//Prepare the VBO for drawing
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);	//Bind the VBO
 		GL20.glEnableVertexAttribArray(0);	//Enable the attribute at location 0 in the vertex attribute array
 		GL20.glVertexAttribPointer(0, 4, GL11.GL_FLOAT, false, 0, 0);	//Tells OpenGL information about what type of data will be stored at location 0
-		GL20.glEnableVertexAttribArray(1);	//Enable anotehr attribute
-		GL20.glVertexAttribPointer(1, 4, GL11.GL_FLOAT, false, 0, 48);	//Index 0, offset = float(4)*vec4(4)*vertices(3)
+		GL20.glEnableVertexAttribArray(1);	//Enable another attribute
+		GL20.glVertexAttribPointer(1, 4, GL11.GL_FLOAT, false, 0, data.length * 2);	//Index 0, offset = float(4)*vec4(4)*vertices(3)
 		
 		//Draw the triangle
-		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3);
+		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 36);
 		
 		//Disable the attribute at location 0
 		GL20.glDisableVertexAttribArray(0);
+		GL20.glDisableVertexAttribArray(1);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);	//Unbind the buffer
 		
 		//Deselect the shader program

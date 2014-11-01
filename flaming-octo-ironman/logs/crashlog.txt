@@ -1,11 +1,11 @@
 FlamingOctoIronman has crashed!
 
 Reason for death: NORMAL
-Crash occurred at: 24/10/2014 20:54:06
+Crash occurred at: 31/10/2014 19:47:32
 Ticks passed since start: 0.0
 Max JVM memory: 3814064128
-Free memory: 242199520
-Used memory: 3571864608
+Free memory: 244886384
+Used memory: 3569177744
 
 Stack traces: 
 Thread: Reference Handler
