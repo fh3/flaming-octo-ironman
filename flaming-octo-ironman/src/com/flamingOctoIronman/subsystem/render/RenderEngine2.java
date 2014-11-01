@@ -100,6 +100,11 @@ public class RenderEngine2{
 			0.0f, 1.0f, 1.0f, 1.0f
 			};
 	private int offsetUniform;	//The position of the camera offset variable in the VRAM
+	private int perspectiveMatrixUniform;
+	
+	private FloatBuffer perspectiveMatrix;
+	
+	private float frustumScale = 1.0f;
 	
 	private RenderEngine2(){
 		//Setup display
@@ -125,19 +130,6 @@ public class RenderEngine2{
 	@SuppressWarnings("unused")
 	@CoreEventHandler(event = "StartUpEvent")
 	public void InitializeVertexBuffer(){
-		float vertexPositions[] = {
-			    0.75f, 0.75f, 0.0f, 1.0f,
-			    0.75f, -0.75f, 0.0f, 1.0f,
-			    -0.75f, -0.75f, 0.0f, 1.0f
-			};
-		float vertexData[] = {
-			     0.0f,    0.5f, 0.0f, 1.0f,
-			     0.5f, -0.366f, 0.0f, 1.0f,
-			    -0.5f, -0.366f, 0.0f, 1.0f,
-			     1.0f,    0.0f, 0.0f, 1.0f,
-			     0.0f,    1.0f, 0.0f, 1.0f,
-			     0.0f,    0.0f, 1.0f, 1.0f,
-			};
 		
 		//Clearing the screen
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);	//Set the color that will be used when clearing the screen
@@ -153,19 +145,23 @@ public class RenderEngine2{
 		this.detachShaders(program, shaders);
 		
 		offsetUniform = GL20.glGetUniformLocation(program, "offset");	//Get the location of the "offset" variable in the VRAM and store it for later use
+		perspectiveMatrixUniform = GL20.glGetUniformLocation(program, "perspectiveMatrix");
 		
-		//Get the location of variables and store for later use
-		int frustumScaleUniform = GL20.glGetUniformLocation(program, "frustumScale");
-		int zNearUniform = GL20.glGetUniformLocation(program, "zNear");
-		int zFarUniform = GL20.glGetUniformLocation(program, "zFar");
+		float zNear = 0.5f;
+		float zFar = 3.0f;
+		
+		perspectiveMatrix = BufferUtils.createFloatBuffer(16);
+		perspectiveMatrix.put(0, frustumScale);
+		perspectiveMatrix.put(5, frustumScale);
+		perspectiveMatrix.put(10, (zFar + zNear) / (zNear - zFar));
+		perspectiveMatrix.put(14, (2 * zFar * zNear) / (zNear - zFar));
+		perspectiveMatrix.put(11, -1);
 		
 		//Running the program
 		GL20.glUseProgram(program);
 		
 		//Putting data into the shaders
-		GL20.glUniform1f(frustumScaleUniform, 1f);	//Depth scale? 1 is standard
-		GL20.glUniform1f(zNearUniform, 1);	//Nearest point to be rendered
-		GL20.glUniform1f(zFarUniform, 3);	//Farthest point to be rendered
+		GL20.glUniformMatrix4(perspectiveMatrixUniform, false, perspectiveMatrix);
 		
 		GL20.glUseProgram(0);
 		
@@ -225,7 +221,7 @@ public class RenderEngine2{
 		
 		//Handle display resizing
 		if(Display.wasResized()){
-			GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
+			this.resizeDisplay();
 		}
 		
 		if(Display.isCloseRequested()){
@@ -234,6 +230,14 @@ public class RenderEngine2{
 		
 		//Update the display
 		Display.update();
+	}
+	
+	public void resizeDisplay(){
+		GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
+		perspectiveMatrix.put(0, frustumScale / ((float)Display.getWidth() / Display.getHeight()));
+		GL20.glUseProgram(program);
+		GL20.glUniformMatrix4(perspectiveMatrixUniform, false, perspectiveMatrix);
+		GL20.glUseProgram(0);
 	}
 	
 	/**
@@ -258,7 +262,7 @@ public class RenderEngine2{
 		
 		//Error checking
 		if(GL20.glGetShaderi(shader, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {	//If there was an error
-			System.err.println("Failure in compiling"+ location.getName() +". Error log:\n" + GL20.glGetShaderInfoLog(shader, GL20.glGetShaderi(shader, GL20.GL_INFO_LOG_LENGTH)));	//Print the error
+			System.err.println("Failure in compiling "+ location.getName() +". Error log:\n" + GL20.glGetShaderInfoLog(shader, GL20.glGetShaderi(shader, GL20.GL_INFO_LOG_LENGTH)));	//Print the error
 			FlamingOctoIronman.getInstance().stopGame(DeathReason.SHADER_COMPILE_ERROR);	//And shutdown the game
 		}
 		

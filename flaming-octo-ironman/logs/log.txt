@@ -11,4 +11,3 @@ HIDManager: StartUpEvent
 ResourceManager: StartUpEvent
 LuaManager: StartUpEvent
 RenderEngine2: StartUpEvent
-DebuggingManager: ShutDownEvent
