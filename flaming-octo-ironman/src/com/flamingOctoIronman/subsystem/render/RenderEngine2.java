@@ -1,7 +1,7 @@
 package com.flamingOctoIronman.subsystem.render;
 
-import java.io.File;
 import java.nio.FloatBuffer;
+import java.util.Properties;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
@@ -12,6 +12,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL33;
 import org.lwjgl.opengl.PixelFormat;
 
 import com.flamingOctoIronman.DeathReason;
@@ -107,10 +108,18 @@ public class RenderEngine2{
 	private float frustumScale = 1.0f;
 	
 	private RenderEngine2(){
+		
 		//Setup display
-		// We need a core context with a tleast OpenGL 3.3
-		ContextAttribs cattr = new ContextAttribs(3, 3).withForwardCompatible(true).withProfileCore(true);	//This sets the OpenGL version
+		ContextAttribs cattr;
 		PixelFormat pfmt = new PixelFormat();	//WTF is a PixelFormat
+		
+		//Set the OpenGL version
+		//Mac OS X requires OpenGL 3.2 to be requested, although it delivers a "core" verions of it
+		if(System.getProperty("os.name").equals("Mac OS X")){
+			cattr = new ContextAttribs(3, 2).withForwardCompatible(true).withProfileCore(true);	
+		}else{
+			cattr = new ContextAttribs(3, 3).withForwardCompatible(true).withProfileCore(true);	//This sets the OpenGL version
+		}
 		
 		try {
         	Display.setDisplayMode(new DisplayMode(800,600));	//Set the size
@@ -153,7 +162,7 @@ public class RenderEngine2{
 		perspectiveMatrix.put(11, -1);
 		
 		//Run the program once
-		program.startProgram();;
+		program.startProgram();
 		
 		//Putting data into the shaders
 		GL20.glUniformMatrix4(perspectiveMatrixUniform, false, perspectiveMatrix);
@@ -171,7 +180,8 @@ public class RenderEngine2{
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);	//Bind the buffer to 0 (equivalent of setting to null)
 		
 		//Create a Vertex Array Object
-		GL30.glBindVertexArray(GL30.glGenVertexArrays());
+		int VAO = GL30.glGenVertexArrays();
+		GL30.glBindVertexArray(VAO);
 		
 		//Setup culling
 		GL11.glEnable(GL11.GL_CULL_FACE);	//Enable culling
