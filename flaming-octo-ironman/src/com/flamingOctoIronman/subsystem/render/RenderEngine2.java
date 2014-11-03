@@ -1,7 +1,6 @@
 package com.flamingOctoIronman.subsystem.render;
 
 import java.nio.FloatBuffer;
-import java.util.Properties;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
@@ -12,7 +11,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GL33;
 import org.lwjgl.opengl.PixelFormat;
 
 import com.flamingOctoIronman.DeathReason;
@@ -114,7 +112,7 @@ public class RenderEngine2{
 		PixelFormat pfmt = new PixelFormat();	//WTF is a PixelFormat
 		
 		//Set the OpenGL version
-		//Mac OS X requires OpenGL 3.2 to be requested, although it delivers a "core" verions of it
+		//Mac OS X requires OpenGL 3.2 to be requested, although it delivers a "core" versions of it
 		if(System.getProperty("os.name").equals("Mac OS X")){
 			cattr = new ContextAttribs(3, 2).withForwardCompatible(true).withProfileCore(true);	
 		}else{
