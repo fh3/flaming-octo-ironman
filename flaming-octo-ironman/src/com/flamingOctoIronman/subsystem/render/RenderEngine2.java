@@ -1,6 +1,12 @@
 package com.flamingOctoIronman.subsystem.render;
 
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.nio.LongBuffer;
+import java.nio.ShortBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
@@ -146,12 +152,15 @@ public class RenderEngine2{
 		program.addShader(new Shader(ResourceManager.getFileDir("shaders/frag_test.glsl"), GL20.GL_FRAGMENT_SHADER));	//Add the fragment shader
 		program.compileProgram();//Compile the program
 		
+		//Get uniforms
 		offsetUniform = GL20.glGetUniformLocation(program.getProgram(), "offset");	//Get the location of the "offset" variable in the VRAM and store it for later use
 		perspectiveMatrixUniform = GL20.glGetUniformLocation(program.getProgram(), "perspectiveMatrix");
 		
+		//Far and near positions
 		float zNear = 0.5f;
 		float zFar = 3.0f;
 		
+		//Compute the perspective matrix
 		perspectiveMatrix = BufferUtils.createFloatBuffer(16);
 		perspectiveMatrix.put(0, frustumScale);
 		perspectiveMatrix.put(5, frustumScale);
@@ -172,10 +181,8 @@ public class RenderEngine2{
 		//FloatBuffer tut02 =  createFloatBuffer(vertexData);
 		vbo = GL15.glGenBuffers();		
 		
-		//Setup the triangle to be rendered
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);	//Select the buffer to operate on
-		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, createFloatBuffer(data), GL15.GL_STATIC_DRAW);	//Add the vertex data
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);	//Bind the buffer to 0 (equivalent of setting to null)
+		//Setup the triangle to be rendered		
+		vbo = this.createVBO(createFloatBuffer(data), GL15.GL_ARRAY_BUFFER, GL15.GL_STATIC_DRAW);
 		
 		//Create a Vertex Array Object
 		int VAO = GL30.glGenVertexArrays();
@@ -208,7 +215,7 @@ public class RenderEngine2{
 		GL20.glEnableVertexAttribArray(1);	//Enable the attribute at location = 1 (color attribute)
 		//Set attribute information
 		GL20.glVertexAttribPointer(0, 4, GL11.GL_FLOAT, false, 0, 0);	//Attrib 0 is a vec4
-		GL20.glVertexAttribPointer(1, 4, GL11.GL_FLOAT, false, 0, data.length * 2);	//Attrib 0 is a vec4, offset of data.length * 2
+		GL20.glVertexAttribPointer(1, 4, GL11.GL_FLOAT, false, 0, data.length * 2);	//Attrib 1 is a vec4, offset of data.length * 2
 		
 		//Draw the triangles
 		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 36);
@@ -252,6 +259,39 @@ public class RenderEngine2{
 	 */
 	public static FloatBuffer createFloatBuffer(float[] vertices){
 		return (FloatBuffer)BufferUtils.createFloatBuffer(vertices.length).put(vertices).flip();	//Create a float buffer, put data into it, flip it, return it
+	}
+	
+	//TODO class names are weird, may need to edit switch statement
+	public int createVBO(Buffer buffer, int bufferType, int usage){
+		int vbo = GL15.glGenBuffers();	//Gen the vertex buffer object
+		GL15.glBindBuffer(bufferType, vbo);	//Bind the buffer
+		switch(buffer.getClass().getName()){
+			case "java.nio.ByteBuffer":
+				GL15.glBufferData(bufferType, (ByteBuffer)buffer, usage);	//Add the data to the buffer
+				break;
+			case "java.nio.ShortBuffer":
+				GL15.glBufferData(bufferType, (ShortBuffer)buffer, usage);	//Add the data to the buffer
+				break;
+			case "java.nio.IntBuffer":
+				GL15.glBufferData(bufferType, (IntBuffer)buffer, usage);	//Add the data to the buffer
+				break;
+			//case "java.nio.LongBuffer":		Apparently this isn't supported
+			//	GL15.glBufferData(bufferType, (LongBuffer)buffer, usage);	//Add the data to the buffer
+			//	break;
+			case "java.nio.DirectFloatBufferU":
+				GL15.glBufferData(bufferType, (FloatBuffer)buffer, usage);	//Add the data to the buffer
+				break;
+			case "java.nio.DoubleBuffer":
+				GL15.glBufferData(bufferType, (DoubleBuffer)buffer, usage);	//Add the data to the buffer
+				break;
+			default:
+				return -1;	//Return an error code
+		
+		}
+		
+		GL15.glBindBuffer(bufferType, 0);	//Unbind the buffer
+		
+		return vbo;	//Return the VBO
 	}
 		
 
