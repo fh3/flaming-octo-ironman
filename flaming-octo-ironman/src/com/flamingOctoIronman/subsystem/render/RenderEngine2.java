@@ -17,6 +17,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.PixelFormat;
 
 import com.flamingOctoIronman.DeathReason;
@@ -192,6 +193,14 @@ public class RenderEngine2{
 		GL11.glEnable(GL11.GL_CULL_FACE);	//Enable culling
 		GL11.glCullFace(GL11.GL_BACK);	//Set the face to cull as the back
 		GL11.glFrontFace(GL11.GL_CW);	//Set the front face as the points in counterclockwise direction
+		
+		//Setup depth testing
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glDepthMask(true);
+		GL11.glDepthFunc(GL11.GL_LEQUAL);
+		GL11.glDepthRange(0.0f, 1.0f);
+		
+		GL11.glEnable(GL32.GL_DEPTH_CLAMP);
 	}
 	
 	/**
@@ -199,8 +208,8 @@ public class RenderEngine2{
 	 */
 	@CoreEventHandler(event = "GameLoopEvent")
 	public void render(){
-		//Clear the screen
-		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+		//Clear the screen, color and depth buffer
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		
 		//Run the shader program
 		program.startProgram();
