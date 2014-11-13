@@ -14,4 +14,8 @@ public class RedCar extends Car{
 	public void redCarMethod(){
 		
 	}
+	@Override
+	public void driveForward(){
+		System.out.println("fasddsf");
+	}
 }

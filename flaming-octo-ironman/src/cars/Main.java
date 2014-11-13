@@ -38,6 +38,10 @@ public class Main {
 		Dell.turnOn();
 		Dell.activateGayMeter("Oliver"); 
 		
+		Car someCar = new RedCar();
+		
+		someCar.driveForward();
+		
 		
 		/*
 		 * ashdjgahjf
