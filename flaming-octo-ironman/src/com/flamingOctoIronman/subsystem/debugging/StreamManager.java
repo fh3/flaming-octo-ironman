@@ -59,4 +59,10 @@ public class StreamManager {
 		this.println("Cause: " + e.getCause());
 		this.println("Stack trace: " + e.getStackTrace().toString());
 	}
+
+	public void println(float f) {
+		for(PrintStream stream : outStream){
+			stream.println(f);
+		}
+	}
 }

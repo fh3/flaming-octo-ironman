@@ -10,6 +10,7 @@ import java.nio.ShortBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -23,6 +24,8 @@ import org.lwjgl.opengl.PixelFormat;
 import com.flamingOctoIronman.DeathReason;
 import com.flamingOctoIronman.FlamingOctoIronman;
 import com.flamingOctoIronman.core.event.CoreEventHandler;
+import com.flamingOctoIronman.subsystem.debugging.DebuggingManager;
+import com.flamingOctoIronman.subsystem.debugging.StreamManager;
 import com.flamingOctoIronman.subsystem.resource.ResourceManager;
 
 public class RenderEngine2{
@@ -108,9 +111,14 @@ public class RenderEngine2{
 	private int offsetUniform;	//The position of the camera offset variable in the VRAM
 	private int perspectiveMatrixUniform;
 	
+	private float xOffset;
+	private float yOffset;
+	
 	private FloatBuffer perspectiveMatrix;
 	
 	private float frustumScale = 1.0f;
+	
+	private StreamManager out;
 	
 	private RenderEngine2(){
 		
@@ -136,6 +144,13 @@ public class RenderEngine2{
 		}
         Display.setResizable(true);	//Make it resizeable
         Display.setTitle("FLAMING OCTO IRONMAN");	//Set the title
+        
+        try {
+			Keyboard.create();
+		} catch (LWJGLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -144,6 +159,8 @@ public class RenderEngine2{
 	@SuppressWarnings("unused")
 	@CoreEventHandler(event = "StartUpEvent")
 	public void InitializeVertexBuffer(){
+		out = ((DebuggingManager) FlamingOctoIronman.getInstance().getCoreManager(DebuggingManager.class.getSimpleName())).getStreamManager();
+		
 		//Clearing the screen
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);	//Set the color that will be used when clearing the screen
 		
@@ -214,8 +231,10 @@ public class RenderEngine2{
 		//Run the shader program
 		program.startProgram();
 		
+		GL11.glEnable(GL32.GL_DEPTH_CLAMP);
+		
 		//Set the offset variable
-		GL20.glUniform2f(offsetUniform, 0.5f, 0.5f);
+		GL20.glUniform2f(offsetUniform, yOffset, xOffset);
 		
 		//Prepare the VBO for drawing
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);	//Bind the VBO
@@ -251,6 +270,17 @@ public class RenderEngine2{
 		
 		//Update the display
 		Display.update();
+		
+		if(Keyboard.isKeyDown(Keyboard.KEY_W)){
+			xOffset += 0.01f;
+		}else if(Keyboard.isKeyDown(Keyboard.KEY_S)){
+			xOffset -= 0.01f;
+		}
+		else if(Keyboard.isKeyDown(Keyboard.KEY_D)){
+			yOffset += 0.01f;
+		}else if(Keyboard.isKeyDown(Keyboard.KEY_A)){
+			yOffset -= 0.01f;
+		}
 	}
 	
 	public void resizeDisplay(){
