@@ -16,7 +16,7 @@
 	<classpathentry kind="lib" path="libraries/lwjgl.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="file:/Users/fh3/flaming-octo-ironman/flaming-octo-ironman/doc/lwjgl/3rdparty/"/>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/Users/Quint/Documents/flaming-octo-ironman/flaming-octo-ironman/flaming-octo-ironman/flaming-octo-ironman/native/lwjgl/windows"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="flaming-octo-ironman/native/lwjgl/macosx"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="bin"/>

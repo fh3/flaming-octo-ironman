@@ -5,12 +5,12 @@ import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.nio.LongBuffer;
 import java.nio.ShortBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -20,7 +20,6 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.PixelFormat;
-import org.lwjgl.util.vector.Matrix4f;
 
 import com.flamingOctoIronman.DeathReason;
 import com.flamingOctoIronman.FlamingOctoIronman;
@@ -115,7 +114,9 @@ public class RenderEngine2{
 	private int cameraToClipUniform;
 	private float[] cameraToClipMatrix = new float[16];
 	private int modelToCameraUniform;
-	private Matrix4f modelToCameraMatrix;
+	private float[] modelToCameraMatrix = new float[16];
+	private int cameraUniform;
+	private float[] cameraMatrix = new float[16];
 	
 	//Camera offsets
 	private float xOffset;
@@ -180,7 +181,8 @@ public class RenderEngine2{
 		//Get uniforms
 		offsetUniform = GL20.glGetUniformLocation(program.getProgram(), "offset");	//Get the location of the "offset" variable in the VRAM and store it for later use
 		cameraToClipUniform = GL20.glGetUniformLocation(program.getProgram(), "cameraToClipMatrix");
-		modelToCameraUniform = GL20.glGetUniformLocation(program.getProgram(), "modelToCameraUniform");
+		modelToCameraUniform = GL20.glGetUniformLocation(program.getProgram(), "modelToCameraMatrix");
+		cameraUniform = GL20.glGetUniformLocation(program.getProgram(), "cameraMatrix");
 		
 		//Far and near positions
 		float zNear = 1.0f;
@@ -193,11 +195,24 @@ public class RenderEngine2{
 		cameraToClipMatrix[14] = (2 * zFar * zNear) / (zNear - zFar);
 		cameraToClipMatrix[11] = -1;
 		
+		//Setup the model matrix TODO change this
+		modelToCameraMatrix[0] = 1.0f;
+		modelToCameraMatrix[5] = 1.0f;
+		modelToCameraMatrix[10] = 1.0f;
+		modelToCameraMatrix[15] = 1.0f;
+		
+		//Setup the camera
+		cameraMatrix[0] = 1.0f;
+		cameraMatrix[5] = 1.0f;
+		cameraMatrix[10] = 1.0f;
+		cameraMatrix[15] = 1.0f;
+		
 		//Run the program once
 		program.startProgram();
 		
 		//Putting data into the shaders
 		GL20.glUniformMatrix4(cameraToClipUniform, false, createFloatBuffer(cameraToClipMatrix));
+		GL20.glUniformMatrix4(modelToCameraUniform, false, createFloatBuffer(modelToCameraMatrix));
 		
 		//Stop the program
 		program.stopProgram();
@@ -235,6 +250,9 @@ public class RenderEngine2{
 		
 		//Run the shader program
 		program.startProgram();
+		
+		GL20.glUniformMatrix4(cameraToClipUniform, false, createFloatBuffer(cameraToClipMatrix));
+		GL20.glUniformMatrix4(cameraUniform, false, createFloatBuffer(cameraMatrix));
 		
 		GL11.glEnable(GL32.GL_DEPTH_CLAMP);
 		
@@ -277,26 +295,29 @@ public class RenderEngine2{
 		Display.update();
 		
 		if(Keyboard.isKeyDown(Keyboard.KEY_W)){
-			zOffset += 0.01f;
+			cameraMatrix[14] += 0.01f;
 		}else if(Keyboard.isKeyDown(Keyboard.KEY_S)){
-			zOffset -= 0.01f;
+			cameraMatrix[14] -= 0.01f;
 		}
 		else if(Keyboard.isKeyDown(Keyboard.KEY_A)){
-			yOffset += 0.01f;
+			cameraMatrix[12] += 0.01f;
 		}else if(Keyboard.isKeyDown(Keyboard.KEY_D)){
-			yOffset -= 0.01f;
+			cameraMatrix[12] -= 0.01f;
 		}else if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)){
-			xOffset += 0.01f;
+			cameraMatrix[13] += 0.01f;
 		}else if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)){
-			xOffset -= 0.01f;
+			cameraMatrix[13] -= 0.01f;
 		}
+		
+		//out.println(Mouse.getX() - Display.getWidth() / 2);
+		//out.println(Mouse.getY() - Display.getHeight() / 2);
 	}
 	
 	public void resizeDisplay(){
 		GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());	//Change the viewport size to the current window size
-		perspectiveMatrix.put(0, frustumScale / ((float)Display.getWidth() / Display.getHeight()));	//Adjust the perspective matrix
+		cameraToClipMatrix[0] = frustumScale / ((float)Display.getWidth() / Display.getHeight());	//Adjust the perspective matrix
 		program.startProgram();	//Run the program
-		GL20.glUniformMatrix4(cameraToClipUniform, false, perspectiveMatrix);	//Update the perspective matrix in the VRAM
+		GL20.glUniformMatrix4(cameraToClipUniform, false, createFloatBuffer(cameraToClipMatrix));	//Update the perspective matrix in the VRAM
 		program.stopProgram();	//Stop the program
 	}
 	

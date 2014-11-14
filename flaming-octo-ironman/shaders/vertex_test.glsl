@@ -8,11 +8,12 @@ smooth out vec4 theColor;
 uniform vec3 offset;	//How far the camera has moved
 uniform mat4 cameraToClipMatrix;	//Used to transform the camera
 uniform mat4 modelToCameraMatrix;	//Used to transform the model into worldspace?
+uniform mat4 cameraMatrix;		//Used to move the camera
 
 void main()
 {
 	vec4 cameraPos = position + vec4(offset, 0.0);	//Move the camera
 	
-	gl_Position = cameraToClipMatrix * modelToCameraMatrix * offset;
+	gl_Position =  cameraToClipMatrix * modelToCameraMatrix * cameraMatrix * position;
 	theColor = color;
 }
