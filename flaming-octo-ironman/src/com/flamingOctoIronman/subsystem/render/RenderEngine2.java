@@ -20,6 +20,7 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.PixelFormat;
+import org.lwjgl.util.vector.Matrix4f;
 
 import com.flamingOctoIronman.DeathReason;
 import com.flamingOctoIronman.FlamingOctoIronman;
@@ -108,22 +109,28 @@ public class RenderEngine2{
 			0.0f, 1.0f, 1.0f, 1.0f,
 			0.0f, 1.0f, 1.0f, 1.0f
 			};
-	private int offsetUniform;	//The position of the camera offset variable in the VRAM
-	private int perspectiveMatrixUniform;
 	
+	//Shader uniforms and data
+	private int offsetUniform;	//The position of the camera offset variable in the VRAM
+	private int cameraToClipUniform;
+	private float[] cameraToClipMatrix = new float[16];
+	private int modelToCameraUniform;
+	private Matrix4f modelToCameraMatrix;
+	
+	//Camera offsets
 	private float xOffset;
 	private float yOffset;
+	private float zOffset;
 	
-	private FloatBuffer perspectiveMatrix;
 	
-	private float frustumScale = 1.0f;
+	private float frustumScale = calculateFrustumScale(90f);
 	
 	private StreamManager out;
 	
 	private RenderEngine2(){
 		
 		//Setup display
-		ContextAttribs cattr;
+		ContextAttribs cattr;	//The OpenGL version
 		PixelFormat pfmt = new PixelFormat();	//WTF is a PixelFormat
 		
 		//Set the OpenGL version
@@ -172,29 +179,28 @@ public class RenderEngine2{
 		
 		//Get uniforms
 		offsetUniform = GL20.glGetUniformLocation(program.getProgram(), "offset");	//Get the location of the "offset" variable in the VRAM and store it for later use
-		perspectiveMatrixUniform = GL20.glGetUniformLocation(program.getProgram(), "perspectiveMatrix");
+		cameraToClipUniform = GL20.glGetUniformLocation(program.getProgram(), "cameraToClipMatrix");
+		modelToCameraUniform = GL20.glGetUniformLocation(program.getProgram(), "modelToCameraUniform");
 		
 		//Far and near positions
-		float zNear = 0.5f;
-		float zFar = 3.0f;
+		float zNear = 1.0f;
+		float zFar = 45.0f;
 		
-		//Compute the perspective matrix
-		perspectiveMatrix = BufferUtils.createFloatBuffer(16);
-		perspectiveMatrix.put(0, frustumScale);
-		perspectiveMatrix.put(5, frustumScale);
-		perspectiveMatrix.put(10, (zFar + zNear) / (zNear - zFar));
-		perspectiveMatrix.put(14, (2 * zFar * zNear) / (zNear - zFar));
-		perspectiveMatrix.put(11, -1);
+		//Compute the camera space to clip space matrix
+		cameraToClipMatrix[0] = frustumScale;
+		cameraToClipMatrix[5] = frustumScale;
+		cameraToClipMatrix[10] = (zFar + zNear) / (zNear - zFar);
+		cameraToClipMatrix[14] = (2 * zFar * zNear) / (zNear - zFar);
+		cameraToClipMatrix[11] = -1;
 		
 		//Run the program once
 		program.startProgram();
 		
 		//Putting data into the shaders
-		GL20.glUniformMatrix4(perspectiveMatrixUniform, false, perspectiveMatrix);
+		GL20.glUniformMatrix4(cameraToClipUniform, false, createFloatBuffer(cameraToClipMatrix));
 		
 		//Stop the program
 		program.stopProgram();
-		
 		
 		//FloatBuffer tut02 =  createFloatBuffer(vertexData);
 		vbo = GL15.glGenBuffers();		
@@ -217,7 +223,6 @@ public class RenderEngine2{
 		GL11.glDepthFunc(GL11.GL_LEQUAL);
 		GL11.glDepthRange(0.0f, 1.0f);
 		
-		GL11.glEnable(GL32.GL_DEPTH_CLAMP);
 	}
 	
 	/**
@@ -234,7 +239,7 @@ public class RenderEngine2{
 		GL11.glEnable(GL32.GL_DEPTH_CLAMP);
 		
 		//Set the offset variable
-		GL20.glUniform2f(offsetUniform, yOffset, xOffset);
+		GL20.glUniform3f(offsetUniform, yOffset, xOffset, zOffset);
 		
 		//Prepare the VBO for drawing
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);	//Bind the VBO
@@ -272,14 +277,18 @@ public class RenderEngine2{
 		Display.update();
 		
 		if(Keyboard.isKeyDown(Keyboard.KEY_W)){
-			xOffset += 0.01f;
+			zOffset += 0.01f;
 		}else if(Keyboard.isKeyDown(Keyboard.KEY_S)){
-			xOffset -= 0.01f;
+			zOffset -= 0.01f;
 		}
-		else if(Keyboard.isKeyDown(Keyboard.KEY_D)){
+		else if(Keyboard.isKeyDown(Keyboard.KEY_A)){
 			yOffset += 0.01f;
-		}else if(Keyboard.isKeyDown(Keyboard.KEY_A)){
+		}else if(Keyboard.isKeyDown(Keyboard.KEY_D)){
 			yOffset -= 0.01f;
+		}else if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)){
+			xOffset += 0.01f;
+		}else if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)){
+			xOffset -= 0.01f;
 		}
 	}
 	
@@ -287,7 +296,7 @@ public class RenderEngine2{
 		GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());	//Change the viewport size to the current window size
 		perspectiveMatrix.put(0, frustumScale / ((float)Display.getWidth() / Display.getHeight()));	//Adjust the perspective matrix
 		program.startProgram();	//Run the program
-		GL20.glUniformMatrix4(perspectiveMatrixUniform, false, perspectiveMatrix);	//Update the perspective matrix in the VRAM
+		GL20.glUniformMatrix4(cameraToClipUniform, false, perspectiveMatrix);	//Update the perspective matrix in the VRAM
 		program.stopProgram();	//Stop the program
 	}
 	
@@ -333,7 +342,14 @@ public class RenderEngine2{
 		return vbo;	//Return the VBO
 	}
 		
-
+	/**
+	 * Calculates the Frustrum scale from a given angle
+	 * @param angle The Frustrum angle
+	 * @return	the Frustrum scale
+	 */
+	private static float calculateFrustumScale(float angle) {
+		return 1 / (float)Math.tan((angle * (float)Math.PI / 180) / 2f);
+	}
 	
 	/**
 	 * Get the <code>RenderEngine2</code> instance
