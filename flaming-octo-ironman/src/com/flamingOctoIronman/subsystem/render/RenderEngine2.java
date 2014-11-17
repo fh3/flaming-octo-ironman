@@ -123,8 +123,8 @@ public class RenderEngine2{
 	//Camera offsets
 	private Vector3f cameraAngle = new Vector3f();
 	private float xAngle;
-	private float yAngle;
-	private float zAngle;
+	private float yAngle = (float) (Math.PI / 2);
+	private float zAngle = (float) (Math.PI / 2);
 	
 	
 	private float frustumScale = calculateFrustumScale(90f);
@@ -293,10 +293,10 @@ public class RenderEngine2{
 		
 		Vector3f translateVec;
 		if(Keyboard.isKeyDown(Keyboard.KEY_W)){
-			cameraAngle.x = (float) Math.sin((double) yAngle);
-			cameraAngle.y = (float) Math.sin((double) zAngle);
+			cameraAngle.x = (float) Math.cos((double) yAngle);
+			cameraAngle.y = (float) Math.cos((double) zAngle);
 			cameraAngle.z = (float) Math.cos((double) xAngle);
-			cameraAngle.normalise();
+			//cameraAngle.normalise();
 			cameraAngle.scale(0.01f);
 			//cameraAngle.x *= -0.00001f;
 			//cameraAngle.y *= 0.01f;
@@ -305,10 +305,11 @@ public class RenderEngine2{
 			out.println(cameraAngle.toString());
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_S)){
-			cameraAngle.x = (float) Math.sin((double) yAngle);
-			cameraAngle.y = (float) Math.sin((double) zAngle);
+			cameraAngle.x = (float) Math.cos((double) yAngle);
+			cameraAngle.y = (float) Math.cos((double) zAngle);
 			cameraAngle.z = (float) Math.cos((double) xAngle);
-			cameraAngle.normalise();
+			//cameraAngle.normalise();
+			cameraAngle.scale(-0.01f);
 			//cameraAngle.x *= 0.00001f;
 			//cameraAngle.y *= 0.01f;
 			//cameraAngle.z *= -0.01f;

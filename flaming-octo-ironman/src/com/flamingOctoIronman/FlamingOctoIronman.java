@@ -292,7 +292,7 @@ public class FlamingOctoIronman implements Runnable{
 	 * @see java.lang.Thread
 	 */
 	public static void main(String args[]){
-		new Thread(FlamingOctoIronman.getInstance()).start();;	//Create a new instance of the game in a new thread and start it
+		new Thread(FlamingOctoIronman.getInstance()).start();	//Create a new instance of the game in a new thread and start it
 	}
 	
 	/**
