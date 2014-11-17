@@ -20,6 +20,8 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.PixelFormat;
+import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 import com.flamingOctoIronman.DeathReason;
 import com.flamingOctoIronman.FlamingOctoIronman;
@@ -116,12 +118,13 @@ public class RenderEngine2{
 	private int modelToCameraUniform;
 	private float[] modelToCameraMatrix = new float[16];
 	private int cameraUniform;
-	private float[] cameraMatrix = new float[16];
+	private Matrix4f cameraMatrix = new Matrix4f();
 	
 	//Camera offsets
-	private float xOffset;
-	private float yOffset;
-	private float zOffset;
+	private Vector3f cameraAngle = new Vector3f();
+	private float xAngle;
+	private float yAngle;
+	private float zAngle;
 	
 	
 	private float frustumScale = calculateFrustumScale(90f);
@@ -202,10 +205,7 @@ public class RenderEngine2{
 		modelToCameraMatrix[15] = 1.0f;
 		
 		//Setup the camera
-		cameraMatrix[0] = 1.0f;
-		cameraMatrix[5] = 1.0f;
-		cameraMatrix[10] = 1.0f;
-		cameraMatrix[15] = 1.0f;
+		cameraMatrix.setIdentity();
 		
 		//Run the program once
 		program.startProgram();
@@ -255,10 +255,7 @@ public class RenderEngine2{
 		GL20.glUniformMatrix4(cameraUniform, false, createFloatBuffer(cameraMatrix));
 		
 		GL11.glEnable(GL32.GL_DEPTH_CLAMP);
-		
-		//Set the offset variable
-		GL20.glUniform3f(offsetUniform, yOffset, xOffset, zOffset);
-		
+				
 		//Prepare the VBO for drawing
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);	//Bind the VBO
 		//Enable attributes
@@ -294,22 +291,61 @@ public class RenderEngine2{
 		//Update the display
 		Display.update();
 		
+		Vector3f translateVec;
 		if(Keyboard.isKeyDown(Keyboard.KEY_W)){
-			cameraMatrix[14] += 0.01f;
-		}else if(Keyboard.isKeyDown(Keyboard.KEY_S)){
-			cameraMatrix[14] -= 0.01f;
+			cameraAngle.x = (float) Math.sin((double) yAngle);
+			cameraAngle.y = (float) Math.sin((double) zAngle);
+			cameraAngle.z = (float) Math.cos((double) xAngle);
+			cameraAngle.normalise();
+			cameraAngle.scale(0.01f);
+			//cameraAngle.x *= -0.00001f;
+			//cameraAngle.y *= 0.01f;
+			//cameraAngle.z *= 0.01f;
+			cameraMatrix.translate(cameraAngle);
+			out.println(cameraAngle.toString());
 		}
-		else if(Keyboard.isKeyDown(Keyboard.KEY_A)){
-			cameraMatrix[12] += 0.01f;
-		}else if(Keyboard.isKeyDown(Keyboard.KEY_D)){
-			cameraMatrix[12] -= 0.01f;
-		}else if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)){
-			cameraMatrix[13] += 0.01f;
-		}else if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)){
-			cameraMatrix[13] -= 0.01f;
+		if(Keyboard.isKeyDown(Keyboard.KEY_S)){
+			cameraAngle.x = (float) Math.sin((double) yAngle);
+			cameraAngle.y = (float) Math.sin((double) zAngle);
+			cameraAngle.z = (float) Math.cos((double) xAngle);
+			cameraAngle.normalise();
+			//cameraAngle.x *= 0.00001f;
+			//cameraAngle.y *= 0.01f;
+			//cameraAngle.z *= -0.01f;
+			cameraMatrix.translate(cameraAngle);
+			out.println(cameraAngle.toString());
 		}
+		if(Keyboard.isKeyDown(Keyboard.KEY_A)){
+			cameraMatrix.translate(new Vector3f((float) Math.cos((double) yAngle) * 0.01f, 0.0f, -(float) Math.cos((double) xAngle) * 0.01f));
+		}
+		if(Keyboard.isKeyDown(Keyboard.KEY_D)){
+			cameraMatrix.translate(new Vector3f((float) Math.cos((double) yAngle) * -0.01f, 0.0f, (float) Math.cos((double) xAngle) * -0.01f));
+		}
+		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)){
+			cameraMatrix.translate(new Vector3f(0.0f, 0.01f, 0.0f));
+		}
+		if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)){
+			cameraMatrix.translate(new Vector3f(0.0f, -0.01f, 0.0f));
+		}
+		if(Mouse.isButtonDown(1)){
+			xAngle += 0.0001f * (Mouse.getX() - Display.getWidth() / 2);
+			yAngle += -0.0001f * (Mouse.getY() - Display.getHeight() / 2);
+			cameraMatrix.rotate(0.0001f * (Mouse.getX() - Display.getWidth() / 2), new Vector3f(0.0f, 1.0f, 0.0f));
+			cameraMatrix.rotate(-0.0001f * (Mouse.getY() - Display.getHeight() / 2), new Vector3f(1.0f, 0.0f, 0.0f));
+			out.println("X Angle: " + xAngle);
+			out.println("Y Angle: " + yAngle);
+		}
+		if(Keyboard.isKeyDown(Keyboard.KEY_R)){
+			cameraMatrix.setIdentity();
+			xAngle = 0.0f;
+			yAngle = 0.0f;
+			zAngle = 0.0f;
+			out.println("X Angle: " + xAngle);
+			out.println("Y Angle: " + yAngle);
+		}
+		//out.println(cameraMatrix.toString());
 		
-		//out.println(Mouse.getX() - Display.getWidth() / 2);
+		//out.println();
 		//out.println(Mouse.getY() - Display.getHeight() / 2);
 	}
 	
@@ -328,6 +364,13 @@ public class RenderEngine2{
 	 */
 	public static FloatBuffer createFloatBuffer(float[] vertices){
 		return (FloatBuffer)BufferUtils.createFloatBuffer(vertices.length).put(vertices).flip();	//Create a float buffer, put data into it, flip it, return it
+	}
+	
+	public static FloatBuffer createFloatBuffer(Matrix4f matrix){
+		FloatBuffer buffer = BufferUtils.createFloatBuffer(16);	//Create the buffer
+		matrix.store(buffer);	//Store the matrix in it
+		buffer.flip();		//Flip the buffer
+		return buffer;	//Return the buffer
 	}
 	
 	//TODO class names are weird, may need to edit switch statement
