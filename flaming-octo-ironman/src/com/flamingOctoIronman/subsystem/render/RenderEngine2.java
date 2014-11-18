@@ -122,12 +122,9 @@ public class RenderEngine2{
 	private Matrix4f cameraMatrix = new Matrix4f();
 	
 	//Camera offsets
-	private Vector3f cameraAngle = new Vector3f();
-	private Vector3f cameraTranslation = new Vector3f();
-	private float xAngle;
-	private float yAngle;
-	private float zAngle;
-	
+	private float angle;	//Angle of rotation
+	float lx=0.0f,lz=-1.0f;	//Directional vector
+	float x=0.0f,z=5.0f;	//Camera translationj
 	
 	private float frustumScale = calculateFrustumScale(90f);
 	
@@ -250,6 +247,12 @@ public class RenderEngine2{
 		//Clear the screen, color and depth buffer
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		
+		GL11.glLoadIdentity();
+		
+		GLU.gluLookAt(	x, 1.0f, z,
+				x+lx, 1.0f,  z+lz,
+				0.0f, 1.0f,  0.0f);
+		
 		//Run the shader program
 		program.startProgram();
 		
@@ -295,65 +298,34 @@ public class RenderEngine2{
 		
 		Vector3f translateVec;
 		if(Keyboard.isKeyDown(Keyboard.KEY_W)){
-			/*cameraAngle.x = (float) -Math.sin((double) xAngle);
-			cameraAngle.y = (float) Math.sin((double) yAngle);
-			cameraAngle.z = (float) Math.cos((double) zAngle);
-			cameraAngle.normalise();
-			cameraAngle.scale(0.01f);
-			cameraMatrix.translate(cameraAngle);
-			out.println(cameraAngle.toString());*/
-			cameraTranslation.z += 0.01f;
+			//z
+			x += lx * 0.01f;
+			z += lz * 0.01f;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_S)){
-			/*cameraAngle.x = (float) -Math.sin((double) xAngle);
-			cameraAngle.y = (float) Math.sin((double) yAngle);
-			cameraAngle.z = (float) Math.cos((double) zAngle);
-			cameraAngle.normalise();
-			cameraAngle.scale(-0.01f);
-			cameraMatrix.translate(cameraAngle);
-			out.println(cameraAngle.toString());*/
-			cameraTranslation.z -= 0.01f;
+			x -= lx * 0.01f;
+			z -= lz * 0.01f;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_A)){
-			/*cameraAngle.x = (float) Math.cos((double) xAngle);
-			cameraAngle.y = (float) -Math.sin((double) yAngle);
-			cameraAngle.z = (float) Math.sin((double) zAngle);
-			cameraAngle.normalise();
-			cameraAngle.scale(0.01f);
-			cameraMatrix.translate(cameraAngle);
-			out.println(cameraAngle.toString());*/
-			cameraTranslation.x += 0.01f;
+			//x
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_D)){
-			cameraTranslation.x -= 0.01f;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)){
-			cameraMatrix.translate(new Vector3f(0.0f, 0.01f, 0.0f));
+			//y
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)){
-			cameraMatrix.translate(new Vector3f(0.0f, -0.01f, 0.0f));
 		}
 		if(true){
-			xAngle += 0.0001f * (Mouse.getX() - Display.getWidth() / 2);
-			yAngle += -0.0001f * (Mouse.getY() - Display.getHeight() / 2);
-			//cameraMatrix.rotate(0.0001f * (Mouse.getX() - Display.getWidth() / 2), new Vector3f(0.0f, 1.0f, 0.0f));
-			//cameraMatrix.rotate(-0.0001f * (Mouse.getY() - Display.getHeight() / 2), new Vector3f(1.0f, 0.0f, 0.0f));
-			cameraAngle.z = (float) Math.sin(xAngle);
-			cameraAngle.x = (float) -Math.cos(yAngle);
-			out.println("X Angle: " + xAngle);
-			out.println("Y Angle: " + yAngle);
+			// 0.0001f * (Mouse.getX() - Display.getWidth() / 2); z
+			//-0.0001f * (Mouse.getY() - Display.getHeight() / 2); x
+			angle -= 0.0001f * (Mouse.getX() - Display.getWidth() / 2);
+			lx = (float) Math.sin(angle);
+			lz = (float) -Math.cos(angle);
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_R)){
 			cameraMatrix.setIdentity();
-			xAngle = 0.0f;
-			yAngle = 0.0f;
-			zAngle = 0.0f;
-			cameraAngle.set(0, 0, 0);
-			cameraTranslation.set(0, 0, 0);
-			out.println("X Angle: " + xAngle);
-			out.println("Y Angle: " + yAngle);
 		}
-		GLU.gluLookAt(cameraTranslation.x, cameraTranslation.y, cameraTranslation.z, centerx, centery, centerz, upx, upy, upz);
 		//out.println(cameraMatrix.toString());
 		
 		//out.println();
