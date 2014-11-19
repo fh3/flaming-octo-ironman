@@ -7,10 +7,12 @@ smooth out vec4 theColor;
 
 uniform mat4 cameraToClipMatrix;	//Used to transform the camera
 uniform mat4 modelToCameraMatrix;	//Used to transform the model into worldspace?
-uniform mat4 cameraMatrix;		//Used to move the camera
+uniform vec3 cameraPosition;	//The camera's current position
+uniform vec3 point;	//The point to look at
+uniform vec3 upVector;	//The up vector
 
 void main()
 {	
-	gl_Position =  cameraToClipMatrix * modelToCameraMatrix * cameraMatrix * position;
+	gl_Position = cameraToClipMatrix * modelToCameraMatrix * cameraMatrix * position;
 	theColor = color;
 }
