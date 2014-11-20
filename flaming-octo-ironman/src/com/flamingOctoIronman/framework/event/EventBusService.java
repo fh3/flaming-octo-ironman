@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
-import com.flamingOctoIronman.core.event.CoreEventHandler;
 
 /**
  * This class is used to handle the subscribing and publishing of events. It provides the basic framework
@@ -14,7 +13,7 @@ import com.flamingOctoIronman.core.event.CoreEventHandler;
  * @author Quint
  *
  */
-public abstract class  EventBusService<T extends Event> {
+public class EventBusService<T extends Event> {
 	/**
 	 * This loads all the <code>Event</code>s. For a class to be loaded, it must extend <code>T</code>, and must be
 	 * registered in <code>T</code>'s class manifest.
@@ -60,16 +59,16 @@ public abstract class  EventBusService<T extends Event> {
 		//Temporary variables
 		Method[] methods = subscriber.getClass().getMethods();	//Get an array of all the methods in the class
 		Event event;
-		//Loop through the CoreEvents
+		//Loop through the Events
 		Iterator<T> iterator = loader.iterator();	//Get a new Iterator
 		while(iterator.hasNext()){
 			event = iterator.next();	//Get a the next iterator entry
 			//Loop through all the methods in the subscriber
 			for(Method method : methods){
 				//If the given method has the EventHandler annotation and the modifier isn't static
-				if(method.isAnnotationPresent(CoreEventHandler.class) && !Modifier.isStatic(method.getModifiers())){
-					//If one of them is equal to the CoreEvent's class
-					if(event.getClass().getSimpleName().equals(method.getAnnotation(CoreEventHandler.class).event())){
+				if(method.isAnnotationPresent(EventHandler.class) && !Modifier.isStatic(method.getModifiers())){
+					//If one of them is equal to the Event's class
+					if(event.getClass().getSimpleName().equals(method.getAnnotation(EventHandler.class).event())){
 						//Subscribe to the event
 						event.subscribe(method, subscriber);
 					}
@@ -86,7 +85,7 @@ public abstract class  EventBusService<T extends Event> {
 		//Temporary variables
 		Method[] methods;
 		Event event;
-		//Loop through the CoreEvents
+		//Loop through the Events
 		Iterator<T> iterator = loader.iterator();
 		while(iterator.hasNext()){
 			event = iterator.next();
@@ -94,9 +93,9 @@ public abstract class  EventBusService<T extends Event> {
 			//Loop through all the methods in the subscriber
 			for(Method method : methods){
 				//If the given method has the EventHandler annotation, and the object is static
-				if(method.isAnnotationPresent(CoreEventHandler.class) && Modifier.isStatic(method.getModifiers())){
-					//If one of them is equal to the CoreEvent's class
-					if(event.getClass().getSimpleName().equals(method.getAnnotation(CoreEventHandler.class).event())){
+				if(method.isAnnotationPresent(EventHandler.class) && Modifier.isStatic(method.getModifiers())){
+					//If one of them is equal to the Event's class
+					if(event.getClass().getSimpleName().equals(method.getAnnotation(EventHandler.class).event())){
 						//Subscribe to the event
 						event.subscribe(method, subscriber);
 					}
@@ -109,10 +108,10 @@ public abstract class  EventBusService<T extends Event> {
 	 * @param event <code>Class</code> simple name of the event that is being published.
 	 */
 	public void publish(Class<? extends Event> event){
-		Event iteratorEvent;	//Variable to hold CoreEvents from the loader's iterator
+		Event iteratorEvent;	//Variable to hold Events from the loader's iterator
 		Iterator<? extends Event> iterator = loader.iterator();
 		while(iterator.hasNext()){		//While there's an event left in the loader's iterator
-			iteratorEvent = iterator.next();	//Get the next CoreEvent
+			iteratorEvent = iterator.next();	//Get the next Event
 			if(iteratorEvent.getClass() == event){	//If the iteratorEvent is an instance of event
 				try {
 					iteratorEvent.publish();		//Then try and publish the event
@@ -123,10 +122,4 @@ public abstract class  EventBusService<T extends Event> {
 			}
 		}
 	}
-	
-	/**
-	 * Returns the annotation class associated with this <code>EventBusService</code>
-	 * @return
-	 */
-	public abstract Class getHandlerAnnotation();
 }

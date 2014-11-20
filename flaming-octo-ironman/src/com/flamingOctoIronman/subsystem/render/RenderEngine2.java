@@ -113,18 +113,23 @@ public class RenderEngine2{
 			};
 	
 	//Shader uniforms and data
-	private int offsetUniform;	//The position of the camera offset variable in the VRAM
 	private int cameraToClipUniform;
 	private float[] cameraToClipMatrix = new float[16];
 	private int modelToCameraUniform;
 	private float[] modelToCameraMatrix = new float[16];
-	private int cameraUniform;
+	private int cameraPositionUniform;
+	private int pointUniform;
+	private int upVectorUniform;
 	private Matrix4f cameraMatrix = new Matrix4f();
 	
 	//Camera offsets
 	private float angle;	//Angle of rotation
 	float lx=0.0f,lz=-1.0f;	//Directional vector
-	float x=0.0f,z=5.0f;	//Camera translationj
+	float x=0.0f,z=5.0f;	//Camera translation
+	
+	private Vector3f cameraPosition = new Vector3f();
+	private Vector3f point = new Vector3f();
+	private Vector3f upVector = new Vector3f();
 	
 	private float frustumScale = calculateFrustumScale(90f);
 	
@@ -181,10 +186,11 @@ public class RenderEngine2{
 		program.compileProgram();//Compile the program
 		
 		//Get uniforms
-		offsetUniform = GL20.glGetUniformLocation(program.getProgram(), "offset");	//Get the location of the "offset" variable in the VRAM and store it for later use
 		cameraToClipUniform = GL20.glGetUniformLocation(program.getProgram(), "cameraToClipMatrix");
 		modelToCameraUniform = GL20.glGetUniformLocation(program.getProgram(), "modelToCameraMatrix");
-		cameraUniform = GL20.glGetUniformLocation(program.getProgram(), "cameraMatrix");
+		cameraPositionUniform = GL20.glGetUniformLocation(program.getProgram(), "cameraPosition");
+		pointUniform = GL20.glGetUniformLocation(program.getProgram(), "point");
+		upVectorUniform = GL20.glGetUniformLocation(program.getProgram(), "upVector");
 		
 		//Far and near positions
 		float zNear = 1.0f;
@@ -247,17 +253,12 @@ public class RenderEngine2{
 		//Clear the screen, color and depth buffer
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		
-		GL11.glLoadIdentity();
-		
-		GLU.gluLookAt(	x, 1.0f, z,
-				x+lx, 1.0f,  z+lz,
-				0.0f, 1.0f,  0.0f);
-		
 		//Run the shader program
 		program.startProgram();
 		
 		GL20.glUniformMatrix4(cameraToClipUniform, false, createFloatBuffer(cameraToClipMatrix));
-		GL20.glUniformMatrix4(cameraUniform, false, createFloatBuffer(cameraMatrix));
+		GL20.glUniform3(cameraPositionUniform, createFloatBuffer(cameraPosition));
+		GL20.glUniform3(pointUniform, createFloatBuffer(point));
 		
 		GL11.glEnable(GL32.GL_DEPTH_CLAMP);
 				
@@ -298,23 +299,22 @@ public class RenderEngine2{
 		
 		Vector3f translateVec;
 		if(Keyboard.isKeyDown(Keyboard.KEY_W)){
-			//z
-			x += lx * 0.01f;
-			z += lz * 0.01f;
+			cameraPosition.z += 0.001f;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_S)){
-			x -= lx * 0.01f;
-			z -= lz * 0.01f;
+			cameraPosition.z -= 0.001f;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_A)){
-			//x
+			cameraPosition.x += 0.001f;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_D)){
+			cameraPosition.x -= 0.001f;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)){
-			//y
+			cameraPosition.y += 0.001f;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)){
+			cameraPosition.y -= 0.001f;
 		}
 		if(true){
 			// 0.0001f * (Mouse.getX() - Display.getWidth() / 2); z
@@ -354,6 +354,13 @@ public class RenderEngine2{
 		matrix.store(buffer);	//Store the matrix in it
 		buffer.flip();		//Flip the buffer
 		return buffer;	//Return the buffer
+	}
+	
+	public static FloatBuffer createFloatBuffer(Vector3f vector){
+		FloatBuffer buffer = BufferUtils.createFloatBuffer(3);
+		vector.store(buffer);
+		buffer.flip();
+		return buffer;
 	}
 	
 	//TODO class names are weird, may need to edit switch statement

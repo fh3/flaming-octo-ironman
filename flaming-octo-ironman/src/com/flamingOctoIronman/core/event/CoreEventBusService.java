@@ -33,10 +33,4 @@ public class CoreEventBusService extends EventBusService<CoreEvent> {
 		}
 		return instance;	//Return the instance
 	}
-
-	@Override
-	public Class<? extends Object> getHandlerAnnotation() {
-		return CoreEventHandler.class;
-	}
-
 }
