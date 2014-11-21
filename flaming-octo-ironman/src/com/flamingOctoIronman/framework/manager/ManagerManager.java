@@ -16,12 +16,12 @@ import com.flamingOctoIronman.framework.event.EventHandler;
  * @param <T1>	The class that extends {@link Manager}
  * @param <T2>	The class that extends <code>Event</code>
  */
-public abstract class ManagerManager<T1 extends Manager, T2 extends Event> {
+public abstract class ManagerManager<T1 extends Manager> {
 	
 	/**
 	 * A reference to the {@link EventServiceBus} that controls all the <code>T2 Event</code>s
 	 */
-	private EventBusService<T2> busService;
+	private EventBusService busService;
 	
 	/**
 	 * Loads all the <code>T1 Manager</code>s
@@ -43,7 +43,7 @@ public abstract class ManagerManager<T1 extends Manager, T2 extends Event> {
 	 * @param toLoad	The top level <code>Class T1</code> to load with the <code>ServiceLoader</code>. Generics cannot
 	 * be used here to to generic's limitations.
 	 */
-	public ManagerManager(EventBusService<T2> busService, Class<T1> toLoad){
+	public ManagerManager(EventBusService busService, Class<T1> toLoad){
 		//Set the instance's references to the passed arguments
 		this.busService = busService;
 		this.toLoad = toLoad;
@@ -67,8 +67,8 @@ public abstract class ManagerManager<T1 extends Manager, T2 extends Event> {
 		}
 		
 		//Register each Manager for events
-		T2 event;	//Temporary reference
-		Iterator<T2> iterator2 = busService.getEventIterator();	//Get a new Iterator from the ServiceLoader
+		Event event;	//Temporary reference
+		Iterator<Event> iterator2 = (Iterator<Event>) busService.getEventIterator();	//Get a new Iterator from the ServiceLoader
 		while(iterator2.hasNext()){		//While there's Events left in the Iterator
 			event = iterator2.next();	//Set the temporary reference to the next Event
 			for(T1 manager2 : classMap.values()){	//For each Manager in the classMap
@@ -83,8 +83,8 @@ public abstract class ManagerManager<T1 extends Manager, T2 extends Event> {
 	 */
 	public void postInitialize(){
 		//Register submanagers for Events
-		T2 event;	//Temporary reference
-		Iterator<T2> iterator = busService.getEventIterator();//Get a new Iterator from the ServiceLoader
+		Event event;	//Temporary reference
+		Iterator<Event> iterator = (Iterator<Event>) busService.getEventIterator();//Get a new Iterator from the ServiceLoader
 		while(iterator.hasNext()){	//While there's Events left in the Iterator
 			event = iterator.next();	//Set the temporary reference to the next Event
 			for(T1 manager : classMap.values()){	//For each Manager in the classMap
@@ -104,7 +104,7 @@ public abstract class ManagerManager<T1 extends Manager, T2 extends Event> {
 	 * @param object	The <code>Object</code> that contains the methods to be checked
 	 * @param event	The <code>Event</code> the check the methods against
 	 */
-	private void checkMethodsAndSubscribe(Object object, T2 event){
+	private void checkMethodsAndSubscribe(Object object, Event event){
 		for(Method method : object.getClass().getMethods()){	//For each method in each manager
 			if(method.isAnnotationPresent(EventHandler.class)){	//If the name of the annotation on the method is equal to the event's handler
 				if(event.getClass().getSimpleName().equals(method.getAnnotation(EventHandler.class).event())){	//If the event parameter is equal to the event's name

@@ -13,30 +13,30 @@ import java.util.ServiceLoader;
  * @author Quint
  *
  */
-public class EventBusService<T extends Event> {
+public class EventBusService {
 	/**
 	 * This loads all the <code>Event</code>s. For a class to be loaded, it must extend <code>T</code>, and must be
 	 * registered in <code>T</code>'s class manifest.
 	 */
-	private ServiceLoader<T> loader;
+	private ServiceLoader<? extends Event> loader;
 	/**
 	 * This {@link HashMap} Stores a key/pair of the simple name of every <code>T</code> and <code>T</code> instance.
 	 */
-	private HashMap<String, T> eventMap;
+	private HashMap<String, Event> eventMap;
 	
 	/**
 	 * Creates a new <code>EventBusService</code>. Initialize references and loop through all the <code>T</code>
 	 * in the loader and add them to the <code>eventMap</code>
 	 * @param loader A {@link ServiceLoader} instance with all the <code>T</code> classes loaded.
 	 */
-	public EventBusService(ServiceLoader<T> loader){
+	public EventBusService(ServiceLoader<? extends Event> loader){
 		//Initialized references
-		this.loader = (ServiceLoader<T>) loader;	//Set the loader reference to the passed argument
-		this.eventMap = new HashMap<String, T>();	//Initialized the eventMap
+		this.loader = loader;	//Set the loader reference to the passed argument
+		this.eventMap = new HashMap<String, Event>();	//Initialized the eventMap
 		
 		//Loop through all the events in the loader and add them to the eventMap
-		T event;	//Create a temporary reference for T instances
-		Iterator<T> iterator = loader.iterator();	//Get a new Iterator from the loader
+		Event event;	//Create a temporary reference for T instances
+		Iterator<Event> iterator = (Iterator<Event>) loader.iterator();	//Get a new Iterator from the loader
 		while(iterator.hasNext()){	//Loop through the iterator while there's still objects remaining
 			event = iterator.next();	//Set the temporary reference to the next T instance in the iterator
 			eventMap.put(event.getName(), event);	//Add the name of that instance and the instance to the eventMap
@@ -47,7 +47,7 @@ public class EventBusService<T extends Event> {
 	 * Returns a copy of the <code>ServiceLoader</code>'s {@link Iterator}.
 	 * @return	A copy of the <code>ServiceLoader</code>'s <code>Iterator</code>
 	 */
-	public Iterator<T> getEventIterator(){
+	public Iterator<? extends Event> getEventIterator(){
 		return loader.iterator();	//Get a copy of the iterator and return it
 	}
 	
@@ -60,7 +60,7 @@ public class EventBusService<T extends Event> {
 		Method[] methods = subscriber.getClass().getMethods();	//Get an array of all the methods in the class
 		Event event;
 		//Loop through the Events
-		Iterator<T> iterator = loader.iterator();	//Get a new Iterator
+		Iterator<? extends Event> iterator = loader.iterator();	//Get a new Iterator
 		while(iterator.hasNext()){
 			event = iterator.next();	//Get a the next iterator entry
 			//Loop through all the methods in the subscriber
@@ -86,7 +86,7 @@ public class EventBusService<T extends Event> {
 		Method[] methods;
 		Event event;
 		//Loop through the Events
-		Iterator<T> iterator = loader.iterator();
+		Iterator<? extends Event> iterator = loader.iterator();
 		while(iterator.hasNext()){
 			event = iterator.next();
 			methods = subscriber.getMethods();
