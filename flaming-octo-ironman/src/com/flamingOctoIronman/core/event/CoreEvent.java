@@ -16,11 +16,5 @@ public abstract class CoreEvent extends Event{
 	 */
 	public CoreEvent() {
 		super();
-	}
-
-	@Override
-	public boolean compareNames(Method m) {
-		return m.getAnnotation(CoreEventHandler.class).event().equals(getName());
-	}
-	
+	}	
 }

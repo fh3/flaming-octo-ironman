@@ -84,13 +84,6 @@ public abstract class Event {
 	 * @return the simple name of the class.
 	 */
 	public abstract String getName();
-	
-	/**
-	 * Compares the name of the class to the annotation on the passed method.
-	 * @param m The <code>Method</code> to compare
-	 * @return True if the name of the class is the same as the method's annotation, otherwise false
-	 */
-	public abstract boolean compareNames(Method m);
 		
 	/**
 	 * Returns the verbosity of the <code>Event</code>

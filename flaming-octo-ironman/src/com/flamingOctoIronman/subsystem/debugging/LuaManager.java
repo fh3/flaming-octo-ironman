@@ -14,7 +14,7 @@ import javax.script.ScriptException;
 import org.luaj.vm2.LuaError;
 
 import com.flamingOctoIronman.FlamingOctoIronman;
-import com.flamingOctoIronman.core.event.CoreEventHandler;
+import com.flamingOctoIronman.framework.event.EventHandler;
 import com.flamingOctoIronman.subsystem.resource.ResourceManager;
 
 //TODO I might need to make this a separate thread
@@ -44,7 +44,7 @@ public class LuaManager {
 		}
 	}
 	
-	@CoreEventHandler(event = "StartUpEvent")
+	@EventHandler(event = "StartUpEvent")
 	public void startUp(){
 		this.evaluate("print 'Loading Scripts'");
 		this.loadFile(ResourceManager.getFileDir("/scripts/source/Test.lua"));
@@ -56,7 +56,7 @@ public class LuaManager {
 	}
 	
 	//TODO might change the way this works later
-	@CoreEventHandler(event = "GameLoopEvent")
+	@EventHandler(event = "GameLoopEvent")
 	public void evaluate(){
 		if(streamScanner != null){
 			try {

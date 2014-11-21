@@ -26,7 +26,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 import com.flamingOctoIronman.DeathReason;
 import com.flamingOctoIronman.FlamingOctoIronman;
-import com.flamingOctoIronman.core.event.CoreEventHandler;
+import com.flamingOctoIronman.framework.event.EventHandler;
 import com.flamingOctoIronman.subsystem.debugging.DebuggingManager;
 import com.flamingOctoIronman.subsystem.debugging.StreamManager;
 import com.flamingOctoIronman.subsystem.resource.ResourceManager;
@@ -171,8 +171,8 @@ public class RenderEngine2{
 	/**
 	 * Initialize the renderer
 	 */
-	@SuppressWarnings("unused")
-	@CoreEventHandler(event = "StartUpEvent")
+	@SuppressWarnings("static-access")
+	@EventHandler(event = "StartUpEvent")
 	public void InitializeVertexBuffer(){
 		out = ((DebuggingManager) FlamingOctoIronman.getInstance().getCoreManager(DebuggingManager.class.getSimpleName())).getStreamManager();
 		
@@ -248,7 +248,7 @@ public class RenderEngine2{
 	/**
 	 * Perform render operations
 	 */
-	@CoreEventHandler(event = "GameLoopEvent")
+	@com.flamingOctoIronman.framework.event.EventHandler(event = "GameLoopEvent")
 	public void render(){
 		//Clear the screen, color and depth buffer
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);

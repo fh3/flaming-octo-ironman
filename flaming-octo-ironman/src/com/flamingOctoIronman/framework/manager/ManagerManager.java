@@ -7,6 +7,7 @@ import java.util.ServiceLoader;
 
 import com.flamingOctoIronman.framework.event.Event;
 import com.flamingOctoIronman.framework.event.EventBusService;
+import com.flamingOctoIronman.framework.event.EventHandler;
 
 /**
  * This class handles all the managers. It loads them, then registers them for {@link Event}s.
@@ -105,8 +106,8 @@ public abstract class ManagerManager<T1 extends Manager, T2 extends Event> {
 	 */
 	private void checkMethodsAndSubscribe(Object object, T2 event){
 		for(Method method : object.getClass().getMethods()){	//For each method in each manager
-			if(method.isAnnotationPresent(busService.getHandlerAnnotation())){	//If the name of the annotation on the method is equal to the event's handler
-				if(event.compareNames(method)){	//If the event parameter is equal to the event's name
+			if(method.isAnnotationPresent(EventHandler.class)){	//If the name of the annotation on the method is equal to the event's handler
+				if(event.getClass().getSimpleName().equals(method.getAnnotation(EventHandler.class).event())){	//If the event parameter is equal to the event's name
 					event.subscribe(method, object);	//Then subscribe the method and the object to the event
 				}
 			}

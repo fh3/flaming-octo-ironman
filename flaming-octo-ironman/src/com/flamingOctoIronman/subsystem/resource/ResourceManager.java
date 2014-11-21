@@ -13,8 +13,8 @@ import java.nio.file.Paths;
 
 import com.flamingOctoIronman.DeathReason;
 import com.flamingOctoIronman.FlamingOctoIronman;
-import com.flamingOctoIronman.core.event.CoreEventHandler;
 import com.flamingOctoIronman.core.manager.CoreManager;
+import com.flamingOctoIronman.framework.event.EventHandler;
 
 /**
  * This is the main class that loads and unloads files.
@@ -31,11 +31,11 @@ public class ResourceManager extends CoreManager{
 	/**
 	 * This method runs whatever needs to be run at the initialization stage of the game's life.
 	 */
-	@CoreEventHandler(event = "InitializationEvent")
+	@EventHandler(event = "InitializationEvent")
 	public void initialization() {
 		
 	}
-	@CoreEventHandler(event = "StartUpEvent")
+	@EventHandler(event = "StartUpEvent")
 	public void startUpEvent(){
 		
 	}
