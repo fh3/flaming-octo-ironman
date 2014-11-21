@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 public @interface EventHandler {
 	/**
 	 * 
-	 * @return The <code>getSimplifiedName()</code> of the event being subscribed to
+	 * @return The <code>getName()</code> of the event being subscribed to
 	 */
 	public String event();
 }

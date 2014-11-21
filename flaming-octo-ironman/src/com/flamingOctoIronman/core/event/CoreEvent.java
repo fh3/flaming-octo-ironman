@@ -1,7 +1,5 @@
 package com.flamingOctoIronman.core.event;
 
-import java.lang.reflect.Method;
-
 import com.flamingOctoIronman.framework.event.Event;
 
 /**
@@ -14,7 +12,4 @@ public abstract class CoreEvent extends Event{
 	/**
 	 * Nothing to see here, move along.
 	 */
-	public CoreEvent() {
-		super();
-	}	
 }

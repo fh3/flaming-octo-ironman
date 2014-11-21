@@ -20,7 +20,6 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.PixelFormat;
-import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -117,19 +116,8 @@ public class RenderEngine2{
 	private float[] cameraToClipMatrix = new float[16];
 	private int modelToCameraUniform;
 	private float[] modelToCameraMatrix = new float[16];
-	private int cameraPositionUniform;
-	private int pointUniform;
-	private int upVectorUniform;
-	private Matrix4f cameraMatrix = new Matrix4f();
 	
-	//Camera offsets
-	private float angle;	//Angle of rotation
-	float lx=0.0f,lz=-1.0f;	//Directional vector
-	float x=0.0f,z=5.0f;	//Camera translation
-	
-	private Vector3f cameraPosition = new Vector3f();
-	private Vector3f point = new Vector3f();
-	private Vector3f upVector = new Vector3f();
+	//Camera data
 	
 	private float frustumScale = calculateFrustumScale(90f);
 	
@@ -188,9 +176,6 @@ public class RenderEngine2{
 		//Get uniforms
 		cameraToClipUniform = GL20.glGetUniformLocation(program.getProgram(), "cameraToClipMatrix");
 		modelToCameraUniform = GL20.glGetUniformLocation(program.getProgram(), "modelToCameraMatrix");
-		cameraPositionUniform = GL20.glGetUniformLocation(program.getProgram(), "cameraPosition");
-		pointUniform = GL20.glGetUniformLocation(program.getProgram(), "point");
-		upVectorUniform = GL20.glGetUniformLocation(program.getProgram(), "upVector");
 		
 		//Far and near positions
 		float zNear = 1.0f;
@@ -208,9 +193,6 @@ public class RenderEngine2{
 		modelToCameraMatrix[5] = 1.0f;
 		modelToCameraMatrix[10] = 1.0f;
 		modelToCameraMatrix[15] = 1.0f;
-		
-		//Setup the camera
-		cameraMatrix.setIdentity();
 		
 		//Run the program once
 		program.startProgram();
@@ -248,7 +230,7 @@ public class RenderEngine2{
 	/**
 	 * Perform render operations
 	 */
-	@com.flamingOctoIronman.framework.event.EventHandler(event = "GameLoopEvent")
+	@EventHandler(event = "GameLoopEvent")
 	public void render(){
 		//Clear the screen, color and depth buffer
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
@@ -257,8 +239,6 @@ public class RenderEngine2{
 		program.startProgram();
 		
 		GL20.glUniformMatrix4(cameraToClipUniform, false, createFloatBuffer(cameraToClipMatrix));
-		GL20.glUniform3(cameraPositionUniform, createFloatBuffer(cameraPosition));
-		GL20.glUniform3(pointUniform, createFloatBuffer(point));
 		
 		GL11.glEnable(GL32.GL_DEPTH_CLAMP);
 				
@@ -299,32 +279,23 @@ public class RenderEngine2{
 		
 		Vector3f translateVec;
 		if(Keyboard.isKeyDown(Keyboard.KEY_W)){
-			cameraPosition.z += 0.001f;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_S)){
-			cameraPosition.z -= 0.001f;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_A)){
-			cameraPosition.x += 0.001f;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_D)){
-			cameraPosition.x -= 0.001f;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)){
-			cameraPosition.y += 0.001f;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)){
-			cameraPosition.y -= 0.001f;
 		}
 		if(true){
 			// 0.0001f * (Mouse.getX() - Display.getWidth() / 2); z
 			//-0.0001f * (Mouse.getY() - Display.getHeight() / 2); x
-			angle -= 0.0001f * (Mouse.getX() - Display.getWidth() / 2);
-			lx = (float) Math.sin(angle);
-			lz = (float) -Math.cos(angle);
+			// Compute new orientation
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_R)){
-			cameraMatrix.setIdentity();
 		}
 		//out.println(cameraMatrix.toString());
 		

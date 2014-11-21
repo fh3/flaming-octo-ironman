@@ -36,6 +36,7 @@ public class EventBusService {
 		
 		//Loop through all the events in the loader and add them to the eventMap
 		Event event;	//Create a temporary reference for T instances
+		@SuppressWarnings("unchecked")
 		Iterator<Event> iterator = (Iterator<Event>) loader.iterator();	//Get a new Iterator from the loader
 		while(iterator.hasNext()){	//Loop through the iterator while there's still objects remaining
 			event = iterator.next();	//Set the temporary reference to the next T instance in the iterator
@@ -68,7 +69,7 @@ public class EventBusService {
 				//If the given method has the EventHandler annotation and the modifier isn't static
 				if(method.isAnnotationPresent(EventHandler.class) && !Modifier.isStatic(method.getModifiers())){
 					//If one of them is equal to the Event's class
-					if(event.getClass().getSimpleName().equals(method.getAnnotation(EventHandler.class).event())){
+					if(event.getName().equals(method.getAnnotation(EventHandler.class).event())){
 						//Subscribe to the event
 						event.subscribe(method, subscriber);
 					}
@@ -95,7 +96,7 @@ public class EventBusService {
 				//If the given method has the EventHandler annotation, and the object is static
 				if(method.isAnnotationPresent(EventHandler.class) && Modifier.isStatic(method.getModifiers())){
 					//If one of them is equal to the Event's class
-					if(event.getClass().getSimpleName().equals(method.getAnnotation(EventHandler.class).event())){
+					if(event.getName().equals(method.getAnnotation(EventHandler.class).event())){
 						//Subscribe to the event
 						event.subscribe(method, subscriber);
 					}

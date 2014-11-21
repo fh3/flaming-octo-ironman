@@ -17,12 +17,11 @@ public class CoreEventBusService extends EventBusService {
 	private static CoreEventBusService instance;
 	
 	/**
-	 * Creates a new instance, provides <code>EventBusService</code> with a new loaded <code>ServiceLoader&lt;CoreEvent&gt;</code>
+	 * Creates a new instance, provides <code>EventBusService</code> with a new loaded <code>ServiceLoader</code>
 	 */
 	private CoreEventBusService() {
-		super(ServiceLoader.load(CoreEvent.class));	//Call super with a new ServiceLoader<CoreEvent>
+		super(ServiceLoader.load(CoreEvent.class));	//Call super with a new ServiceLoader
 	}
-	
 	/**
 	 * Gets the instance of this class.
 	 * @return The sole instance of this class

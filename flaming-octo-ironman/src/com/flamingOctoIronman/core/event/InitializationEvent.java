@@ -21,6 +21,4 @@ public final class InitializationEvent extends CoreEvent {
 	public String getName() {
 		return InitializationEvent.class.getSimpleName();
 	}
-
-
 }

@@ -1,43 +1,48 @@
 FlamingOctoIronman has crashed!
 
 Reason for death: NORMAL
-Crash occurred at: 14/11/2014 22:25:17
+Crash occurred at: 21/11/2014 15:18:22
 Ticks passed since start: 0.0
-Max JVM memory: 3814064128
-Free memory: 242176648
-Used memory: 3571887480
+Max JVM memory: 1908932608
+Free memory: 115615976
+Used memory: 1793316632
 
 Stack traces: 
-Thread: Attach Listener
+Thread: DestroyJavaVM
+
+Thread: AppKit Thread
+
+Thread: AWT-Shutdown
+Class java.lang.Object Line -2: wait
+Class sun.awt.AWTAutoShutdown Line 315: run
+Class java.lang.Thread Line 745: run
 
 Thread: Reference Handler
 Class java.lang.Object Line -2: wait
 Class java.lang.Object Line 503: wait
-Class java.lang.ref.Reference$ReferenceHandler Line -1: run
+Class java.lang.ref.Reference$ReferenceHandler Line 133: run
 
 Thread: Signal Dispatcher
 
+Thread: Finalizer
+Class java.lang.Object Line -2: wait
+Class java.lang.ref.ReferenceQueue Line 135: remove
+Class java.lang.ref.ReferenceQueue Line 151: remove
+Class java.lang.ref.Finalizer$FinalizerThread Line 209: run
+
 Thread: Thread-0
 Class java.lang.Thread Line -2: dumpThreads
-Class java.lang.Thread Line -1: getAllStackTraces
+Class java.lang.Thread Line 1640: getAllStackTraces
 Class com.flamingOctoIronman.subsystem.debugging.CrashReport Line 32: <init>
 Class com.flamingOctoIronman.subsystem.debugging.DebuggingManager Line 50: shutDown
 Class sun.reflect.NativeMethodAccessorImpl Line -2: invoke0
-Class sun.reflect.NativeMethodAccessorImpl Line -1: invoke
-Class sun.reflect.DelegatingMethodAccessorImpl Line -1: invoke
-Class java.lang.reflect.Method Line -1: invoke
-Class com.flamingOctoIronman.framework.event.Event Line 70: publish
+Class sun.reflect.NativeMethodAccessorImpl Line 57: invoke
+Class sun.reflect.DelegatingMethodAccessorImpl Line 43: invoke
+Class java.lang.reflect.Method Line 606: invoke
+Class com.flamingOctoIronman.framework.event.Event Line 67: publish
 Class com.flamingOctoIronman.framework.event.EventBusService Line 118: publish
 Class com.flamingOctoIronman.FlamingOctoIronman Line 258: shutDown
 Class com.flamingOctoIronman.FlamingOctoIronman Line 87: startGame
 Class com.flamingOctoIronman.FlamingOctoIronman Line 303: run
-Class java.lang.Thread Line -1: run
-
-Thread: DestroyJavaVM
-
-Thread: Finalizer
-Class java.lang.Object Line -2: wait
-Class java.lang.ref.ReferenceQueue Line -1: remove
-Class java.lang.ref.ReferenceQueue Line -1: remove
-Class java.lang.ref.Finalizer$FinalizerThread Line -1: run
+Class java.lang.Thread Line 745: run
 
