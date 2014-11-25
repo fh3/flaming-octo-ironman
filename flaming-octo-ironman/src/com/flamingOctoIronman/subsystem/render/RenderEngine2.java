@@ -21,6 +21,7 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Quaternion;
 import org.lwjgl.util.vector.Vector3f;
 
 import com.flamingOctoIronman.DeathReason;
@@ -116,8 +117,17 @@ public class RenderEngine2{
 	private float[] cameraToClipMatrix = new float[16];
 	private int modelToCameraUniform;
 	private float[] modelToCameraMatrix = new float[16];
-	
+
 	//Camera data
+	private float xAngle = 0;
+	private float yAngle = 0;
+	private Quaternion xQ = createQuaternion(Vectors.j.vector(), xAngle);
+	private Quaternion yQ = createQuaternion(Vectors.i.vector(), yAngle);
+	private Vector3f cameraPosition = new Vector3f();
+	private Vector3f point = (Vector3f) Vectors.k.vector().scale(-1.0f);
+	private Vector3f forward = new Vector3f();
+	private Vector3f side = new Vector3f();
+	private Vector3f up = new Vector3f();
 	
 	private float frustumScale = calculateFrustumScale(90f);
 	
@@ -291,8 +301,10 @@ public class RenderEngine2{
 		if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)){
 		}
 		if(true){
-			// 0.0001f * (Mouse.getX() - Display.getWidth() / 2); z
-			//-0.0001f * (Mouse.getY() - Display.getHeight() / 2); x
+			xAngle = 0.0001f * (Mouse.getX() - Display.getWidth() / 2);
+			yAngle = -0.0001f * (Mouse.getY() - Display.getHeight() / 2);
+			xQ = createQuaternion(Vectors.j.vector(), xAngle);
+			yQ = createQuaternion(Vectors.i.vector(), yAngle);
 			// Compute new orientation
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_R)){
@@ -374,6 +386,39 @@ public class RenderEngine2{
 	 */
 	private static float calculateFrustumScale(float angle) {
 		return 1 / (float)Math.tan((angle * (float)Math.PI / 180) / 2f);
+	}
+	
+	public static Vector3f createVector(float x, float y, float z){
+		Vector3f v = new Vector3f();
+		v.x = x;
+		v.y = y;
+		v.z = z;
+		return v;
+	}
+	
+	public static Quaternion createQuaternion(Vector3f v, float angle){
+		Quaternion q = new Quaternion();
+		float halfAngle = angle / 2;
+		float cosineAngle = (float)Math.cos(halfAngle);
+		q.w = (float) Math.sin(halfAngle);
+		q.x = v.x * cosineAngle;
+		q.y = v.y * cosineAngle;
+		q.z = v.z * cosineAngle;
+		return q;
+	}
+
+	public static Matrix4f matrixFromQuaternion(Quaternion q){
+		Matrix4f m = new Matrix4f();
+		m.m00 = 1 - 2 * q.y * q.y - 2 * q.z * q.z;
+		m.m10 = 2 * q.x * q.y - 2 * q.z * q.w;
+		m.m20 = 2 * q.x * q.z + 2 * q.y * q.w;
+		m.m01 = 2 * q.x * q.y + 2 * q.z*q.w;
+		m.m11 = 1 - 2 * q.x * q.x - 2 * q.z * q.z;
+		m.m21 = 2 * q.y * q.z - 2 * q.x * q.w;
+		m.m02 = 2 * q.x * q.z - 2 * q.y * q.w;
+		m.m12 = 2 * q.y * q.z + 2 * q.x * q.w;
+		m.m22 = 1 - 2 * q.x * q.x - 2 * q.y * q.y;
+		return m;
 	}
 	
 	/**
