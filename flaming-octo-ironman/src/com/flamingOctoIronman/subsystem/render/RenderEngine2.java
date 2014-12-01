@@ -117,17 +117,18 @@ public class RenderEngine2{
 	private float[] cameraToClipMatrix = new float[16];
 	private int modelToCameraUniform;
 	private float[] modelToCameraMatrix = new float[16];
+	private int cameraMatrixUniform;
 
 	//Camera data
-	private float xAngle = 0;
-	private float yAngle = 0;
-	private Quaternion xQ = createQuaternion(Vectors.j.vector(), xAngle);
-	private Quaternion yQ = createQuaternion(Vectors.i.vector(), yAngle);
-	private Vector3f cameraPosition = new Vector3f();
-	private Vector3f point = (Vector3f) Vectors.k.vector().scale(-1.0f);
+	private float xAngle = (float) (3.14 / 2);
+	private float yAngle = (float) (3.14 / 2);
+	private float zAngle = 0;
 	private Vector3f forward = new Vector3f();
 	private Vector3f side = new Vector3f();
 	private Vector3f up = new Vector3f();
+	private Vector3f translate = new Vector3f();
+	private Matrix4f cameraMatrix = new Matrix4f();
+	private float speed = 10f;
 	
 	private float frustumScale = calculateFrustumScale(90f);
 	
@@ -186,6 +187,8 @@ public class RenderEngine2{
 		//Get uniforms
 		cameraToClipUniform = GL20.glGetUniformLocation(program.getProgram(), "cameraToClipMatrix");
 		modelToCameraUniform = GL20.glGetUniformLocation(program.getProgram(), "modelToCameraMatrix");
+		cameraMatrixUniform = GL20.glGetUniformLocation(program.getProgram(), "cameraMatrix");
+		out.println(cameraMatrixUniform);
 		
 		//Far and near positions
 		float zNear = 1.0f;
@@ -249,6 +252,7 @@ public class RenderEngine2{
 		program.startProgram();
 		
 		GL20.glUniformMatrix4(cameraToClipUniform, false, createFloatBuffer(cameraToClipMatrix));
+		GL20.glUniformMatrix4(cameraMatrixUniform, false, createFloatBuffer(cameraMatrix));
 		
 		GL11.glEnable(GL32.GL_DEPTH_CLAMP);
 				
@@ -286,8 +290,19 @@ public class RenderEngine2{
 		
 		//Update the display
 		Display.update();
-		
-		Vector3f translateVec;
+			
+		if(true){
+			xAngle = -0.001f * (Mouse.getY() - Display.getWidth() / 2);
+			yAngle = 0.001f * (Mouse.getX() - Display.getHeight() / 2);
+		}
+		//Calculate vectors
+		forward = createVector(xAngle, yAngle, zAngle);
+		forward.normalise();
+		Vector3f.cross(forward, createVector(0, 1, 0), side);
+		side.normalise();
+		Vector3f.cross(forward, side, up);
+		up.normalise();
+		cameraMatrix = createRotationMatrix(xAngle, yAngle, zAngle);
 		if(Keyboard.isKeyDown(Keyboard.KEY_W)){
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_S)){
@@ -300,13 +315,7 @@ public class RenderEngine2{
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)){
 		}
-		if(true){
-			xAngle = 0.0001f * (Mouse.getX() - Display.getWidth() / 2);
-			yAngle = -0.0001f * (Mouse.getY() - Display.getHeight() / 2);
-			xQ = createQuaternion(Vectors.j.vector(), xAngle);
-			yQ = createQuaternion(Vectors.i.vector(), yAngle);
-			// Compute new orientation
-		}
+
 		if(Keyboard.isKeyDown(Keyboard.KEY_R)){
 		}
 		//out.println(cameraMatrix.toString());
@@ -419,6 +428,44 @@ public class RenderEngine2{
 		m.m12 = 2 * q.y * q.z + 2 * q.x * q.w;
 		m.m22 = 1 - 2 * q.x * q.x - 2 * q.y * q.y;
 		return m;
+	}
+	
+	public static Matrix4f createRotationMatrix(Quaternion q){
+		return createRotationMatrix(q.x, q.y, q.z);
+	}
+	
+	public static Matrix4f createRotationMatrix(float x, float y, float z){
+		//Create the references
+		Matrix4f rx = new Matrix4f();
+		Matrix4f ry = new Matrix4f();
+		Matrix4f rz = new Matrix4f();
+		Matrix4f combined = new Matrix4f();
+		//Fill the 
+		//X matrix
+		rx.m00 = 1.0f;
+		rx.m11 = (float)Math.cos(x);
+		rx.m12 = (float) -Math.sin(x);
+		rx.m21 = (float) Math.sin(x);
+		rx.m22 = (float) Math.cos(x);
+		rx.m33 = 1.0f;
+		//Y matrix
+		ry.m00 = (float) Math.cos(y);
+		ry.m02 = (float) Math.sin(y);
+		ry.m11 = 1.0f;
+		ry.m20 = (float) -Math.sin(y);
+		ry.m22 = (float) Math.cos(y);
+		ry.m33 = 1.0f;
+		//Z matrix
+		rz.m00 = (float) Math.cos(z);
+		rz.m01 = (float) -Math.sin(z);
+		rz.m10 = (float) Math.sin(z);
+		rz.m11 = (float) Math.cos(z);
+		rz.m22 = 1.0f;
+		rz.m33 = 1.0f;
+		
+		Matrix4f.mul(rx, ry, combined);
+		Matrix4f.mul(combined, rz, combined);
+		return combined;
 	}
 	
 	/**
