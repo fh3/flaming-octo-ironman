@@ -11,6 +11,6 @@ uniform mat4 cameraMatrix;	//The cameras atomic transformation matrix
 
 void main()
 {	
-	gl_Position = cameraToClipMatrix * modelToCameraMatrix * cameraMatrix * position;
+	gl_Position = cameraToClipMatrix * modelToCameraMatrix * cameraMatrix* position;
 	theColor = color;
 }

@@ -33,6 +33,7 @@ import com.flamingOctoIronman.subsystem.resource.ResourceManager;
 
 public class RenderEngine2{
 	private int vbo;
+	private int vbo_root;
 	private ShaderProgram program;
 	
 	private static RenderEngine2 instance;
@@ -112,6 +113,33 @@ public class RenderEngine2{
 			0.0f, 1.0f, 1.0f, 1.0f
 			};
 	
+	private float[] root = {
+			0.0f, 0.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+			1.0f, 1.0f, 0.0f, 1.0f,
+			
+			0.0f, 0.0f, 0.0f, 1.0f,
+			0.0f, 1.0f, 0.0f, 1.0f,
+			1.0f, 1.0f, 0.0f, 1.0f,
+			
+			0.0f, 0.0f, 0.0f, 1.0f,
+			0.0f, 0.0f, 1.0f, 1.0f,
+			1.0f, 0.0f, 1.0f, 1.0f,
+			
+			1.0f, 0.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+			
+			0.0f, 1.0f, 0.0f, 1.0f,
+			0.0f, 1.0f, 0.0f, 1.0f,
+			0.0f, 1.0f, 0.0f, 1.0f,
+			
+			0.0f, 0.0f, 1.0f, 1.0f,
+			0.0f, 0.0f, 1.0f, 1.0f,
+			0.0f, 0.0f, 1.0f, 1.0f,
+			0.0f, 0.0f, 1.0f, 1.0f
+	};
+	
 	//Shader uniforms and data
 	private int cameraToClipUniform;
 	private float[] cameraToClipMatrix = new float[16];
@@ -129,6 +157,9 @@ public class RenderEngine2{
 	private Vector3f translate = new Vector3f();
 	private Matrix4f cameraMatrix = new Matrix4f();
 	private float speed = 10f;
+	private Matrix4f identityMatrix = newIdentityMatrix();
+	private Vector3f translateVector = new Vector3f();
+	private Vector3f lookVector = new Vector3f();
 	
 	private float frustumScale = calculateFrustumScale(90f);
 	
@@ -218,10 +249,15 @@ public class RenderEngine2{
 		program.stopProgram();
 		
 		//FloatBuffer tut02 =  createFloatBuffer(vertexData);
-		vbo = GL15.glGenBuffers();		
+		vbo = GL15.glGenBuffers();	
+		
+		vbo_root = GL15.glGenBuffers();
 		
 		//Setup the triangle to be rendered		
 		vbo = this.createVBO(createFloatBuffer(data), GL15.GL_ARRAY_BUFFER, GL15.GL_STATIC_DRAW);
+		
+		vbo_root = this.createVBO(createFloatBuffer(root), GL15.GL_ARRAY_BUFFER, GL15.GL_STATIC_DRAW);
+		
 		
 		//Create a Vertex Array Object
 		int VAO = GL30.glGenVertexArrays();
@@ -248,6 +284,8 @@ public class RenderEngine2{
 		//Clear the screen, color and depth buffer
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		
+		cameraMatrix = createAtomicTransformationMatrix(xAngle, yAngle, zAngle, translateVector);
+
 		//Run the shader program
 		program.startProgram();
 		
@@ -275,8 +313,27 @@ public class RenderEngine2{
 		//Unbind the buffer
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 		
+		//Prepare the VBO for drawing
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo_root);	//Bind the VBO
+		//Enable attributes
+		GL20.glEnableVertexAttribArray(0);	//Enable the attribute at location = 0 (position attribute)
+		GL20.glEnableVertexAttribArray(1);	//Enable the attribute at location = 1 (color attribute)
+		//Set attribute information
+		GL20.glVertexAttribPointer(0, 4, GL11.GL_FLOAT, false, 0, 0);	//Attrib 0 is a vec4
+		GL20.glVertexAttribPointer(1, 4, GL11.GL_FLOAT, false, 0, root.length * 2);	//Attrib 1 is a vec4, offset of data.length * 2
+		
+		//Draw the triangles
+		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 4);
+		
+		//Disable the attributes
+		GL20.glDisableVertexAttribArray(0);
+		GL20.glDisableVertexAttribArray(1);
+		
+		//Unbind the buffer
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+		
 		//Deselect the shader program
-		GL20.glUseProgram(0);
+		program.stopProgram();
 		
 		//Handle display resizing
 		if(Display.wasResized()){
@@ -302,20 +359,34 @@ public class RenderEngine2{
 		side.normalise();
 		Vector3f.cross(forward, side, up);
 		up.normalise();
-		cameraMatrix = createRotationMatrix(xAngle, yAngle, zAngle);
+		lookVector = new Vector3f();
 		if(Keyboard.isKeyDown(Keyboard.KEY_W)){
+			Vector3f.add((Vector3f) up.scale(-1), lookVector, lookVector);
 		}
-		if(Keyboard.isKeyDown(Keyboard.KEY_S)){
+		if(Keyboard.isKeyDown(Keyboard.KEY_S)){		
+			Vector3f.add(up, lookVector, lookVector);
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_A)){
+			Vector3f.add(side, lookVector, lookVector);
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_D)){
+			Vector3f.add((Vector3f) side.scale(-1), lookVector, lookVector);
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)){
+			Vector3f.add(forward, lookVector, lookVector);
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)){
+			Vector3f.add((Vector3f) forward.scale(-1), lookVector, lookVector);
 		}
-
+		try{
+			lookVector.normalise();
+		} catch(IllegalStateException e){
+			
+		}
+		lookVector.scale(0.1f);
+		Vector3f.add(lookVector, translateVector, translateVector);
+		out.println(translateVector.toString());
+		
 		if(Keyboard.isKeyDown(Keyboard.KEY_R)){
 		}
 		//out.println(cameraMatrix.toString());
@@ -430,11 +501,11 @@ public class RenderEngine2{
 		return m;
 	}
 	
-	public static Matrix4f createRotationMatrix(Quaternion q){
-		return createRotationMatrix(q.x, q.y, q.z);
+	public static Matrix4f createAtomicTransformationMatrix(Quaternion q, Vector3f translate){
+		return createAtomicTransformationMatrix(q.x, q.y, q.z, translate);
 	}
 	
-	public static Matrix4f createRotationMatrix(float x, float y, float z){
+	public static Matrix4f createAtomicTransformationMatrix(float x, float y, float z, Vector3f translate){
 		//Create the references
 		Matrix4f rx = new Matrix4f();
 		Matrix4f ry = new Matrix4f();
@@ -465,7 +536,18 @@ public class RenderEngine2{
 		
 		Matrix4f.mul(rx, ry, combined);
 		Matrix4f.mul(combined, rz, combined);
+		
+		//Setup combined
+		combined.m31 = translate.x;
+		combined.m32 = translate.y;
+		combined.m33 = translate.z;
 		return combined;
+	}
+	
+	public static Matrix4f newIdentityMatrix(){
+		Matrix4f m = new Matrix4f();
+		Matrix4f.setIdentity(m);
+		return m;		
 	}
 	
 	/**
