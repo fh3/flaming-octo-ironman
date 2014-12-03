@@ -147,9 +147,9 @@ public class RenderEngine2{
 	private int cameraMatrixUniform;
 
 	//Camera data
-	private float xAngle = 3.14f / 2;
-	private float yAngle = 0.001f;
-	private float zAngle = -3.14f / 2f;
+	private float xAngle = -3.14f / 2f;
+	private float yAngle = 0;
+	private float zAngle = 0;
 	private Vector3f forward = new Vector3f();
 	private Vector3f side = new Vector3f();
 	private Vector3f up = new Vector3f();
@@ -284,6 +284,7 @@ public class RenderEngine2{
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		
 		cameraMatrix = createAtomicTransformationMatrix(xAngle, yAngle, zAngle, translateVector);
+		out.println(cameraMatrix.toString());
 
 		//Run the shader program
 		program.startProgram();
@@ -350,37 +351,49 @@ public class RenderEngine2{
 		if(true){
 			//xAngle = -0.001f * (Display.getWidth() / 2 - Mouse.getY());
 			//yAngle = 0.001f * (Display.getHeight() / 2 - Mouse.getX());
-			out.println("X: " + Mouse.getX() + ", Y: " + Mouse.getY());
-			out.println(Display.getWidth() / 2);
-			out.println(Display.getHeight() / 2);
-			out.println(forward.toString());
+			//out.println("X: " + Mouse.getX() + ", Y: " + Mouse.getY());
+			//out.println(Display.getWidth() / 2);
+			//out.println(Display.getHeight() / 2);
+			//out.println(forward.toString());
 			//Mouse.setCursorPosition(Display.getWidth() / 2, Display.getHeight() / 2);
 		}
 		//Calculate vectors
 		forward = createVector(xAngle, yAngle, zAngle);
-		//forward.normalise();
+		forward.normalise();
 		Vector3f.cross(forward, createVector(0, 1, 0), side);
 		//side.normalise();
 		Vector3f.cross(forward, side, up);
 		//up.normalise();
 		lookVector = new Vector3f();
 		if(Keyboard.isKeyDown(Keyboard.KEY_W)){
-			Vector3f.add((Vector3f) up.scale(-1), lookVector, lookVector);
-		}
-		if(Keyboard.isKeyDown(Keyboard.KEY_S)){		
-			Vector3f.add(up, lookVector, lookVector);
-		}
-		if(Keyboard.isKeyDown(Keyboard.KEY_A)){
-			Vector3f.add(side, lookVector, lookVector);
-		}
-		if(Keyboard.isKeyDown(Keyboard.KEY_D)){
 			Vector3f.add((Vector3f) side.scale(-1), lookVector, lookVector);
 		}
-		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)){
+		if(Keyboard.isKeyDown(Keyboard.KEY_S)){		
+			Vector3f.add(side, lookVector, lookVector);
+		}
+		if(Keyboard.isKeyDown(Keyboard.KEY_A)){
+			Vector3f.add((Vector3f) forward.scale(-1), lookVector, lookVector);
+		}
+		if(Keyboard.isKeyDown(Keyboard.KEY_D)){
 			Vector3f.add(forward, lookVector, lookVector);
 		}
+		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)){
+			Vector3f.add((Vector3f) up.scale(-1), lookVector, lookVector);
+		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)){
-			Vector3f.add((Vector3f) forward.scale(-1), lookVector, lookVector);
+			Vector3f.add(up, lookVector, lookVector);
+		}
+		if(Keyboard.isKeyDown(Keyboard.KEY_LEFT)){
+			xAngle += 0.001f;
+		}
+		if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT)){
+			xAngle -= 0.001f;
+		}
+		if(Keyboard.isKeyDown(Keyboard.KEY_UP)){
+			yAngle += 0.001f;
+		}
+		if(Keyboard.isKeyDown(Keyboard.KEY_DOWN)){
+			yAngle -= 0.001f;
 		}
 		try{
 			lookVector.normalise();
@@ -389,9 +402,17 @@ public class RenderEngine2{
 		}
 		lookVector.scale(0.1f);
 		Vector3f.add(lookVector, translateVector, translateVector);
+		out.println("Look vector: " + lookVector.toString());
+		//out.println("Forward vector: " + forward.toString());
+		//out.println("Up vector: " + up.toString());
+		//out.println("Side vector: " + side.toString());
 		//out.println(translateVector.toString());
 		
 		if(Keyboard.isKeyDown(Keyboard.KEY_R)){
+			translateVector = new Vector3f();
+			xAngle = -3.14f / 2f;
+			yAngle = 0.0f;
+			zAngle = 0.0f;
 		}
 		//out.println(cameraMatrix.toString());
 		
@@ -505,11 +526,11 @@ public class RenderEngine2{
 		return m;
 	}
 	
-	public static Matrix4f createAtomicTransformationMatrix(Quaternion q, Vector3f translate){
+	public Matrix4f createAtomicTransformationMatrix(Quaternion q, Vector3f translate){
 		return createAtomicTransformationMatrix(q.x, q.y, q.z, translate);
 	}
 	
-	public static Matrix4f createAtomicTransformationMatrix(float x, float y, float z, Vector3f translate){
+	public Matrix4f createAtomicTransformationMatrix(float x, float y, float z, Vector3f translate){
 		//Create the references
 		Matrix4f rx = new Matrix4f();
 		Matrix4f ry = new Matrix4f();
@@ -519,21 +540,21 @@ public class RenderEngine2{
 		//X matrix
 		rx.m00 = 1.0f;
 		rx.m11 = (float)Math.cos(x);
-		rx.m12 = (float) -Math.sin(x);
-		rx.m21 = (float) Math.sin(x);
+		rx.m12 = (float) Math.sin(x);
+		rx.m21 = (float) -Math.sin(x);
 		rx.m22 = (float) Math.cos(x);
 		rx.m33 = 1.0f;
 		//Y matrix
 		ry.m00 = (float) Math.cos(y);
-		ry.m02 = (float) Math.sin(y);
+		ry.m02 = (float) -Math.sin(y);
 		ry.m11 = 1.0f;
-		ry.m20 = (float) -Math.sin(y);
+		ry.m20 = (float) Math.sin(y);
 		ry.m22 = (float) Math.cos(y);
 		ry.m33 = 1.0f;
 		//Z matrix
 		rz.m00 = (float) Math.cos(z);
-		rz.m01 = (float) -Math.sin(z);
-		rz.m10 = (float) Math.sin(z);
+		rz.m01 = (float) Math.sin(z);
+		rz.m10 = (float) -Math.sin(z);
 		rz.m11 = (float) Math.cos(z);
 		rz.m22 = 1.0f;
 		rz.m33 = 1.0f;
@@ -542,9 +563,12 @@ public class RenderEngine2{
 		Matrix4f.mul(combined, rz, combined);
 		
 		//Setup combined
-		combined.m31 = translate.x;
-		combined.m32 = translate.y;
-		combined.m33 = translate.z;
+		combined.m30 = translate.x;
+		combined.m31 = translate.y;
+		combined.m32 = translate.z;
+		out.println("rx: \n" + rx.toString());
+		out.println("ry: \n" + ry.toString());
+		out.println("rz: \n" + rz.toString());
 		return combined;
 	}
 	
