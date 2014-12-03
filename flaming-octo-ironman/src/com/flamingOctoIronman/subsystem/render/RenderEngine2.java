@@ -116,15 +116,15 @@ public class RenderEngine2{
 	private float[] root = {
 			0.0f, 0.0f, 0.0f, 1.0f,
 			1.0f, 0.0f, 0.0f, 1.0f,
-			1.0f, 1.0f, 0.0f, 1.0f,
+			1.0f, 0.1f, 0.0f, 1.0f,
 			
 			0.0f, 0.0f, 0.0f, 1.0f,
 			0.0f, 1.0f, 0.0f, 1.0f,
-			1.0f, 1.0f, 0.0f, 1.0f,
-			
+			0.1f, 1.0f, 0.0f, 1.0f,
+
 			0.0f, 0.0f, 0.0f, 1.0f,
 			0.0f, 0.0f, 1.0f, 1.0f,
-			1.0f, 0.0f, 1.0f, 1.0f,
+			0.1f, 0.0f, 1.0f, 1.0f,
 			
 			1.0f, 0.0f, 0.0f, 1.0f,
 			1.0f, 0.0f, 0.0f, 1.0f,
@@ -134,7 +134,6 @@ public class RenderEngine2{
 			0.0f, 1.0f, 0.0f, 1.0f,
 			0.0f, 1.0f, 0.0f, 1.0f,
 			
-			0.0f, 0.0f, 1.0f, 1.0f,
 			0.0f, 0.0f, 1.0f, 1.0f,
 			0.0f, 0.0f, 1.0f, 1.0f,
 			0.0f, 0.0f, 1.0f, 1.0f
@@ -148,9 +147,9 @@ public class RenderEngine2{
 	private int cameraMatrixUniform;
 
 	//Camera data
-	private float xAngle = (float) (3.14 / 2);
-	private float yAngle = (float) (3.14 / 2);
-	private float zAngle = 0;
+	private float xAngle = 3.14f / 2;
+	private float yAngle = 0.001f;
+	private float zAngle = -3.14f / 2f;
 	private Vector3f forward = new Vector3f();
 	private Vector3f side = new Vector3f();
 	private Vector3f up = new Vector3f();
@@ -264,7 +263,7 @@ public class RenderEngine2{
 		GL30.glBindVertexArray(VAO);
 		
 		//Setup culling
-		GL11.glEnable(GL11.GL_CULL_FACE);	//Enable culling
+		//GL11.glEnable(GL11.GL_CULL_FACE);	//Enable culling
 		GL11.glCullFace(GL11.GL_BACK);	//Set the face to cull as the back
 		GL11.glFrontFace(GL11.GL_CW);	//Set the front face as the points in counterclockwise direction
 		
@@ -323,7 +322,7 @@ public class RenderEngine2{
 		GL20.glVertexAttribPointer(1, 4, GL11.GL_FLOAT, false, 0, root.length * 2);	//Attrib 1 is a vec4, offset of data.length * 2
 		
 		//Draw the triangles
-		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 4);
+		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 18);
 		
 		//Disable the attributes
 		GL20.glDisableVertexAttribArray(0);
@@ -349,16 +348,21 @@ public class RenderEngine2{
 		Display.update();
 			
 		if(true){
-			xAngle = -0.001f * (Mouse.getY() - Display.getWidth() / 2);
-			yAngle = 0.001f * (Mouse.getX() - Display.getHeight() / 2);
+			//xAngle = -0.001f * (Display.getWidth() / 2 - Mouse.getY());
+			//yAngle = 0.001f * (Display.getHeight() / 2 - Mouse.getX());
+			out.println("X: " + Mouse.getX() + ", Y: " + Mouse.getY());
+			out.println(Display.getWidth() / 2);
+			out.println(Display.getHeight() / 2);
+			out.println(forward.toString());
+			//Mouse.setCursorPosition(Display.getWidth() / 2, Display.getHeight() / 2);
 		}
 		//Calculate vectors
 		forward = createVector(xAngle, yAngle, zAngle);
-		forward.normalise();
+		//forward.normalise();
 		Vector3f.cross(forward, createVector(0, 1, 0), side);
-		side.normalise();
+		//side.normalise();
 		Vector3f.cross(forward, side, up);
-		up.normalise();
+		//up.normalise();
 		lookVector = new Vector3f();
 		if(Keyboard.isKeyDown(Keyboard.KEY_W)){
 			Vector3f.add((Vector3f) up.scale(-1), lookVector, lookVector);
@@ -385,7 +389,7 @@ public class RenderEngine2{
 		}
 		lookVector.scale(0.1f);
 		Vector3f.add(lookVector, translateVector, translateVector);
-		out.println(translateVector.toString());
+		//out.println(translateVector.toString());
 		
 		if(Keyboard.isKeyDown(Keyboard.KEY_R)){
 		}
