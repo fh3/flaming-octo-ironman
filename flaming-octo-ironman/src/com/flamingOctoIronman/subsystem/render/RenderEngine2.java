@@ -25,6 +25,8 @@ import com.flamingOctoIronman.FlamingOctoIronman;
 import com.flamingOctoIronman.framework.event.EventHandler;
 import com.flamingOctoIronman.subsystem.debugging.DebuggingManager;
 import com.flamingOctoIronman.subsystem.debugging.StreamManager;
+import com.flamingOctoIronman.subsystem.render.primitives.Primitive;
+import com.flamingOctoIronman.subsystem.render.primitives.VisualObject;
 import com.flamingOctoIronman.subsystem.resource.ResourceManager;
 
 public class RenderEngine2{
@@ -109,30 +111,30 @@ public class RenderEngine2{
 			0.0f, 1.0f, 1.0f, 1.0f
 			};
 	
-	private float[] root = {
+	private float[] r2 = {
 			0.0f, 0.0f, 0.0f, 1.0f,
 			1.0f, 0.0f, 0.0f, 1.0f,
-			1.0f, 0.1f, 0.0f, 1.0f,
 			
 			0.0f, 0.0f, 0.0f, 1.0f,
 			0.0f, 1.0f, 0.0f, 1.0f,
-			0.1f, 1.0f, 0.0f, 1.0f,
-
+			
 			0.0f, 0.0f, 0.0f, 1.0f,
 			0.0f, 0.0f, 1.0f, 1.0f,
-			0.1f, 0.0f, 1.0f, 1.0f,
 			
-			1.0f, 0.0f, 0.0f, 1.0f,
 			1.0f, 0.0f, 0.0f, 1.0f,
 			1.0f, 0.0f, 0.0f, 1.0f,
 			
 			0.0f, 1.0f, 0.0f, 1.0f,
 			0.0f, 1.0f, 0.0f, 1.0f,
-			0.0f, 1.0f, 0.0f, 1.0f,
 			
-			0.0f, 0.0f, 1.0f, 1.0f,
 			0.0f, 0.0f, 1.0f, 1.0f,
 			0.0f, 0.0f, 1.0f, 1.0f
+	};
+	
+	private float[] center = {
+		 0.0f, 0.0f, 0.0f, 1.0f,
+		 
+		 1.0f, 1.0f, 1.0f, 1.0f
 	};
 	
 	//Shader uniforms and data
@@ -246,15 +248,19 @@ public class RenderEngine2{
 		program.stopProgram();
 		
 		//Setup the triangle to be rendered	
-		objectList.add(new VisualObject(data));
-		objectList.add(new VisualObject(root));
+		objectList.add(new Primitive(data, GL15.GL_ARRAY_BUFFER, GL11.GL_TRIANGLES));
+		//objectList.add(new VisualObject(root, GL11.GL_TRIANGLES));
+		GL11.glLineWidth(1.0f);
+		objectList.add(new Primitive(r2, GL15.GL_ARRAY_BUFFER, GL11.GL_LINES));
+		GL11.glPointSize(10.0f);
+		objectList.add(new Primitive(center, GL15.GL_ARRAY_BUFFER, GL11.GL_POINTS));
 		
 		//Create a Vertex Array Object
 		int VAO = GL30.glGenVertexArrays();
 		GL30.glBindVertexArray(VAO);
 		
 		//Setup culling
-		//GL11.glEnable(GL11.GL_CULL_FACE);	//Enable culling
+		GL11.glEnable(GL11.GL_CULL_FACE);	//Enable culling
 		GL11.glCullFace(GL11.GL_BACK);	//Set the face to cull as the back
 		GL11.glFrontFace(GL11.GL_CW);	//Set the front face as the points in counterclockwise direction
 		
@@ -284,26 +290,7 @@ public class RenderEngine2{
 		GL20.glUniformMatrix4(cameraMatrixUniform, false, createFloatBuffer(cameraMatrix));
 		
 		GL11.glEnable(GL32.GL_DEPTH_CLAMP);
-		/*
-		//Prepare the VBO for drawing
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo_root);	//Bind the VBO
-		//Enable attributes
-		GL20.glEnableVertexAttribArray(0);	//Enable the attribute at location = 0 (position attribute)
-		GL20.glEnableVertexAttribArray(1);	//Enable the attribute at location = 1 (color attribute)
-		//Set attribute information
-		GL20.glVertexAttribPointer(0, 4, GL11.GL_FLOAT, false, 0, 0);	//Attrib 0 is a vec4
-		GL20.glVertexAttribPointer(1, 4, GL11.GL_FLOAT, false, 0, root.length * 2);	//Attrib 1 is a vec4, offset of data.length * 2
-		
-		//Draw the triangles
-		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 18);
-		
-		//Disable the attributes
-		GL20.glDisableVertexAttribArray(0);
-		GL20.glDisableVertexAttribArray(1);
-		
-		//Unbind the buffer
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-		*/
+
 		for(int i = 0; i < objectList.size(); i++){
 			objectList.get(i).renderObject();
 		}
