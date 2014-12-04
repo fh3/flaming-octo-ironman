@@ -151,10 +151,7 @@ public class RenderEngine2{
 	private Vector3f forward = new Vector3f();
 	private Vector3f side = new Vector3f();
 	private Vector3f up = new Vector3f();
-	private Vector3f translate = new Vector3f();
 	private Matrix4f cameraMatrix = new Matrix4f();
-	private float speed = 10f;
-	private Matrix4f identityMatrix = newIdentityMatrix();
 	private Vector3f translateVector = new Vector3f();
 	private Vector3f lookVector = new Vector3f();
 	
@@ -204,6 +201,8 @@ public class RenderEngine2{
 	@EventHandler(event = "StartUpEvent")
 	public void InitializeVertexBuffer(){
 		out = ((DebuggingManager) FlamingOctoIronman.getInstance().getCoreManager(DebuggingManager.class.getSimpleName())).getStreamManager();
+		
+		float[] f = OBJLoader.loadOBJ(ResourceManager.getFileDir("objects/testing/test.obj"));
 		
 		//Clearing the screen
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);	//Set the color that will be used when clearing the screen
@@ -344,16 +343,16 @@ public class RenderEngine2{
 			Vector3f.add(up, lookVector, lookVector);
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_LEFT)){
-			zAngle -= 0.001f;
+			zAngle -= 0.01f;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT)){
-			zAngle += 0.001f;
+			zAngle += 0.01f;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_UP)){
-			xAngle += 0.001f;
+			xAngle += 0.01f;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_DOWN)){
-			xAngle -= 0.001f;
+			xAngle -= 0.01f;
 		}
 		try{
 			lookVector.normalise();
