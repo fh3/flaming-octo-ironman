@@ -218,7 +218,6 @@ public class RenderEngine2{
 		cameraToClipUniform = GL20.glGetUniformLocation(program.getProgram(), "cameraToClipMatrix");
 		modelToCameraUniform = GL20.glGetUniformLocation(program.getProgram(), "modelToCameraMatrix");
 		cameraMatrixUniform = GL20.glGetUniformLocation(program.getProgram(), "cameraMatrix");
-		out.println(cameraMatrixUniform);
 		
 		//Far and near positions
 		float zNear = 1.0f;
@@ -249,7 +248,6 @@ public class RenderEngine2{
 		
 		//Setup the triangle to be rendered	
 		objectList.add(new Primitive(data, GL15.GL_ARRAY_BUFFER, GL11.GL_TRIANGLES));
-		//objectList.add(new VisualObject(root, GL11.GL_TRIANGLES));
 		GL11.glLineWidth(1.0f);
 		objectList.add(new Primitive(r2, GL15.GL_ARRAY_BUFFER, GL11.GL_LINES));
 		GL11.glPointSize(10.0f);
@@ -281,7 +279,6 @@ public class RenderEngine2{
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		
 		cameraMatrix = createAtomicTransformationMatrix(xAngle, yAngle, zAngle, translateVector);
-		out.println(cameraMatrix.toString());
 
 		//Run the shader program
 		program.startProgram();
@@ -365,11 +362,6 @@ public class RenderEngine2{
 		}
 		lookVector.scale(0.1f);
 		Vector3f.add(lookVector, translateVector, translateVector);
-		out.println("Look vector: " + lookVector.toString());
-		//out.println("Forward vector: " + forward.toString());
-		//out.println("Up vector: " + up.toString());
-		//out.println("Side vector: " + side.toString());
-		//out.println(translateVector.toString());
 		
 		if(Keyboard.isKeyDown(Keyboard.KEY_R)){
 			translateVector = new Vector3f();
@@ -377,10 +369,6 @@ public class RenderEngine2{
 			yAngle = 0.0f;
 			zAngle = 0.0f;
 		}
-		//out.println(cameraMatrix.toString());
-		
-		//out.println();
-		//out.println(Mouse.getY() - Display.getHeight() / 2);
 	}
 	
 	public void resizeDisplay(){
@@ -499,9 +487,6 @@ public class RenderEngine2{
 		combined.m30 = translate.x;
 		combined.m31 = translate.y;
 		combined.m32 = translate.z;
-		out.println("rx: \n" + rx.toString());
-		out.println("ry: \n" + ry.toString());
-		out.println("rz: \n" + rz.toString());
 		return combined;
 	}
 	
