@@ -1,11 +1,7 @@
 package com.flamingOctoIronman.subsystem.render;
 
-import java.nio.Buffer;
-import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.nio.ShortBuffer;
+import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
@@ -32,11 +28,11 @@ import com.flamingOctoIronman.subsystem.debugging.StreamManager;
 import com.flamingOctoIronman.subsystem.resource.ResourceManager;
 
 public class RenderEngine2{
-	private int vbo;
-	private int vbo_root;
 	private ShaderProgram program;
 	
 	private static RenderEngine2 instance;
+	
+	private ArrayList<VisualObject> objectList;
 	
 	private final float[] data = {
 			0.25f, 0.25f, -1.25f, 1.0f,
@@ -195,6 +191,8 @@ public class RenderEngine2{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+        
+        objectList = new ArrayList<VisualObject>();
 	}
 	
 	/**
@@ -247,16 +245,9 @@ public class RenderEngine2{
 		//Stop the program
 		program.stopProgram();
 		
-		//FloatBuffer tut02 =  createFloatBuffer(vertexData);
-		vbo = GL15.glGenBuffers();	
-		
-		vbo_root = GL15.glGenBuffers();
-		
-		//Setup the triangle to be rendered		
-		vbo = this.createVBO(createFloatBuffer(data), GL15.GL_ARRAY_BUFFER, GL15.GL_STATIC_DRAW);
-		
-		vbo_root = this.createVBO(createFloatBuffer(root), GL15.GL_ARRAY_BUFFER, GL15.GL_STATIC_DRAW);
-		
+		//Setup the triangle to be rendered	
+		objectList.add(new VisualObject(data));
+		objectList.add(new VisualObject(root));
 		
 		//Create a Vertex Array Object
 		int VAO = GL30.glGenVertexArrays();
@@ -293,26 +284,7 @@ public class RenderEngine2{
 		GL20.glUniformMatrix4(cameraMatrixUniform, false, createFloatBuffer(cameraMatrix));
 		
 		GL11.glEnable(GL32.GL_DEPTH_CLAMP);
-				
-		//Prepare the VBO for drawing
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);	//Bind the VBO
-		//Enable attributes
-		GL20.glEnableVertexAttribArray(0);	//Enable the attribute at location = 0 (position attribute)
-		GL20.glEnableVertexAttribArray(1);	//Enable the attribute at location = 1 (color attribute)
-		//Set attribute information
-		GL20.glVertexAttribPointer(0, 4, GL11.GL_FLOAT, false, 0, 0);	//Attrib 0 is a vec4
-		GL20.glVertexAttribPointer(1, 4, GL11.GL_FLOAT, false, 0, data.length * 2);	//Attrib 1 is a vec4, offset of data.length * 2
-		
-		//Draw the triangles
-		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 36);
-		
-		//Disable the attributes
-		GL20.glDisableVertexAttribArray(0);
-		GL20.glDisableVertexAttribArray(1);
-		
-		//Unbind the buffer
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-		
+		/*
 		//Prepare the VBO for drawing
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo_root);	//Bind the VBO
 		//Enable attributes
@@ -331,6 +303,10 @@ public class RenderEngine2{
 		
 		//Unbind the buffer
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+		*/
+		for(int i = 0; i < objectList.size(); i++){
+			objectList.get(i).renderObject();
+		}
 		
 		//Deselect the shader program
 		program.stopProgram();
@@ -384,16 +360,16 @@ public class RenderEngine2{
 			Vector3f.add(up, lookVector, lookVector);
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_LEFT)){
-			xAngle += 0.001f;
+			zAngle -= 0.001f;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT)){
-			xAngle -= 0.001f;
+			zAngle += 0.001f;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_UP)){
-			yAngle += 0.001f;
+			xAngle += 0.001f;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_DOWN)){
-			yAngle -= 0.001f;
+			xAngle -= 0.001f;
 		}
 		try{
 			lookVector.normalise();
@@ -452,37 +428,7 @@ public class RenderEngine2{
 	}
 	
 	//TODO class names are weird, may need to edit switch statement
-	public int createVBO(Buffer buffer, int bufferType, int usage){
-		int vbo = GL15.glGenBuffers();	//Gen the vertex buffer object
-		GL15.glBindBuffer(bufferType, vbo);	//Bind the buffer
-		switch(buffer.getClass().getName()){
-			case "java.nio.ByteBuffer":
-				GL15.glBufferData(bufferType, (ByteBuffer)buffer, usage);	//Add the data to the buffer
-				break;
-			case "java.nio.ShortBuffer":
-				GL15.glBufferData(bufferType, (ShortBuffer)buffer, usage);	//Add the data to the buffer
-				break;
-			case "java.nio.IntBuffer":
-				GL15.glBufferData(bufferType, (IntBuffer)buffer, usage);	//Add the data to the buffer
-				break;
-			//case "java.nio.LongBuffer":		Apparently this isn't supported
-			//	GL15.glBufferData(bufferType, (LongBuffer)buffer, usage);	//Add the data to the buffer
-			//	break;
-			case "java.nio.DirectFloatBufferU":
-				GL15.glBufferData(bufferType, (FloatBuffer)buffer, usage);	//Add the data to the buffer
-				break;
-			case "java.nio.DoubleBuffer":
-				GL15.glBufferData(bufferType, (DoubleBuffer)buffer, usage);	//Add the data to the buffer
-				break;
-			default:
-				return -1;	//Return an error code
-		
-		}
-		
-		GL15.glBindBuffer(bufferType, 0);	//Unbind the buffer
-		
-		return vbo;	//Return the VBO
-	}
+
 		
 	/**
 	 * Calculates the Frustrum scale from a given angle
