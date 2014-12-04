@@ -13,11 +13,17 @@ import org.lwjgl.opengl.GL20;
 
 public class VisualObject {
 	private float[] verticies;
+	private float[] indicies;
 	private int vbo = -1;
 	
 	public VisualObject(float[] verticies){
 		this.verticies = verticies;
 		this.vbo = createVBO(RenderEngine2.createFloatBuffer(this.verticies), GL15.GL_ARRAY_BUFFER, GL15.GL_STATIC_DRAW);
+	}
+	
+	public VisualObject(float[] verticies, float[] indicies){
+		this.verticies = verticies;
+		this.indicies = indicies;
 	}
 	
 	public int getVBO(){
