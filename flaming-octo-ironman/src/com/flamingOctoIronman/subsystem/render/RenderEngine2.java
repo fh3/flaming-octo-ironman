@@ -192,6 +192,7 @@ public class RenderEngine2{
 		}
         
         objectList = new ArrayList<VisualObject>();
+        
 	}
 	
 	/**
@@ -201,9 +202,8 @@ public class RenderEngine2{
 	@EventHandler(event = "StartUpEvent")
 	public void InitializeVertexBuffer(){
 		out = ((DebuggingManager) FlamingOctoIronman.getInstance().getCoreManager(DebuggingManager.class.getSimpleName())).getStreamManager();
-		
-		float[] f = OBJLoader.loadOBJ(ResourceManager.getFileDir("objects/testing/test.obj"));
-		
+				
+		float[] f = OBJLoader.loadVerticies(ResourceManager.getFileDir("objects/testing/test.obj"));
 		//Clearing the screen
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);	//Set the color that will be used when clearing the screen
 		

@@ -20,6 +20,8 @@ public abstract class VisualObject {
 		return vbo;
 	}
 	
+	public abstract void initializeObject();
+	
 	public abstract void renderObject();
 	
 	public static int createVBO(Buffer buffer, int bufferType, int usage){

@@ -115,7 +115,7 @@ public class FlamingOctoIronman implements Runnable{
 	 */
 	private void preinit(){
 		streamManager = new StreamManager();	//Create a new StreamManager object
-		streamManager.addStreamToOutput(ResourceManager.getPrintStream("logs/log_" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ".txt"));	//I can access ResourceManager here because the method is static, which doesn't require the manager to be initialized for me to use it
+		streamManager.addStreamToOutput(ResourceManager.getPrintStream("logs/log_" + new SimpleDateFormat("yyyy-MM-dd HH-mm-ss").format(new Date()) + ".txt"));	//I can access ResourceManager here because the method is static, which doesn't require the manager to be initialized for me to use it
 		
 		streamManager.println("Starting the game");
 		
