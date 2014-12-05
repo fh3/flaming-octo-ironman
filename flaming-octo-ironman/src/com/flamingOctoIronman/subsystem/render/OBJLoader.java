@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL15;
 
 import com.flamingOctoIronman.subsystem.render.primitives.Primitive;
 import com.flamingOctoIronman.subsystem.resource.ResourceManager;
@@ -13,59 +12,71 @@ public class OBJLoader {
 	public static float[] loadVerticies(String toLoad){
 		String[] lines = toLoad.split("\n");
 		String[][] objData = new String[lines.length][]; 
-		ArrayList<Float> verticies = new ArrayList<Float>();
-		float[] returnArray;
+		float[] verticies;
+		int count = 0;
+		//ArrayList<Float> verticies = new ArrayList<Float>();
 		for(int i = 0; i < lines.length; i++){
 			objData[i] = lines[i].split(" ");
 		}
 		for(int i = 0; i < objData.length; i++){
 			if(objData[i][0].equals("v")){
-				verticies.add(Float.parseFloat(objData[i][1]));
-				verticies.add(Float.parseFloat(objData[i][2]));
-				verticies.add(Float.parseFloat(objData[i][3]));
-				verticies.add(1.0f);					
+				count += 4;					
 			}
-		}		
-		returnArray = new float[verticies.size() * 2];
-		for(int i = 0; i < verticies.size(); i++){
-			returnArray[i] = verticies.get(i);
 		}
-		for(int i = verticies.size(); i < verticies.size() * 2; i++){
-			returnArray[i] = 1.0f;
+		verticies = new float[count];
+		int next = 0;
+		for(int i = 0; i < objData.length; i++){
+			if(objData[i][0].equals("v")){
+				verticies[next++] = Float.parseFloat(objData[i][1]);
+				verticies[next++] = Float.parseFloat(objData[i][2]);
+				verticies[next++] = Float.parseFloat(objData[i][3]);
+				verticies[next++] = 1.0f;					
+			}
 		}
-		return returnArray;
+		return verticies;
 	}
 	
-	public static float[] loadIndicies(String toLoad){
+	public static int[] loadIndicies(String toLoad){
 		String[] lines = toLoad.split("\n");
 		String[][] objData = new String[lines.length][];
-		ArrayList<Float> indicies = new ArrayList<Float>();
-		float[] returnArray;
+		int[] indicies;
+		int count = 0;
 		for(int i = 0; i < lines.length; i++){
 			objData[i] = lines[i].split(" ");
 		}
 		for(int i = 0; i < objData.length; i++){
 			if(objData[i][0].equals("f")){
-				indicies.add(Float.parseFloat(objData[i][1]) - 1);			
-				indicies.add(Float.parseFloat(objData[i][2]) - 1);	
-				indicies.add(Float.parseFloat(objData[i][3]) - 1);	
-				
-				indicies.add(Float.parseFloat(objData[i][2]) - 1);	
-				indicies.add(Float.parseFloat(objData[i][3]) - 1);	
-				indicies.add(Float.parseFloat(objData[i][4]) - 1);	
+				count += 3;
 			}
 		}
-		returnArray = new float[indicies.size()];
-		for(int i = 0; i < indicies.size(); i++){
-			returnArray[i] = indicies.get(i);
+		indicies = new int[count];
+		int next = 0;
+		for(int i = 0; i < objData.length; i++){
+			if(objData[i][0].equals("f")){
+				indicies[next++] = Integer.parseInt(objData[i][1]);			
+				indicies[next++] = Integer.parseInt(objData[i][2]);	
+				indicies[next++] = Integer.parseInt(objData[i][3]);
+			}
 		}
-		return returnArray;
+		return indicies;
 	}
 	
 	public static Primitive loadObject(File toLoad){
 		String objectString = ResourceManager.ReadFile(toLoad);
-		float [] verticies = loadVerticies(objectString);
-		float [] indices = loadIndicies(objectString);
-		return new Primitive(verticies, indices, GL15.GL_ELEMENT_ARRAY_BUFFER, GL11.GL_TRIANGLES);
+		float[] verticies = loadVerticies(objectString);
+		int[] indicies = loadIndicies(objectString);
+		float[] objectBuffer = new float[indicies.length * 4 * 2];
+		
+		for(int i = 0; i < indicies.length; i++){
+			objectBuffer[(i * 4) + 0] = verticies[(indicies[i] - 1) * 4 + 0];
+			objectBuffer[(i * 4) + 1] = -verticies[(indicies[i] - 1) * 4 + 2];
+			objectBuffer[(i * 4) + 2] = verticies[(indicies[i] - 1) * 4 + 1];
+			objectBuffer[(i * 4) + 3] = 1.0f;
+		}
+		
+		for(int i = objectBuffer.length / 2; i < objectBuffer.length; i++){
+			objectBuffer[i] = 0.5f;
+		}
+		return new Primitive(objectBuffer, GL11.GL_TRIANGLES);
 	}
 }

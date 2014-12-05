@@ -203,7 +203,6 @@ public class RenderEngine2{
 	public void InitializeVertexBuffer(){
 		out = ((DebuggingManager) FlamingOctoIronman.getInstance().getCoreManager(DebuggingManager.class.getSimpleName())).getStreamManager();
 				
-		float[] f = OBJLoader.loadVerticies(ResourceManager.getFileDir("objects/testing/test.obj"));
 		//Clearing the screen
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);	//Set the color that will be used when clearing the screen
 		
@@ -246,11 +245,11 @@ public class RenderEngine2{
 		program.stopProgram();
 		
 		//Setup the triangle to be rendered	
-		objectList.add(new Primitive(data, GL15.GL_ARRAY_BUFFER, GL11.GL_TRIANGLES));
+		objectList.add(OBJLoader.loadObject(ResourceManager.getFileDir("objects/testing/test.obj")));
 		GL11.glLineWidth(1.0f);
-		objectList.add(new Primitive(r2, GL15.GL_ARRAY_BUFFER, GL11.GL_LINES));
+		objectList.add(new Primitive(r2, GL11.GL_LINES));
 		GL11.glPointSize(10.0f);
-		objectList.add(new Primitive(center, GL15.GL_ARRAY_BUFFER, GL11.GL_POINTS));
+		//objectList.add(new Primitive(center, GL15.GL_ARRAY_BUFFER, GL11.GL_POINTS));
 		
 		//Create a Vertex Array Object
 		int VAO = GL30.glGenVertexArrays();

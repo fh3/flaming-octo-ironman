@@ -20,9 +20,16 @@ public abstract class VisualObject {
 		return vbo;
 	}
 	
-	public abstract void initializeObject();
+	public void bindVBO(){
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
+	}
+	
+	public void unbindVBO(){
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+	}
 	
 	public abstract void renderObject();
+	
 	
 	public static int createVBO(Buffer buffer, int bufferType, int usage){
 		int vbo = GL15.glGenBuffers();	//Gen the vertex buffer object
