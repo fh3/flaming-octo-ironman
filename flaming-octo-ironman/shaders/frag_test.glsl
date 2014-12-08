@@ -1,10 +1,12 @@
 #version 330
 
-smooth in vec4 theColor;	//New input variable, mast have same name
+in vec2 UV;	//Texture location input variable
 
-out vec4 outputColor;	//Default out variable
+out vec3 outputColor;	//Fragment color output
+
+uniform sampler2D myTextureSampler;	//Texture to use
 
 void main()
 {
-	outputColor = theColor;
+	outputColor = texture(myTextureSampler, UV).rgb;
 }

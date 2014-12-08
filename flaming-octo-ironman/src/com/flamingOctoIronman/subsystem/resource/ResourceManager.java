@@ -2,6 +2,7 @@ package com.flamingOctoIronman.subsystem.resource;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -25,18 +26,6 @@ import com.flamingOctoIronman.framework.event.EventHandler;
 public class ResourceManager extends CoreManager{
 	private static String classDir = System.getProperty("java.class.path").substring(0, System.getProperty("java.class.path").indexOf("bin"));
 	public ResourceManager(){
-		
-	}
-	
-	/**
-	 * This method runs whatever needs to be run at the initialization stage of the game's life.
-	 */
-	@EventHandler(event = "InitializationEvent")
-	public void initialization() {
-		
-	}
-	@EventHandler(event = "StartUpEvent")
-	public void startUpEvent(){
 		
 	}
 	
@@ -131,9 +120,22 @@ public class ResourceManager extends CoreManager{
 				toReturn = toReturn + "\n" + line;
 			}
 		} catch (IOException e) {
+			e.printStackTrace();
 			FlamingOctoIronman.getInstance().stopGame(DeathReason.EXCEPTION);
 		}
 		return toReturn;
+	}
+	
+	public static FileInputStream getFileInputStream(File location){
+		FileInputStream inputStream = null;
+		try{
+			inputStream = new FileInputStream(location);
+		} catch(IOException e){
+			e.printStackTrace();
+			FlamingOctoIronman.getInstance().stopGame(DeathReason.EXCEPTION);
+		}
+		
+		return inputStream;
 	}
 
 }

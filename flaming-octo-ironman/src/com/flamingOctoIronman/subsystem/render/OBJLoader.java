@@ -1,7 +1,6 @@
 package com.flamingOctoIronman.subsystem.render;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import org.lwjgl.opengl.GL11;
 
@@ -13,24 +12,38 @@ public class OBJLoader {
 		String[] lines = toLoad.split("\n");
 		String[][] objData = new String[lines.length][]; 
 		float[] verticies;
-		int count = 0;
+		float[] uvVerticies;
+		int vertexCount = 0;
+		int uvCount = 0;
+		boolean usesMTL = false;
 		//ArrayList<Float> verticies = new ArrayList<Float>();
 		for(int i = 0; i < lines.length; i++){
 			objData[i] = lines[i].split(" ");
 		}
 		for(int i = 0; i < objData.length; i++){
 			if(objData[i][0].equals("v")){
-				count += 4;					
+				vertexCount += 4;					
+			}
+			if(objData[i][0].equals("mtllib")){
+				usesMTL = true;
+			}
+			if(objData[i][0].equals("vt")){
+				uvCount += 2;					
 			}
 		}
-		verticies = new float[count];
+		verticies = new float[vertexCount];
+		uvVerticies = new float[uvCount];
 		int next = 0;
-		for(int i = 0; i < objData.length; i++){
-			if(objData[i][0].equals("v")){
-				verticies[next++] = Float.parseFloat(objData[i][1]);
-				verticies[next++] = Float.parseFloat(objData[i][2]);
-				verticies[next++] = Float.parseFloat(objData[i][3]);
-				verticies[next++] = 1.0f;					
+		if(usesMTL){
+			
+		} else{
+			for(int i = 0; i < objData.length; i++){
+				if(objData[i][0].equals("v")){
+					verticies[next++] = Float.parseFloat(objData[i][1]);
+					verticies[next++] = Float.parseFloat(objData[i][2]);
+					verticies[next++] = Float.parseFloat(objData[i][3]);
+					verticies[next++] = 1.0f;					
+				}
 			}
 		}
 		return verticies;

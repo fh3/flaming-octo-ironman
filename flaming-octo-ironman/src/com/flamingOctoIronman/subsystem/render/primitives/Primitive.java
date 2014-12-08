@@ -5,7 +5,7 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-import com.flamingOctoIronman.subsystem.render.RenderEngine2;
+import com.flamingOctoIronman.subsystem.resource.BufferBuilder;
 
 public class Primitive extends VisualObject {
 	private final int verticiesLength;
@@ -13,7 +13,7 @@ public class Primitive extends VisualObject {
 	private static int VAO;
 	
 	public Primitive(float[] buffer, int GL_PRIMITIVE_TYPE) {
-		super(VisualObject.createVBO(RenderEngine2.createFloatBuffer(buffer), GL15.GL_ARRAY_BUFFER, GL15.GL_STATIC_DRAW));
+		super(VisualObject.createVBO(BufferBuilder.createFloatBuffer(buffer), GL15.GL_ARRAY_BUFFER, GL15.GL_STATIC_DRAW));
 		this.verticiesLength = buffer.length;
 		this.GL_PRIMITIVE_TYPE = GL_PRIMITIVE_TYPE;
 	}

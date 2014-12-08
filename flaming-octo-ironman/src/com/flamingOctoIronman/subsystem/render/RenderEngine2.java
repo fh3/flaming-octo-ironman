@@ -26,7 +26,9 @@ import com.flamingOctoIronman.framework.event.EventHandler;
 import com.flamingOctoIronman.subsystem.debugging.DebuggingManager;
 import com.flamingOctoIronman.subsystem.debugging.StreamManager;
 import com.flamingOctoIronman.subsystem.render.primitives.Primitive;
+import com.flamingOctoIronman.subsystem.render.primitives.Texture;
 import com.flamingOctoIronman.subsystem.render.primitives.VisualObject;
+import com.flamingOctoIronman.subsystem.resource.BufferBuilder;
 import com.flamingOctoIronman.subsystem.resource.ResourceManager;
 
 public class RenderEngine2{
@@ -238,8 +240,8 @@ public class RenderEngine2{
 		program.startProgram();
 		
 		//Putting data into the shaders
-		GL20.glUniformMatrix4(cameraToClipUniform, false, createFloatBuffer(cameraToClipMatrix));
-		GL20.glUniformMatrix4(modelToCameraUniform, false, createFloatBuffer(modelToCameraMatrix));
+		GL20.glUniformMatrix4(cameraToClipUniform, false, BufferBuilder.createFloatBuffer(cameraToClipMatrix));
+		GL20.glUniformMatrix4(modelToCameraUniform, false, BufferBuilder.createFloatBuffer(modelToCameraMatrix));
 		
 		//Stop the program
 		program.stopProgram();
@@ -266,6 +268,8 @@ public class RenderEngine2{
 		GL11.glDepthFunc(GL11.GL_LEQUAL);
 		GL11.glDepthRange(0.0f, 1.0f);
 		
+		Texture t = BMPLoader.loadBMP(ResourceManager.getFileDir("textures/test2.bmp"));
+		
 	}
 	
 	/**
@@ -281,8 +285,8 @@ public class RenderEngine2{
 		//Run the shader program
 		program.startProgram();
 		
-		GL20.glUniformMatrix4(cameraToClipUniform, false, createFloatBuffer(cameraToClipMatrix));
-		GL20.glUniformMatrix4(cameraMatrixUniform, false, createFloatBuffer(cameraMatrix));
+		GL20.glUniformMatrix4(cameraToClipUniform, false, BufferBuilder.createFloatBuffer(cameraToClipMatrix));
+		GL20.glUniformMatrix4(cameraMatrixUniform, false, BufferBuilder.createFloatBuffer(cameraMatrix));
 		
 		GL11.glEnable(GL32.GL_DEPTH_CLAMP);
 
@@ -373,32 +377,10 @@ public class RenderEngine2{
 		GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());	//Change the viewport size to the current window size
 		cameraToClipMatrix[0] = frustumScale / ((float)Display.getWidth() / Display.getHeight());	//Adjust the perspective matrix
 		program.startProgram();	//Run the program
-		GL20.glUniformMatrix4(cameraToClipUniform, false, createFloatBuffer(cameraToClipMatrix));	//Update the perspective matrix in the VRAM
+		GL20.glUniformMatrix4(cameraToClipUniform, false, BufferBuilder.createFloatBuffer(cameraToClipMatrix));	//Update the perspective matrix in the VRAM
 		program.stopProgram();	//Stop the program
 	}
-	
-	/**
-	 * Create a new <code>FloatBuffer</code> from a list of vertices
-	 * @param vertices	The list of points to create the buffer from
-	 * @return	A <code>FloatBuffer</code> created from the input points
-	 */
-	public static FloatBuffer createFloatBuffer(float[] vertices){
-		return (FloatBuffer)BufferUtils.createFloatBuffer(vertices.length).put(vertices).flip();	//Create a float buffer, put data into it, flip it, return it
-	}
-	
-	public static FloatBuffer createFloatBuffer(Matrix4f matrix){
-		FloatBuffer buffer = BufferUtils.createFloatBuffer(16);	//Create the buffer
-		matrix.store(buffer);	//Store the matrix in it
-		buffer.flip();		//Flip the buffer
-		return buffer;	//Return the buffer
-	}
-	
-	public static FloatBuffer createFloatBuffer(Vector3f vector){
-		FloatBuffer buffer = BufferUtils.createFloatBuffer(3);
-		vector.store(buffer);
-		buffer.flip();
-		return buffer;
-	}
+
 	
 	//TODO class names are weird, may need to edit switch statement
 
