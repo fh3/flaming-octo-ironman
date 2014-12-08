@@ -2,6 +2,7 @@ package com.flamingOctoIronman.subsystem.render.primitives;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL20;
 
 import com.flamingOctoIronman.subsystem.resource.BufferBuilder;
 
@@ -11,6 +12,7 @@ public class Texture {
 	private int width;
 	private int height;
 	private int textureID;
+	private static int textureSamplerUniform = -1;
 	
 	public Texture(byte data[], int size, int width, int height){
 		this.data = data;
@@ -39,5 +41,13 @@ public class Texture {
 	
 	public int getHeight(){
 		return height;
+	}
+	
+	public void glSelectTexture(){
+		GL20.glUniform1i(textureSamplerUniform, textureID);
+	}
+	
+	public static void setTextureUniform(int textureSamplerUniform){
+		Texture.textureSamplerUniform = textureSamplerUniform;
 	}
 }
