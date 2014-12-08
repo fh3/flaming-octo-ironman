@@ -52,4 +52,6 @@ public class Car {
 	public void accelerate(int amount){
 		System.out.println(amount);
 	}
+	
 }
+

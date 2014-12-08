@@ -17,6 +17,8 @@ public class Computer {
 		}
 		
 	}
-		
+	public void austinsDumb(){
+		System.out.println("Im not really gay ");
+	}
 	
 }

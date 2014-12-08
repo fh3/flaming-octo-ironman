@@ -47,9 +47,16 @@ public class Main {
 		/**
 		 * asdfadsfsdsaadgdagd
 		 */
-		
-		
-		
+	Dell.austinsDumb();
+	
+	Chair swivel = new Chair(false, true, 4);
+
+	Chair legs = new Chair(true, true, 5);
+	
+	swivel.chairMovement(4, 4);
+	
+	
+	
 				
 	}
 	
