@@ -13,9 +13,8 @@ import java.awt.event.MouseWheelListener;
 
 import javax.swing.JFrame;
 
-import com.flamingOctoIronman.FlamingOctoIronman;
-import com.flamingOctoIronman.core.event.CoreEventHandler;
 import com.flamingOctoIronman.core.manager.CoreManager;
+import com.flamingOctoIronman.framework.event.EventHandler;
 import com.flamingOctoIronman.subsystem.HID.inputEvents.InputEventBusService;
 import com.flamingOctoIronman.subsystem.HID.inputEvents.InputMapper;
 import com.flamingOctoIronman.subsystem.HID.inputEvents.KeyTypedEvent;
@@ -41,7 +40,7 @@ public class HIDManager extends CoreManager implements KeyListener, MouseListene
 		mouseEventThisTick = false;
 	}
 	
-	@CoreEventHandler(event = "StartUpEvent")
+	@EventHandler(event = "StartUpEvent")
 	public void startUp(){
 		//this.registerFrame(FlamingOctoIronman.getInstance().getWindow());
 	}
@@ -49,7 +48,7 @@ public class HIDManager extends CoreManager implements KeyListener, MouseListene
 	/**
 	 * Handle stuff for each tick
 	 */
-	@CoreEventHandler(event = "GameLoopEvent")
+	@EventHandler(event = "GameLoopEvent")
 	public void gameTick(){
 		mouseEventThisTick = false;
 	}

@@ -7,3 +7,8 @@ Maybe I should merge the math classes with their object's class to allow for met
 Decided to use OpenGL over Java3D, because it interfaces closer to the graphics card. Due to the OpenGL API being written in C, I have
 decided to use LWJGL as a wrapper. This library provides many other functions, including math, which is optimized with OpenCL. Some packages
 I have written will either be re-written or removed in light of this new addition.
+
+In root node,
+Red - X+
+Blue - Y+
+Green - Z+

@@ -1,8 +1,8 @@
 package com.flamingOctoIronman.subsystem.debugging;
 
 import com.flamingOctoIronman.FlamingOctoIronman;
-import com.flamingOctoIronman.core.event.CoreEventHandler;
 import com.flamingOctoIronman.core.manager.CoreManager;
+import com.flamingOctoIronman.framework.event.EventHandler;
 
 public class DebuggingManager extends CoreManager{
 	private StreamManager streams;
@@ -34,18 +34,18 @@ public class DebuggingManager extends CoreManager{
 		return list;
 	}
 	
-	@CoreEventHandler(event = "InitializationEvent")
+	@EventHandler(event = "InitializationEvent")
 	public void Initialization(){
 		streams = FlamingOctoIronman.getInstance().getStreamManager();
 		luaManager = new LuaManager();
 	}
 	
-	@CoreEventHandler(event = "GameLoopEvent")
+	@EventHandler(event = "GameLoopEvent")
 	public void tick(){
 		luaManager.evaluate();
 	}
 	
-	@CoreEventHandler(event = "ShutDownEvent")
+	@EventHandler(event = "ShutDownEvent")
 	public void shutDown(){
 		new CrashReport(FlamingOctoIronman.getInstance().getDeathReason());
 	}

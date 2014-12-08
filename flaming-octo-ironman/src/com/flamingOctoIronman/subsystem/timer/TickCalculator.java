@@ -3,7 +3,7 @@ package com.flamingOctoIronman.subsystem.timer;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import com.flamingOctoIronman.core.event.CoreEventHandler;
+import com.flamingOctoIronman.framework.event.EventHandler;
 
 public class TickCalculator {
 	private static TickCalculator instance;
@@ -41,7 +41,7 @@ public class TickCalculator {
 		return (long) (1000 * getPeriod());
 	}
 
-	@CoreEventHandler(event = "GameTickEvent")
+	@EventHandler(event = "GameTickEvent")
 	public void updateRealTimer(){
 		timePassed = System.nanoTime() - lastTime;
 		queue.remove();

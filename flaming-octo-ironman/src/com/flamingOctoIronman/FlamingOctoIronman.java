@@ -1,5 +1,8 @@
 package com.flamingOctoIronman;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.swing.JFrame;
 
 import com.flamingOctoIronman.core.event.CoreEventBusService;
@@ -112,7 +115,7 @@ public class FlamingOctoIronman implements Runnable{
 	 */
 	private void preinit(){
 		streamManager = new StreamManager();	//Create a new StreamManager object
-		streamManager.addStreamToOutput(ResourceManager.getPrintStream("logs/log.txt"));	//I can access ResourceManager here because the method is static, which doesn't require the manager to be initialized for me to use it
+		streamManager.addStreamToOutput(ResourceManager.getPrintStream("logs/log_" + new SimpleDateFormat("yyyy-MM-dd HH-mm-ss").format(new Date()) + ".txt"));	//I can access ResourceManager here because the method is static, which doesn't require the manager to be initialized for me to use it
 		
 		streamManager.println("Starting the game");
 		
@@ -292,7 +295,7 @@ public class FlamingOctoIronman implements Runnable{
 	 * @see java.lang.Thread
 	 */
 	public static void main(String args[]){
-		new Thread(FlamingOctoIronman.getInstance()).start();;	//Create a new instance of the game in a new thread and start it
+		new Thread(FlamingOctoIronman.getInstance()).start();	//Create a new instance of the game in a new thread and start it
 	}
 	
 	/**

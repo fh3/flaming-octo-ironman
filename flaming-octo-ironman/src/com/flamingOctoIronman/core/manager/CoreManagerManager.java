@@ -11,7 +11,7 @@ import com.flamingOctoIronman.framework.manager.ManagerManager;
  * @author Quint
  *
  */
-public class CoreManagerManager extends ManagerManager<CoreManager, CoreEvent>{
+public class CoreManagerManager extends ManagerManager<CoreManager>{
 	/**
 	 * This class's instance
 	 */

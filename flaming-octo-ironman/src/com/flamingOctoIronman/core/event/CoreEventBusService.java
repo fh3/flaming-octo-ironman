@@ -10,19 +10,18 @@ import com.flamingOctoIronman.framework.event.EventBusService;
  * @author Quint Heinecke
  *
  */
-public class CoreEventBusService extends EventBusService<CoreEvent> {
+public class CoreEventBusService extends EventBusService {
 	/**
 	 * This sole instance of this class
 	 */
 	private static CoreEventBusService instance;
 	
 	/**
-	 * Creates a new instance, provides <code>EventBusService</code> with a new loaded <code>ServiceLoader&lt;CoreEvent&gt;</code>
+	 * Creates a new instance, provides <code>EventBusService</code> with a new loaded <code>ServiceLoader</code>
 	 */
 	private CoreEventBusService() {
-		super(ServiceLoader.load(CoreEvent.class));	//Call super with a new ServiceLoader<CoreEvent>
+		super(ServiceLoader.load(CoreEvent.class));	//Call super with a new ServiceLoader
 	}
-	
 	/**
 	 * Gets the instance of this class.
 	 * @return The sole instance of this class
@@ -33,10 +32,4 @@ public class CoreEventBusService extends EventBusService<CoreEvent> {
 		}
 		return instance;	//Return the instance
 	}
-
-	@Override
-	public Class<? extends Object> getHandlerAnnotation() {
-		return CoreEventHandler.class;
-	}
-
 }

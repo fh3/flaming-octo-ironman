@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
-import com.flamingOctoIronman.core.event.CoreEventHandler;
 
 /**
  * This class is used to handle the subscribing and publishing of events. It provides the basic framework
@@ -14,30 +13,31 @@ import com.flamingOctoIronman.core.event.CoreEventHandler;
  * @author Quint
  *
  */
-public abstract class  EventBusService<T extends Event> {
+public class EventBusService {
 	/**
 	 * This loads all the <code>Event</code>s. For a class to be loaded, it must extend <code>T</code>, and must be
 	 * registered in <code>T</code>'s class manifest.
 	 */
-	private ServiceLoader<T> loader;
+	private ServiceLoader<? extends Event> loader;
 	/**
 	 * This {@link HashMap} Stores a key/pair of the simple name of every <code>T</code> and <code>T</code> instance.
 	 */
-	private HashMap<String, T> eventMap;
+	private HashMap<String, Event> eventMap;
 	
 	/**
 	 * Creates a new <code>EventBusService</code>. Initialize references and loop through all the <code>T</code>
 	 * in the loader and add them to the <code>eventMap</code>
 	 * @param loader A {@link ServiceLoader} instance with all the <code>T</code> classes loaded.
 	 */
-	public EventBusService(ServiceLoader<T> loader){
+	public EventBusService(ServiceLoader<? extends Event> loader){
 		//Initialized references
-		this.loader = (ServiceLoader<T>) loader;	//Set the loader reference to the passed argument
-		this.eventMap = new HashMap<String, T>();	//Initialized the eventMap
+		this.loader = loader;	//Set the loader reference to the passed argument
+		this.eventMap = new HashMap<String, Event>();	//Initialized the eventMap
 		
 		//Loop through all the events in the loader and add them to the eventMap
-		T event;	//Create a temporary reference for T instances
-		Iterator<T> iterator = loader.iterator();	//Get a new Iterator from the loader
+		Event event;	//Create a temporary reference for T instances
+		@SuppressWarnings("unchecked")
+		Iterator<Event> iterator = (Iterator<Event>) loader.iterator();	//Get a new Iterator from the loader
 		while(iterator.hasNext()){	//Loop through the iterator while there's still objects remaining
 			event = iterator.next();	//Set the temporary reference to the next T instance in the iterator
 			eventMap.put(event.getName(), event);	//Add the name of that instance and the instance to the eventMap
@@ -48,7 +48,7 @@ public abstract class  EventBusService<T extends Event> {
 	 * Returns a copy of the <code>ServiceLoader</code>'s {@link Iterator}.
 	 * @return	A copy of the <code>ServiceLoader</code>'s <code>Iterator</code>
 	 */
-	public Iterator<T> getEventIterator(){
+	public Iterator<? extends Event> getEventIterator(){
 		return loader.iterator();	//Get a copy of the iterator and return it
 	}
 	
@@ -60,16 +60,16 @@ public abstract class  EventBusService<T extends Event> {
 		//Temporary variables
 		Method[] methods = subscriber.getClass().getMethods();	//Get an array of all the methods in the class
 		Event event;
-		//Loop through the CoreEvents
-		Iterator<T> iterator = loader.iterator();	//Get a new Iterator
+		//Loop through the Events
+		Iterator<? extends Event> iterator = loader.iterator();	//Get a new Iterator
 		while(iterator.hasNext()){
 			event = iterator.next();	//Get a the next iterator entry
 			//Loop through all the methods in the subscriber
 			for(Method method : methods){
 				//If the given method has the EventHandler annotation and the modifier isn't static
-				if(method.isAnnotationPresent(CoreEventHandler.class) && !Modifier.isStatic(method.getModifiers())){
-					//If one of them is equal to the CoreEvent's class
-					if(event.getClass().getSimpleName().equals(method.getAnnotation(CoreEventHandler.class).event())){
+				if(method.isAnnotationPresent(EventHandler.class) && !Modifier.isStatic(method.getModifiers())){
+					//If one of them is equal to the Event's class
+					if(event.getName().equals(method.getAnnotation(EventHandler.class).event())){
 						//Subscribe to the event
 						event.subscribe(method, subscriber);
 					}
@@ -86,17 +86,17 @@ public abstract class  EventBusService<T extends Event> {
 		//Temporary variables
 		Method[] methods;
 		Event event;
-		//Loop through the CoreEvents
-		Iterator<T> iterator = loader.iterator();
+		//Loop through the Events
+		Iterator<? extends Event> iterator = loader.iterator();
 		while(iterator.hasNext()){
 			event = iterator.next();
 			methods = subscriber.getMethods();
 			//Loop through all the methods in the subscriber
 			for(Method method : methods){
 				//If the given method has the EventHandler annotation, and the object is static
-				if(method.isAnnotationPresent(CoreEventHandler.class) && Modifier.isStatic(method.getModifiers())){
-					//If one of them is equal to the CoreEvent's class
-					if(event.getClass().getSimpleName().equals(method.getAnnotation(CoreEventHandler.class).event())){
+				if(method.isAnnotationPresent(EventHandler.class) && Modifier.isStatic(method.getModifiers())){
+					//If one of them is equal to the Event's class
+					if(event.getName().equals(method.getAnnotation(EventHandler.class).event())){
 						//Subscribe to the event
 						event.subscribe(method, subscriber);
 					}
@@ -109,10 +109,10 @@ public abstract class  EventBusService<T extends Event> {
 	 * @param event <code>Class</code> simple name of the event that is being published.
 	 */
 	public void publish(Class<? extends Event> event){
-		Event iteratorEvent;	//Variable to hold CoreEvents from the loader's iterator
+		Event iteratorEvent;	//Variable to hold Events from the loader's iterator
 		Iterator<? extends Event> iterator = loader.iterator();
 		while(iterator.hasNext()){		//While there's an event left in the loader's iterator
-			iteratorEvent = iterator.next();	//Get the next CoreEvent
+			iteratorEvent = iterator.next();	//Get the next Event
 			if(iteratorEvent.getClass() == event){	//If the iteratorEvent is an instance of event
 				try {
 					iteratorEvent.publish();		//Then try and publish the event
@@ -123,10 +123,4 @@ public abstract class  EventBusService<T extends Event> {
 			}
 		}
 	}
-	
-	/**
-	 * Returns the annotation class associated with this <code>EventBusService</code>
-	 * @return
-	 */
-	public abstract Class getHandlerAnnotation();
 }

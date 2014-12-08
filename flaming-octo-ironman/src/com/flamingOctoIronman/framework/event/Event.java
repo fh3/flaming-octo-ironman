@@ -3,11 +3,8 @@ package com.flamingOctoIronman.framework.event;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
 
 import com.flamingOctoIronman.FlamingOctoIronman;
-import com.flamingOctoIronman.core.event.CoreEvent;
-import com.flamingOctoIronman.subsystem.debugging.DebuggingManager;
 import com.flamingOctoIronman.subsystem.debugging.StreamManager;
 import com.flamingOctoIronman.subsystem.debugging.Verbosity;
 
@@ -15,7 +12,7 @@ import com.flamingOctoIronman.subsystem.debugging.Verbosity;
  * This class is the framework for all events. It provides methods to subscribe, unsubscribe, and publish events.
  * 
  * @author Quint
- * @see CoreEvent
+ * @see Event
  */
 public abstract class Event {
 	/**
@@ -87,13 +84,6 @@ public abstract class Event {
 	 * @return the simple name of the class.
 	 */
 	public abstract String getName();
-	
-	/**
-	 * Compares the name of the class to the annotation on the passed method.
-	 * @param m The <code>Method</code> to compare
-	 * @return True if the name of the class is the same as the method's annotation, otherwise false
-	 */
-	public abstract boolean compareNames(Method m);
 		
 	/**
 	 * Returns the verbosity of the <code>Event</code>
