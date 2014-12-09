@@ -4,6 +4,7 @@ public class Chair{
 	public boolean Wheels;
 	public boolean Backrest;
 	public int height;
+	
 	public Chair(boolean hasWheels, boolean hasBackrest, int height){
 		Wheels = hasWheels;
 		Backrest = hasBackrest;

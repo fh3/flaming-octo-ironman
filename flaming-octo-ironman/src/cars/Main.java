@@ -42,6 +42,10 @@ public class Main {
 		
 		someCar.driveForward();
 		
+		Human quint = new Human("quint ",2,2,2); 
+		
+		quint.startWalk(18, 3);
+		
 		
 		/*
 		 * ashdjgahjf
