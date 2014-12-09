@@ -1,0 +1,12 @@
+Starting the game
+DebuggingManager: InitializationEvent
+***************Lua Engine***************
+Engine name: Luaj
+Engine Version: Luaj-jse 3.0
+Language Name: lua
+Language Version: 5.2
+****************************************
+HIDManager: StartUpEvent
+LuaManager: StartUpEvent
+RenderEngine2: StartUpEvent
+Done loading

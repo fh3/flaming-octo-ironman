@@ -1,6 +1,5 @@
 package com.flamingOctoIronman.subsystem.render;
 
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
@@ -27,7 +26,7 @@ import com.flamingOctoIronman.subsystem.debugging.DebuggingManager;
 import com.flamingOctoIronman.subsystem.debugging.StreamManager;
 import com.flamingOctoIronman.subsystem.render.primitives.Primitive;
 import com.flamingOctoIronman.subsystem.render.primitives.Texture;
-import com.flamingOctoIronman.subsystem.render.primitives.VisualObject;
+import com.flamingOctoIronman.subsystem.render.primitives.RenderEntity3D;
 import com.flamingOctoIronman.subsystem.resource.BufferBuilder;
 import com.flamingOctoIronman.subsystem.resource.ResourceManager;
 
@@ -36,7 +35,8 @@ public class RenderEngine2{
 	
 	private static RenderEngine2 instance;
 	
-	private ArrayList<VisualObject> objectList;
+	private ArrayList<Primitive> primitiveList;
+	private ArrayList<OBJEntity> OBJEntityList;
 	
 	private final float[] data = {
 			0.25f, 0.25f, -1.25f, 1.0f,
@@ -132,13 +132,7 @@ public class RenderEngine2{
 			0.0f, 0.0f, 1.0f, 1.0f,
 			0.0f, 0.0f, 1.0f, 1.0f
 	};
-	
-	private float[] center = {
-		 0.0f, 0.0f, 0.0f, 1.0f,
-		 
-		 1.0f, 1.0f, 1.0f, 1.0f
-	};
-	
+		
 	//Shader uniforms and data
 	private int cameraToClipUniform;
 	private float[] cameraToClipMatrix = new float[16];
@@ -193,8 +187,8 @@ public class RenderEngine2{
 			e.printStackTrace();
 		}
         
-        objectList = new ArrayList<VisualObject>();
-        
+        primitiveList = new ArrayList<Primitive>();
+        OBJEntityList = new ArrayList<OBJEntity>();
 	}
 	
 	/**
@@ -218,6 +212,7 @@ public class RenderEngine2{
 		cameraToClipUniform = GL20.glGetUniformLocation(program.getProgram(), "cameraToClipMatrix");
 		modelToCameraUniform = GL20.glGetUniformLocation(program.getProgram(), "modelToCameraMatrix");
 		cameraMatrixUniform = GL20.glGetUniformLocation(program.getProgram(), "cameraMatrix");
+		Texture.setTextureUniform(GL20.glGetUniformLocation(program.getProgram(), "textureSampler"));
 		
 		//Far and near positions
 		float zNear = 1.0f;
@@ -247,11 +242,9 @@ public class RenderEngine2{
 		program.stopProgram();
 		
 		//Setup the triangle to be rendered	
-		objectList.add(OBJLoader.loadObject(ResourceManager.getFileDir("objects/testing/test.obj")));
+		//primitiveList.add(OBJLoader.loadObject(ResourceManager.getFileDir("objects/testing/test.obj")));
 		GL11.glLineWidth(1.0f);
-		objectList.add(new Primitive(r2, GL11.GL_LINES));
-		GL11.glPointSize(10.0f);
-		//objectList.add(new Primitive(center, GL15.GL_ARRAY_BUFFER, GL11.GL_POINTS));
+		primitiveList.add(new Primitive(r2, GL11.GL_LINES));
 		
 		//Create a Vertex Array Object
 		int VAO = GL30.glGenVertexArrays();
@@ -268,8 +261,8 @@ public class RenderEngine2{
 		GL11.glDepthFunc(GL11.GL_LEQUAL);
 		GL11.glDepthRange(0.0f, 1.0f);
 		
-		Texture t = BMPLoader.loadBMP(ResourceManager.getFileDir("textures/test2.bmp"));
-		
+		OBJEntityList.add(new OBJEntity(ResourceManager.getFileDir("objects/UVMap1.obj"), ResourceManager.getFileDir("textures/earth.bmp")));	
+		out.println("Done loading");
 	}
 	
 	/**
@@ -290,8 +283,12 @@ public class RenderEngine2{
 		
 		GL11.glEnable(GL32.GL_DEPTH_CLAMP);
 
-		for(int i = 0; i < objectList.size(); i++){
-			objectList.get(i).renderObject();
+		for(int i = 0; i < primitiveList.size(); i++){
+			primitiveList.get(i).renderObject();
+		}
+		for(int i = 0; i< OBJEntityList.size(); i++){
+			OBJEntityList.get(i).getTexture().glSelectTexture();
+			OBJEntityList.get(i).getPrimitive().renderObject();
 		}
 		
 		//Deselect the shader program
@@ -380,10 +377,6 @@ public class RenderEngine2{
 		GL20.glUniformMatrix4(cameraToClipUniform, false, BufferBuilder.createFloatBuffer(cameraToClipMatrix));	//Update the perspective matrix in the VRAM
 		program.stopProgram();	//Stop the program
 	}
-
-	
-	//TODO class names are weird, may need to edit switch statement
-
 		
 	/**
 	 * Calculates the Frustrum scale from a given angle

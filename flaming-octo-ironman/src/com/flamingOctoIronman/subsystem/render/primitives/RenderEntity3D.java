@@ -9,10 +9,10 @@ import java.nio.ShortBuffer;
 
 import org.lwjgl.opengl.GL15;
 
-public abstract class VisualObject {
+public abstract class RenderEntity3D {
 	private final int vbo;
 	
-	public VisualObject(int vbo){
+	public RenderEntity3D(int vbo){
 		this.vbo = vbo;
 	}
 	
@@ -24,12 +24,11 @@ public abstract class VisualObject {
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
 	}
 	
-	public void unbindVBO(){
+	public static void unbindVBO(){
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 	}
 	
 	public abstract void renderObject();
-	
 	
 	public static int createVBO(Buffer buffer, int bufferType, int usage){
 		int vbo = GL15.glGenBuffers();	//Gen the vertex buffer object
