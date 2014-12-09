@@ -77,7 +77,7 @@ public class OBJLoader {
 		} else{
 			objectBuffer = new float[indexCount * 4];
 		}
-		
+		System.out.println("OBJ:" + indexCount * 4);
 		for(int i = 0; i < indexCount; i++){
 			objectBuffer[(i * 4) + 0] = verticies[(vertexIndicies[i] - 1) * 4 + 0];
 			objectBuffer[(i * 4) + 1] = -verticies[(vertexIndicies[i] - 1) * 4 + 2];

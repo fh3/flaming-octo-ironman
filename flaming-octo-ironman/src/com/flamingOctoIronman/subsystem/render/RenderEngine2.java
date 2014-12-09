@@ -261,7 +261,9 @@ public class RenderEngine2{
 		GL11.glDepthFunc(GL11.GL_LEQUAL);
 		GL11.glDepthRange(0.0f, 1.0f);
 		
-		OBJEntityList.add(new OBJEntity(ResourceManager.getFileDir("objects/UVMap1.obj"), ResourceManager.getFileDir("textures/earth.bmp")));	
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		
+		OBJEntityList.add(new OBJEntity(ResourceManager.getFileDir("objects/textured cube.obj"), ResourceManager.getFileDir("textures/texturetest.bmp")));	
 		out.println("Done loading");
 	}
 	
