@@ -8,5 +8,5 @@ uniform sampler2D textureSampler;	//Texture to use
 
 void main()
 {
-	outputColor = texture(textureSampler, UV).rgb;
+	outputColor = texture(textureSampler, UV).rgb; //vec3(1.0, 1.0, 1.0);
 }

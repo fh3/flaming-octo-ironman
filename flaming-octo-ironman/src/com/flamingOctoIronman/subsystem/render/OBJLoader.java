@@ -77,22 +77,21 @@ public class OBJLoader {
 		} else{
 			objectBuffer = new float[indexCount * 4];
 		}
-		System.out.println("OBJ:" + indexCount * 4);
 		for(int i = 0; i < indexCount; i++){
 			objectBuffer[(i * 4) + 0] = verticies[(vertexIndicies[i] - 1) * 4 + 0];
 			objectBuffer[(i * 4) + 1] = -verticies[(vertexIndicies[i] - 1) * 4 + 2];
 			objectBuffer[(i * 4) + 2] = verticies[(vertexIndicies[i] - 1) * 4 + 1];
-			objectBuffer[(i * 4) + 3] = 1.0f;
+			objectBuffer[(i * 4) + 3] = verticies[(vertexIndicies[i] - 1) * 4 + 3];
 		}
 		
 		if(usesMTL){
-			for(int i = indexCount; i < indexCount * 2; i++){
-				objectBuffer[(i * 2) + 0] = uvVerticies[(uvVertexIndicies[i / 2] - 1) * 2 + 0];
-				objectBuffer[(i * 2) + 1] = uvVerticies[(uvVertexIndicies[i / 2] - 1) * 2 + 1];
+			for(int i = 0; i < indexCount * 2; i++){
+				objectBuffer[i + indexCount * 4] = uvVerticies[(uvVertexIndicies[i / 2] - 1)];
+				i++;
+				objectBuffer[i + indexCount * 4] = uvVerticies[(uvVertexIndicies[i / 2] - 1)];
 				
 			}
 		}
-		System.out.println("Diff: " + Integer.toString(objectBuffer.length - (uvVertexIndicies.length * 2 + vertexIndicies.length * 4)));
-		return new Primitive(objectBuffer, GL11.GL_TRIANGLES);
+		return new Primitive(objectBuffer, indexCount, GL11.GL_TRIANGLES);
 	}
 }

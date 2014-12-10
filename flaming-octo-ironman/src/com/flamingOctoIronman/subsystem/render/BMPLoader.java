@@ -1,6 +1,5 @@
 package com.flamingOctoIronman.subsystem.render;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -42,7 +41,6 @@ public class BMPLoader {
 			out.println("Cound not load file: " + f.getAbsolutePath());
 			out.printError(e.getMessage());
 		}
-		
 		return t;
 	}
 }

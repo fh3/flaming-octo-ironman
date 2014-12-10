@@ -200,7 +200,7 @@ public class RenderEngine2{
 		out = ((DebuggingManager) FlamingOctoIronman.getInstance().getCoreManager(DebuggingManager.class.getSimpleName())).getStreamManager();
 				
 		//Clearing the screen
-		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);	//Set the color that will be used when clearing the screen
+		GL11.glClearColor(1.0f, 0.0f, 0.0f, 0.0f);	//Set the color that will be used when clearing the screen
 		
 		//Setup the shader program
 		program = new ShaderProgram();
@@ -244,7 +244,7 @@ public class RenderEngine2{
 		//Setup the triangle to be rendered	
 		//primitiveList.add(OBJLoader.loadObject(ResourceManager.getFileDir("objects/testing/test.obj")));
 		GL11.glLineWidth(1.0f);
-		primitiveList.add(new Primitive(r2, GL11.GL_LINES));
+		//primitiveList.add(new Primitive(r2, GL11.GL_LINES));
 		
 		//Create a Vertex Array Object
 		int VAO = GL30.glGenVertexArrays();
