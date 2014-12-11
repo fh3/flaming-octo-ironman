@@ -200,7 +200,7 @@ public class RenderEngine2{
 		out = ((DebuggingManager) FlamingOctoIronman.getInstance().getCoreManager(DebuggingManager.class.getSimpleName())).getStreamManager();
 				
 		//Clearing the screen
-		GL11.glClearColor(1.0f, 0.0f, 0.0f, 0.0f);	//Set the color that will be used when clearing the screen
+		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);	//Set the color that will be used when clearing the screen
 		
 		//Setup the shader program
 		program = new ShaderProgram();
@@ -212,7 +212,6 @@ public class RenderEngine2{
 		cameraToClipUniform = GL20.glGetUniformLocation(program.getProgram(), "cameraToClipMatrix");
 		modelToCameraUniform = GL20.glGetUniformLocation(program.getProgram(), "modelToCameraMatrix");
 		cameraMatrixUniform = GL20.glGetUniformLocation(program.getProgram(), "cameraMatrix");
-		Texture.setTextureUniform(GL20.glGetUniformLocation(program.getProgram(), "textureSampler"));
 		
 		//Far and near positions
 		float zNear = 1.0f;
@@ -243,7 +242,7 @@ public class RenderEngine2{
 		
 		//Setup the triangle to be rendered	
 		//primitiveList.add(OBJLoader.loadObject(ResourceManager.getFileDir("objects/testing/test.obj")));
-		GL11.glLineWidth(1.0f);
+		//GL11.glLineWidth(1.0f);
 		//primitiveList.add(new Primitive(r2, GL11.GL_LINES));
 		
 		//Create a Vertex Array Object
@@ -251,9 +250,9 @@ public class RenderEngine2{
 		GL30.glBindVertexArray(VAO);
 		
 		//Setup culling
-		GL11.glEnable(GL11.GL_CULL_FACE);	//Enable culling
+		//GL11.glEnable(GL11.GL_CULL_FACE);	//Enable culling
 		GL11.glCullFace(GL11.GL_BACK);	//Set the face to cull as the back
-		GL11.glFrontFace(GL11.GL_CW);	//Set the front face as the points in counterclockwise direction
+		GL11.glFrontFace(GL11.GL_CCW);	//Set the front face as the points in counterclockwise direction
 		
 		//Setup depth testing
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
@@ -261,7 +260,7 @@ public class RenderEngine2{
 		GL11.glDepthFunc(GL11.GL_LEQUAL);
 		GL11.glDepthRange(0.0f, 1.0f);
 		
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		//GL11.glEnable(GL11.GL_TEXTURE_2D);
 		
 		OBJEntityList.add(new OBJEntity(ResourceManager.getFileDir("objects/textured cube.obj"), ResourceManager.getFileDir("textures/texturetest.bmp")));	
 		out.println("Done loading");
@@ -289,7 +288,7 @@ public class RenderEngine2{
 			primitiveList.get(i).renderObject();
 		}
 		for(int i = 0; i< OBJEntityList.size(); i++){
-			OBJEntityList.get(i).getTexture().glSelectTexture();
+			OBJEntityList.get(i).getTexture().bind();
 			OBJEntityList.get(i).getPrimitive().renderObject();
 		}
 		

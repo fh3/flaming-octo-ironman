@@ -8,14 +8,12 @@ import org.lwjgl.opengl.GL30;
 import com.flamingOctoIronman.subsystem.resource.BufferBuilder;
 
 public class Primitive extends RenderEntity3D {
-	private final int verticiesLength;
 	private final int indexCount;
 	private final int GL_PRIMITIVE_TYPE;
 	private static int VAO;
 	
 	public Primitive(float[] buffer, int indexCount, int GL_PRIMITIVE_TYPE) {
 		super(RenderEntity3D.createVBO(BufferBuilder.createFloatBuffer(buffer), GL15.GL_ARRAY_BUFFER, GL15.GL_STATIC_DRAW));
-		this.verticiesLength = buffer.length;
 		this.indexCount = indexCount;
 		this.GL_PRIMITIVE_TYPE = GL_PRIMITIVE_TYPE;
 		System.out.println(buffer.length * (2/3));
@@ -32,7 +30,7 @@ public class Primitive extends RenderEntity3D {
 		GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 0, indexCount * 4);	//Attrib 1 is a vec4, offset of data.length * 2
 		
 		//Draw the triangles
-		GL11.glDrawArrays(GL_PRIMITIVE_TYPE, 0, indexCount * 4);
+		GL11.glDrawArrays(GL_PRIMITIVE_TYPE, 0, indexCount);
 		
 		//Disable the attributes
 		GL20.glDisableVertexAttribArray(0);

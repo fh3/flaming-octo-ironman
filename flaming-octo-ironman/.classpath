@@ -19,5 +19,10 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="flaming-octo-ironman/native/lwjgl"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="libraries/slick-util.jar" sourcepath="libraries/slick-util-src.zip">
+		<attributes>
+			<attribute name="javadoc_location" value="http://slick.ninjacave.com/javadoc-util/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

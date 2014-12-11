@@ -84,13 +84,110 @@ public class OBJLoader {
 			objectBuffer[(i * 4) + 3] = verticies[(vertexIndicies[i] - 1) * 4 + 3];
 		}
 		
-		if(usesMTL){
+		if(usesMTL){/*
 			for(int i = 0; i < indexCount * 2; i++){
 				objectBuffer[i + indexCount * 4] = uvVerticies[(uvVertexIndicies[i / 2] - 1)];
 				i++;
-				objectBuffer[i + indexCount * 4] = uvVerticies[(uvVertexIndicies[i / 2] - 1)];
+				objectBuffer[i + indexCount * 4] = uvVerticies[(uvVertexIndicies[i / 2])];
 				
-			}
+			}*/
+			/*
+			objectBuffer[indexCount * 4 + 0] = 0;
+			objectBuffer[indexCount * 4 + 1] = 0; 
+			
+			objectBuffer[indexCount * 4 + 2] = 1;
+			objectBuffer[indexCount * 4 + 3] = 0;
+			
+			objectBuffer[indexCount * 4 + 4] = 1;
+			objectBuffer[indexCount * 4 + 5] = 1;
+			
+			objectBuffer[indexCount * 4 + 10] = 0;
+			objectBuffer[indexCount * 4 + 11] = 1;
+			 */
+			//123
+			objectBuffer[indexCount * 4 + 0] = 0;
+			objectBuffer[indexCount * 4 + 1] = 0;
+			objectBuffer[indexCount * 4 + 2] = 1;
+			objectBuffer[indexCount * 4 + 3] = 0;
+			objectBuffer[indexCount * 4 + 4] = 0;
+			objectBuffer[indexCount * 4 + 5] = 1;
+			//234
+			objectBuffer[indexCount * 4 + 6] = 1;
+			objectBuffer[indexCount * 4 + 7] = 0;
+			objectBuffer[indexCount * 4 + 8] = 1;
+			objectBuffer[indexCount * 4 + 9] = 1;
+			objectBuffer[indexCount * 4 + 10] = 0;
+			objectBuffer[indexCount * 4 + 11] = 1;
+			//234
+			objectBuffer[indexCount * 4 + 6] = 1;
+			objectBuffer[indexCount * 4 + 7] = 0;
+			objectBuffer[indexCount * 4 + 8] = 1;
+			objectBuffer[indexCount * 4 + 9] = 1;
+			objectBuffer[indexCount * 4 + 10] = 0;
+			objectBuffer[indexCount * 4 + 11] = 1;
+			//123
+			objectBuffer[indexCount * 4 + 0] = 0;
+			objectBuffer[indexCount * 4 + 1] = 0;
+			objectBuffer[indexCount * 4 + 2] = 1;
+			objectBuffer[indexCount * 4 + 3] = 0;
+			objectBuffer[indexCount * 4 + 4] = 1;
+			objectBuffer[indexCount * 4 + 5] = 1;
+			//234
+			objectBuffer[indexCount * 4 + 6] = 1;
+			objectBuffer[indexCount * 4 + 7] = 0;
+			objectBuffer[indexCount * 4 + 8] = 1;
+			objectBuffer[indexCount * 4 + 9] = 1;
+			objectBuffer[indexCount * 4 + 10] = 0;
+			objectBuffer[indexCount * 4 + 11] = 1;
+			//234
+			objectBuffer[indexCount * 4 + 6] = 1;
+			objectBuffer[indexCount * 4 + 7] = 0;
+			objectBuffer[indexCount * 4 + 8] = 1;
+			objectBuffer[indexCount * 4 + 9] = 1;
+			objectBuffer[indexCount * 4 + 10] = 0;
+			objectBuffer[indexCount * 4 + 11] = 1;
+			//413
+			objectBuffer[indexCount * 4 + 36] = 0;
+			objectBuffer[indexCount * 4 + 37] = 1;
+			objectBuffer[indexCount * 4 + 38] = 0;
+			objectBuffer[indexCount * 4 + 39] = 0;
+			objectBuffer[indexCount * 4 + 40] = 1;
+			objectBuffer[indexCount * 4 + 41] = 1;
+			//124
+			objectBuffer[indexCount * 4 + 42] = 0;
+			objectBuffer[indexCount * 4 + 43] = 0;
+			objectBuffer[indexCount * 4 + 44] = 1;
+			objectBuffer[indexCount * 4 + 45] = 0;
+			objectBuffer[indexCount * 4 + 46] = 0;
+			objectBuffer[indexCount * 4 + 47] = 1;
+			//124
+			objectBuffer[indexCount * 4 + 42] = 0;
+			objectBuffer[indexCount * 4 + 43] = 0;
+			objectBuffer[indexCount * 4 + 44] = 1;
+			objectBuffer[indexCount * 4 + 45] = 0;
+			objectBuffer[indexCount * 4 + 46] = 0;
+			objectBuffer[indexCount * 4 + 47] = 1;
+			//413
+			objectBuffer[indexCount * 4 + 36] = 0;
+			objectBuffer[indexCount * 4 + 37] = 1;
+			objectBuffer[indexCount * 4 + 38] = 0;
+			objectBuffer[indexCount * 4 + 39] = 0;
+			objectBuffer[indexCount * 4 + 40] = 1;
+			objectBuffer[indexCount * 4 + 41] = 1;
+			//124
+			objectBuffer[indexCount * 4 + 42] = 0;
+			objectBuffer[indexCount * 4 + 43] = 0;
+			objectBuffer[indexCount * 4 + 44] = 1;
+			objectBuffer[indexCount * 4 + 45] = 0;
+			objectBuffer[indexCount * 4 + 46] = 0;
+			objectBuffer[indexCount * 4 + 47] = 1;
+			//124
+			objectBuffer[indexCount * 4 + 42] = 0;
+			objectBuffer[indexCount * 4 + 43] = 0;
+			objectBuffer[indexCount * 4 + 44] = 1;
+			objectBuffer[indexCount * 4 + 45] = 0;
+			objectBuffer[indexCount * 4 + 46] = 0;
+			objectBuffer[indexCount * 4 + 47] = 1;
 		}
 		return new Primitive(objectBuffer, indexCount, GL11.GL_TRIANGLES);
 	}
