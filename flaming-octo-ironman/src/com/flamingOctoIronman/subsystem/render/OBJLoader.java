@@ -92,32 +92,37 @@ public class OBJLoader {
 				
 			}*/
 			/*
+			
+			//1
 			objectBuffer[indexCount * 4 + 0] = 0;
 			objectBuffer[indexCount * 4 + 1] = 0; 
 			
+			//2
 			objectBuffer[indexCount * 4 + 2] = 1;
 			objectBuffer[indexCount * 4 + 3] = 0;
 			
+			//3
 			objectBuffer[indexCount * 4 + 4] = 1;
 			objectBuffer[indexCount * 4 + 5] = 1;
 			
+			//4
 			objectBuffer[indexCount * 4 + 10] = 0;
 			objectBuffer[indexCount * 4 + 11] = 1;
-			 */
+			 *//*
 			//123
 			objectBuffer[indexCount * 4 + 0] = 0;
 			objectBuffer[indexCount * 4 + 1] = 0;
-			objectBuffer[indexCount * 4 + 2] = 1;
+			objectBuffer[indexCount * 4 + 2] = 0;
 			objectBuffer[indexCount * 4 + 3] = 0;
 			objectBuffer[indexCount * 4 + 4] = 0;
-			objectBuffer[indexCount * 4 + 5] = 1;
+			objectBuffer[indexCount * 4 + 5] = 0;
 			//234
-			objectBuffer[indexCount * 4 + 6] = 1;
+			objectBuffer[indexCount * 4 + 6] = 0;
 			objectBuffer[indexCount * 4 + 7] = 0;
-			objectBuffer[indexCount * 4 + 8] = 1;
-			objectBuffer[indexCount * 4 + 9] = 1;
+			objectBuffer[indexCount * 4 + 8] = 0;
+			objectBuffer[indexCount * 4 + 9] = 0;
 			objectBuffer[indexCount * 4 + 10] = 0;
-			objectBuffer[indexCount * 4 + 11] = 1;
+			objectBuffer[indexCount * 4 + 11] = 0;
 			//234
 			objectBuffer[indexCount * 4 + 6] = 1;
 			objectBuffer[indexCount * 4 + 7] = 0;
@@ -187,7 +192,7 @@ public class OBJLoader {
 			objectBuffer[indexCount * 4 + 44] = 1;
 			objectBuffer[indexCount * 4 + 45] = 0;
 			objectBuffer[indexCount * 4 + 46] = 0;
-			objectBuffer[indexCount * 4 + 47] = 1;
+			objectBuffer[indexCount * 4 + 47] = 1;*/
 		}
 		return new Primitive(objectBuffer, indexCount, GL11.GL_TRIANGLES);
 	}

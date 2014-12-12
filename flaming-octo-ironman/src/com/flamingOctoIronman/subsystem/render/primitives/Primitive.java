@@ -16,7 +16,6 @@ public class Primitive extends RenderEntity3D {
 		super(RenderEntity3D.createVBO(BufferBuilder.createFloatBuffer(buffer), GL15.GL_ARRAY_BUFFER, GL15.GL_STATIC_DRAW));
 		this.indexCount = indexCount;
 		this.GL_PRIMITIVE_TYPE = GL_PRIMITIVE_TYPE;
-		System.out.println(buffer.length * (2/3));
 	}
 	@Override
 	public void renderObject() {
@@ -26,8 +25,8 @@ public class Primitive extends RenderEntity3D {
 		GL20.glEnableVertexAttribArray(0);	//Enable the attribute at location = 0 (position attribute)
 		GL20.glEnableVertexAttribArray(1);	//Enable the attribute at location = 1 (color attribute)
 		//Set attribute information
-		GL20.glVertexAttribPointer(0, 4, GL11.GL_FLOAT, false, 0, 0);	//Attrib 0 is a vec4
-		GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 0, indexCount * 4);	//Attrib 1 is a vec4, offset of data.length * 2
+		GL20.glVertexAttribPointer(0, 4, GL11.GL_FLOAT, false, 0, 0);	//Attribute for vertex position 
+		GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 0, indexCount * 4);	//Attribute for UV position, offset of number of vertices * 4 (xyzw)
 		
 		//Draw the triangles
 		GL11.glDrawArrays(GL_PRIMITIVE_TYPE, 0, indexCount);
