@@ -85,10 +85,9 @@ public class OBJLoader {
 		}
 		
 		if(usesMTL){
-			for(int i = 0; i < indexCount * 2; i++){
-				objectBuffer[i + indexCount * 4] = uvVerticies[(uvVertexIndicies[i / 2] - 1)];
-				i++;
-				objectBuffer[i + indexCount * 4] = uvVerticies[(uvVertexIndicies[i / 2])];
+			for(int i = 0; i < indexCount; i++){
+				objectBuffer[(i * 2) + indexCount * 4] = uvVerticies[(uvVertexIndicies[i] - 1) * 2 + 0];
+				objectBuffer[(i * 2) + 1 + indexCount * 4] = 1 - uvVerticies[(uvVertexIndicies[i] - 1) * 2 + 1];
 				
 			}
 			/*

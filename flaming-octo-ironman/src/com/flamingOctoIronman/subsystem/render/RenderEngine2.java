@@ -262,7 +262,7 @@ public class RenderEngine2{
 		
 		//GL11.glEnable(GL11.GL_TEXTURE_2D);
 		
-		OBJEntityList.add(new OBJEntity(ResourceManager.getFileDir("objects/textured cube.obj"), ResourceManager.getFileDir("textures/texturetest.bmp")));	
+		OBJEntityList.add(new OBJEntity(ResourceManager.getFileDir("objects/testobject1.obj"), ResourceManager.getFileDir("textures/ForQuintpt2.bmp")));	
 		out.println("Done loading");
 	}
 	
