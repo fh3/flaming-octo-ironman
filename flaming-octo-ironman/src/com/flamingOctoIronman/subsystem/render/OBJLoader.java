@@ -4,7 +4,8 @@ import java.io.File;
 
 import org.lwjgl.opengl.GL11;
 
-import com.flamingOctoIronman.subsystem.render.primitives.Primitive;
+import com.flamingOctoIronman.subsystem.render.renderEntity.ColorMethod;
+import com.flamingOctoIronman.subsystem.render.renderEntity.Primitive;
 import com.flamingOctoIronman.subsystem.resource.ResourceManager;
 
 public class OBJLoader {
@@ -20,7 +21,7 @@ public class OBJLoader {
 		}
 		for(int i = 0; i < objectData.length; i++){
 			if(objectData[i][0].equals("v")){
-				vertexCount += 4;					
+				vertexCount += 3;					
 			}
 			if(objectData[i][0].equals("f")){
 				indexCount += 3;
@@ -45,8 +46,7 @@ public class OBJLoader {
 			if(objectData[i][0].equals("v")){
 				verticies[verticiesNext++] = Float.parseFloat(objectData[i][1]);
 				verticies[verticiesNext++] = Float.parseFloat(objectData[i][2]);
-				verticies[verticiesNext++] = Float.parseFloat(objectData[i][3]);
-				verticies[verticiesNext++] = 1.0f;					
+				verticies[verticiesNext++] = Float.parseFloat(objectData[i][3]);				
 			}
 			
 			if(objectData[i][0].equals("f")){
@@ -73,127 +73,23 @@ public class OBJLoader {
 		float[] objectBuffer;
 		
 		if(usesMTL){
-			objectBuffer = new float[indexCount * 6];
+			objectBuffer = new float[indexCount * 5];
 		} else{
-			objectBuffer = new float[indexCount * 4];
+			objectBuffer = new float[indexCount * 3];
 		}
 		for(int i = 0; i < indexCount; i++){
-			objectBuffer[(i * 4) + 0] = verticies[(vertexIndicies[i] - 1) * 4 + 0];
-			objectBuffer[(i * 4) + 1] = -verticies[(vertexIndicies[i] - 1) * 4 + 2];
-			objectBuffer[(i * 4) + 2] = verticies[(vertexIndicies[i] - 1) * 4 + 1];
-			objectBuffer[(i * 4) + 3] = verticies[(vertexIndicies[i] - 1) * 4 + 3];
+			objectBuffer[(i * 3) + 0] = verticies[(vertexIndicies[i] - 1) * 3 + 0];
+			objectBuffer[(i * 3) + 1] = verticies[(vertexIndicies[i] - 1) * 3 + 1];
+			objectBuffer[(i * 3) + 2] = verticies[(vertexIndicies[i] - 1) * 3 + 2];
 		}
 		
 		if(usesMTL){
 			for(int i = 0; i < indexCount; i++){
-				objectBuffer[(i * 2) + indexCount * 4] = uvVerticies[(uvVertexIndicies[i] - 1) * 2 + 0];
-				objectBuffer[(i * 2) + 1 + indexCount * 4] = 1 - uvVerticies[(uvVertexIndicies[i] - 1) * 2 + 1];
+				objectBuffer[(i * 2) + indexCount * 3] = uvVerticies[(uvVertexIndicies[i] - 1) * 2 + 0];
+				objectBuffer[(i * 2) + 1 + indexCount * 3] = 1 - uvVerticies[(uvVertexIndicies[i] - 1) * 2 + 1];
 				
 			}
-			/*
-			
-			//1
-			objectBuffer[indexCount * 4 + 0] = 0;
-			objectBuffer[indexCount * 4 + 1] = 0; 
-			
-			//2
-			objectBuffer[indexCount * 4 + 2] = 1;
-			objectBuffer[indexCount * 4 + 3] = 0;
-			
-			//3
-			objectBuffer[indexCount * 4 + 4] = 1;
-			objectBuffer[indexCount * 4 + 5] = 1;
-			
-			//4
-			objectBuffer[indexCount * 4 + 10] = 0;
-			objectBuffer[indexCount * 4 + 11] = 1;
-			 *//*
-			//123
-			objectBuffer[indexCount * 4 + 0] = 0;
-			objectBuffer[indexCount * 4 + 1] = 0;
-			objectBuffer[indexCount * 4 + 2] = 0;
-			objectBuffer[indexCount * 4 + 3] = 0;
-			objectBuffer[indexCount * 4 + 4] = 0;
-			objectBuffer[indexCount * 4 + 5] = 0;
-			//234
-			objectBuffer[indexCount * 4 + 6] = 0;
-			objectBuffer[indexCount * 4 + 7] = 0;
-			objectBuffer[indexCount * 4 + 8] = 0;
-			objectBuffer[indexCount * 4 + 9] = 0;
-			objectBuffer[indexCount * 4 + 10] = 0;
-			objectBuffer[indexCount * 4 + 11] = 0;
-			//234
-			objectBuffer[indexCount * 4 + 6] = 0;
-			objectBuffer[indexCount * 4 + 7] = 0;
-			objectBuffer[indexCount * 4 + 8] = 0;
-			objectBuffer[indexCount * 4 + 9] = 0;
-			objectBuffer[indexCount * 4 + 10] = 0;
-			objectBuffer[indexCount * 4 + 11] = 0;
-			//123
-			objectBuffer[indexCount * 4 + 0] = 0;
-			objectBuffer[indexCount * 4 + 1] = 0;
-			objectBuffer[indexCount * 4 + 2] = 0;
-			objectBuffer[indexCount * 4 + 3] = 0;
-			objectBuffer[indexCount * 4 + 4] = 0;
-			objectBuffer[indexCount * 4 + 5] = 0;
-			//234
-			objectBuffer[indexCount * 4 + 6] = 0;
-			objectBuffer[indexCount * 4 + 7] = 0;
-			objectBuffer[indexCount * 4 + 8] = 0;
-			objectBuffer[indexCount * 4 + 9] = 0;
-			objectBuffer[indexCount * 4 + 10] = 0;
-			objectBuffer[indexCount * 4 + 11] = 0;
-			//234
-			objectBuffer[indexCount * 4 + 6] = 0;
-			objectBuffer[indexCount * 4 + 7] = 0;
-			objectBuffer[indexCount * 4 + 8] = 0;
-			objectBuffer[indexCount * 4 + 9] = 0;
-			objectBuffer[indexCount * 4 + 10] = 0;
-			objectBuffer[indexCount * 4 + 11] = 0;
-			//413
-			objectBuffer[indexCount * 4 + 36] = 0;
-			objectBuffer[indexCount * 4 + 37] = 0;
-			objectBuffer[indexCount * 4 + 38] = 0;
-			objectBuffer[indexCount * 4 + 39] = 0;
-			objectBuffer[indexCount * 4 + 40] = 0;
-			objectBuffer[indexCount * 4 + 41] = 0;
-			//124
-			objectBuffer[indexCount * 4 + 42] = 0;
-			objectBuffer[indexCount * 4 + 43] = 0;
-			objectBuffer[indexCount * 4 + 44] = 0;
-			objectBuffer[indexCount * 4 + 45] = 0;
-			objectBuffer[indexCount * 4 + 46] = 0;
-			objectBuffer[indexCount * 4 + 47] = 0;
-			//124
-			objectBuffer[indexCount * 4 + 42] = 0;
-			objectBuffer[indexCount * 4 + 43] = 0;
-			objectBuffer[indexCount * 4 + 44] = 0;
-			objectBuffer[indexCount * 4 + 45] = 0;
-			objectBuffer[indexCount * 4 + 46] = 0;
-			objectBuffer[indexCount * 4 + 47] = 0;
-			//413
-			objectBuffer[indexCount * 4 + 36] = 0;
-			objectBuffer[indexCount * 4 + 37] = 0;
-			objectBuffer[indexCount * 4 + 38] = 0;
-			objectBuffer[indexCount * 4 + 39] = 0;
-			objectBuffer[indexCount * 4 + 40] = 0;
-			objectBuffer[indexCount * 4 + 41] = 0;
-			//124
-			objectBuffer[indexCount * 4 + 42] = 0;
-			objectBuffer[indexCount * 4 + 43] = 0;
-			objectBuffer[indexCount * 4 + 44] = 0;
-			objectBuffer[indexCount * 4 + 45] = 0;
-			objectBuffer[indexCount * 4 + 46] = 0;
-			objectBuffer[indexCount * 4 + 47] = 0;
-			//124
-			objectBuffer[indexCount * 4 + 42] = 0;
-			objectBuffer[indexCount * 4 + 43] = 0;
-			objectBuffer[indexCount * 4 + 44] = 0;
-			objectBuffer[indexCount * 4 + 45] = 0;
-			objectBuffer[indexCount * 4 + 46] = 0;
-			objectBuffer[indexCount * 4 + 47] = 0;
-			*/
 		}
-		return new Primitive(objectBuffer, indexCount, GL11.GL_TRIANGLES);
+		return new Primitive(objectBuffer, indexCount, GL11.GL_TRIANGLES, ColorMethod.TEXTURE);
 	}
 }

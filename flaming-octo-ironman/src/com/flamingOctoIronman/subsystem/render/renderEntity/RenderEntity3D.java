@@ -1,4 +1,4 @@
-package com.flamingOctoIronman.subsystem.render.primitives;
+package com.flamingOctoIronman.subsystem.render.renderEntity;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;

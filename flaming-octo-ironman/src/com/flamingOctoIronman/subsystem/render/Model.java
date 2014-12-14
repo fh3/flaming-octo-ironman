@@ -6,14 +6,14 @@ import java.io.IOException;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
-import com.flamingOctoIronman.subsystem.render.primitives.Primitive;
+import com.flamingOctoIronman.subsystem.render.renderEntity.Primitive;
 import com.flamingOctoIronman.subsystem.resource.ResourceManager;
 
-public class OBJEntity {
+public class Model {
 	private Primitive objectPrimitive;
 	private Texture objectTexture;
 	
-	public OBJEntity(File objectFile, File textureFile) {
+	public Model(File objectFile, File textureFile) {
 		objectPrimitive = OBJLoader.loadObject(objectFile);
 		try {
 			objectTexture = TextureLoader.getTexture("BMP", ResourceManager.getFileInputStream(textureFile));

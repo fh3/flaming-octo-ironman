@@ -18,15 +18,18 @@ import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Quaternion;
 import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
 import com.flamingOctoIronman.DeathReason;
 import com.flamingOctoIronman.FlamingOctoIronman;
 import com.flamingOctoIronman.framework.event.EventHandler;
 import com.flamingOctoIronman.subsystem.debugging.DebuggingManager;
 import com.flamingOctoIronman.subsystem.debugging.StreamManager;
-import com.flamingOctoIronman.subsystem.render.primitives.Primitive;
-import com.flamingOctoIronman.subsystem.render.primitives.Texture;
-import com.flamingOctoIronman.subsystem.render.primitives.RenderEntity3D;
+import com.flamingOctoIronman.subsystem.render.renderEntity.Line;
+import com.flamingOctoIronman.subsystem.render.renderEntity.Point;
+import com.flamingOctoIronman.subsystem.render.renderEntity.Primitive;
+import com.flamingOctoIronman.subsystem.render.renderEntity.RenderEntity3D;
+import com.flamingOctoIronman.subsystem.render.renderEntity.Triangle;
 import com.flamingOctoIronman.subsystem.resource.BufferBuilder;
 import com.flamingOctoIronman.subsystem.resource.ResourceManager;
 
@@ -36,7 +39,7 @@ public class RenderEngine2{
 	private static RenderEngine2 instance;
 	
 	private ArrayList<Primitive> primitiveList;
-	private ArrayList<OBJEntity> OBJEntityList;
+	private ArrayList<Model> OBJEntityList;
 	
 	private final float[] data = {
 			0.25f, 0.25f, -1.25f, 1.0f,
@@ -139,17 +142,23 @@ public class RenderEngine2{
 	private int modelToCameraUniform;
 	private float[] modelToCameraMatrix = new float[16];
 	private int cameraMatrixUniform;
+	private int colorTypeUniform;
 
 	//Camera data
-	private float xAngle = -3.14f / 2f;
-	private float yAngle = 0;
-	private float zAngle = 0;
+	private final float defaultXAngle = 0.0f;
+	private final float defaultYAngle = 0.0f;
+	private final float defaultZAngle = 0.0f;	//Set to a negligibly low value to prevent a gimble lock 
+	private float xAngle = defaultXAngle;
+	private float yAngle = defaultYAngle;
+	private float zAngle = defaultZAngle;
 	private Vector3f forward = new Vector3f();
 	private Vector3f side = new Vector3f();
 	private Vector3f up = new Vector3f();
 	private Matrix4f cameraMatrix = new Matrix4f();
-	private Vector3f translateVector = new Vector3f();
+	private Vector3f translateVector = createVector(0.0f, 0.0f, 0.000001f);
 	private Vector3f lookVector = new Vector3f();
+	private float rotateRate = 0.01f;
+	private float translateRate = 0.1f;
 	
 	private float frustumScale = calculateFrustumScale(90f);
 	
@@ -188,7 +197,7 @@ public class RenderEngine2{
 		}
         
         primitiveList = new ArrayList<Primitive>();
-        OBJEntityList = new ArrayList<OBJEntity>();
+        OBJEntityList = new ArrayList<Model>();
 	}
 	
 	/**
@@ -212,6 +221,7 @@ public class RenderEngine2{
 		cameraToClipUniform = GL20.glGetUniformLocation(program.getProgram(), "cameraToClipMatrix");
 		modelToCameraUniform = GL20.glGetUniformLocation(program.getProgram(), "modelToCameraMatrix");
 		cameraMatrixUniform = GL20.glGetUniformLocation(program.getProgram(), "cameraMatrix");
+		colorTypeUniform = GL20.glGetUniformLocation(program.getProgram(), "colorType");
 		
 		//Far and near positions
 		float zNear = 1.0f;
@@ -262,8 +272,18 @@ public class RenderEngine2{
 		
 		//GL11.glEnable(GL11.GL_TEXTURE_2D);
 		
-		OBJEntityList.add(new OBJEntity(ResourceManager.getFileDir("objects/testobject1.obj"), ResourceManager.getFileDir("textures/ForQuintpt2.bmp")));	
+		OBJEntityList.add(new Model(ResourceManager.getFileDir("objects/ComplexShape.obj"), ResourceManager.getFileDir("textures/ComplexTexture.bmp")));
+		primitiveList.add(new Point(new Vector3f(1.0f, 1.0f, 1.0f), new Vector3f(1.0f, 1.0f, 1.0f), 10.0f));
+		primitiveList.add(new Line(new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(10.0f, 0.0f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f), 2.0f));
+		primitiveList.add(new Line(new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.0f, 10.0f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f), 2.0f));
+		primitiveList.add(new Line(new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.0f, 0.0f, 10.0f), new Vector3f(0.0f, 0.0f, 1.0f), 2.0f));
+		primitiveList.add(new Triangle(new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f), new Vector3f(1.0f, 0.0f, 1.0f)));
+		primitiveList.add(null);
+
 		out.println("Done loading");
+		
+		Primitive.setColorTypeUniform(colorTypeUniform);
+		Primitive.setVAO(VAO);
 	}
 	
 	/**
@@ -271,6 +291,7 @@ public class RenderEngine2{
 	 */
 	@EventHandler(event = "GameLoopEvent")
 	public void render(){
+		primitiveList.set(5, new Line(Vector3f.add(translateVector, forward, null), translateVector, new Vector3f(1.0f, 1.0f, 0.0f), 2.0f));
 		//Clear the screen, color and depth buffer
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		
@@ -285,6 +306,7 @@ public class RenderEngine2{
 		GL11.glEnable(GL32.GL_DEPTH_CLAMP);
 
 		for(int i = 0; i < primitiveList.size(); i++){
+			GL11.glPointSize(10.0f);
 			primitiveList.get(i).renderObject();
 		}
 		for(int i = 0; i< OBJEntityList.size(); i++){
@@ -318,24 +340,29 @@ public class RenderEngine2{
 			//Mouse.setCursorPosition(Display.getWidth() / 2, Display.getHeight() / 2);
 		}
 		//Calculate vectors
-		forward = createVector(xAngle, yAngle, zAngle);
-		forward.normalise();
+		forward = createVector(0.0f, 0.0f, 1.0f);
+		forward.x -= yAngle;
+		forward.y += xAngle;
+		forward.z += zAngle;
+		if(forward.length() != 0.0f){
+			forward.normalise();
+		}
 		Vector3f.cross(forward, createVector(0, 1, 0), side);
 		//side.normalise();
 		Vector3f.cross(forward, side, up);
 		//up.normalise();
 		lookVector = new Vector3f();
 		if(Keyboard.isKeyDown(Keyboard.KEY_W)){
-			Vector3f.add((Vector3f) side.scale(-1), lookVector, lookVector);
+			Vector3f.add(forward, lookVector, lookVector);
 		}
-		if(Keyboard.isKeyDown(Keyboard.KEY_S)){		
-			Vector3f.add(side, lookVector, lookVector);
-		}
-		if(Keyboard.isKeyDown(Keyboard.KEY_A)){
+		if(Keyboard.isKeyDown(Keyboard.KEY_S)){
 			Vector3f.add((Vector3f) forward.scale(-1), lookVector, lookVector);
 		}
+		if(Keyboard.isKeyDown(Keyboard.KEY_A)){
+			Vector3f.add((Vector3f) side.scale(-1), lookVector, lookVector);
+		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_D)){
-			Vector3f.add(forward, lookVector, lookVector);
+			Vector3f.add(side, lookVector, lookVector);
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)){
 			Vector3f.add((Vector3f) up.scale(-1), lookVector, lookVector);
@@ -344,30 +371,30 @@ public class RenderEngine2{
 			Vector3f.add(up, lookVector, lookVector);
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_LEFT)){
-			zAngle -= 0.01f;
+			yAngle -= rotateRate;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT)){
-			zAngle += 0.01f;
+			yAngle += rotateRate;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_UP)){
-			xAngle += 0.01f;
+			xAngle += rotateRate;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_DOWN)){
-			xAngle -= 0.01f;
+			xAngle -= rotateRate;
 		}
 		try{
 			lookVector.normalise();
 		} catch(IllegalStateException e){
 			
 		}
-		lookVector.scale(0.1f);
+		lookVector.scale(translateRate);
 		Vector3f.add(lookVector, translateVector, translateVector);
 		
 		if(Keyboard.isKeyDown(Keyboard.KEY_R)){
 			translateVector = new Vector3f();
-			xAngle = -3.14f / 2f;
-			yAngle = 0.0f;
-			zAngle = 0.0f;
+			xAngle = defaultXAngle;
+			yAngle = defaultYAngle;
+			zAngle = defaultZAngle;
 		}
 	}
 	
@@ -425,43 +452,33 @@ public class RenderEngine2{
 		return createAtomicTransformationMatrix(q.x, q.y, q.z, translate);
 	}
 	
+	public static Matrix4f createRotationMatrix(float x, float y, float z){
+		Matrix4f rotationMatrix = new Matrix4f();
+		rotationMatrix.setIdentity();
+		rotationMatrix.rotate(x, new Vector3f(1.0f, 0.0f, 0.0f));
+		rotationMatrix.rotate(y, new Vector3f(0.0f, 1.0f, 0.0f));
+		rotationMatrix.rotate(z, new Vector3f(0.0f, 0.0f, 1.0f));
+		return rotationMatrix;
+	}
+	
 	public Matrix4f createAtomicTransformationMatrix(float x, float y, float z, Vector3f translate){
-		//Create the references
-		Matrix4f rx = new Matrix4f();
-		Matrix4f ry = new Matrix4f();
-		Matrix4f rz = new Matrix4f();
-		Matrix4f combined = new Matrix4f();
-		//Fill the 
-		//X matrix
-		rx.m00 = 1.0f;
-		rx.m11 = (float)Math.cos(x);
-		rx.m12 = (float) Math.sin(x);
-		rx.m21 = (float) -Math.sin(x);
-		rx.m22 = (float) Math.cos(x);
-		rx.m33 = 1.0f;
-		//Y matrix
-		ry.m00 = (float) Math.cos(y);
-		ry.m02 = (float) -Math.sin(y);
-		ry.m11 = 1.0f;
-		ry.m20 = (float) Math.sin(y);
-		ry.m22 = (float) Math.cos(y);
-		ry.m33 = 1.0f;
-		//Z matrix
-		rz.m00 = (float) Math.cos(z);
-		rz.m01 = (float) Math.sin(z);
-		rz.m10 = (float) -Math.sin(z);
-		rz.m11 = (float) Math.cos(z);
-		rz.m22 = 1.0f;
-		rz.m33 = 1.0f;
+		Matrix4f rotationComplete = createRotationMatrix(x, y, z);
+		Matrix4f translationMatrix = new Matrix4f();
 		
-		Matrix4f.mul(rx, ry, combined);
-		Matrix4f.mul(combined, rz, combined);
-		
-		//Setup combined
-		combined.m30 = translate.x;
-		combined.m31 = translate.y;
-		combined.m32 = translate.z;
-		return combined;
+		translationMatrix.setIdentity();
+		translationMatrix.m30 = translate.x;
+		translationMatrix.m31 = translate.y;
+		translationMatrix.m32 = translate.z;
+		Matrix4f.mul(rotationComplete, translationMatrix, rotationComplete);
+		return rotationComplete;
+	}
+	
+	public Vector3f matrixVectorMultiplication(Matrix4f matrix, Vector3f vector){
+		Vector3f result = new Vector3f();
+		result.x = matrix.m00 * vector.x + matrix.m10 * vector.x + matrix.m20 * vector.x + matrix.m30 * vector.x;
+		result.y = matrix.m01 * vector.y + matrix.m11 * vector.y + matrix.m21 * vector.y + matrix.m31 * vector.y;
+		result.z = matrix.m02 * vector.z + matrix.m12 * vector.z + matrix.m22 * vector.z + matrix.m32 * vector.z;
+		return result;
 	}
 	
 	public static Matrix4f newIdentityMatrix(){

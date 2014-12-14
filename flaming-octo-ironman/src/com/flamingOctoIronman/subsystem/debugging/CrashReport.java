@@ -15,7 +15,7 @@ public class CrashReport {
 	private FileWriter writer;
 	
 	public CrashReport(DeathReason deathReason) {
-		writer = ResourceManager.getFileWriter(ResourceManager.getFileDir("logs/crashlog_" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ".txt"));
+		writer = ResourceManager.getFileWriter(ResourceManager.getFileDir("logs/crashlog_" + new SimpleDateFormat("yyyy-MM-dd HH-mm-ss").format(new Date()) + ".txt"));
 		
 		//Output for file
 		try {
