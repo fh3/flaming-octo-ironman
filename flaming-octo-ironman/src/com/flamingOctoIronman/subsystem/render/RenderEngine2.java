@@ -341,18 +341,13 @@ public class RenderEngine2{
 		}
 		//Calculate vectors
 		forward = createVector(0.0f, 0.0f, 1.0f);
+		forward = matrixVectorMultiplication(createRotationMatrix(0, yAngle, 0), forward);
 		forward.x *= -1;
-		out.println(forward.toString());
-		//forward.x += yAngle;
-		//forward.y += xAngle;
-		//forward.z += zAngle;
-		if(forward.length() != 0.0f){
-			forward.normalise();
-		}
+		forward.normalise();
 		Vector3f.cross(forward, createVector(0, 1, 0), side);
-		//side.normalise();
+		side.normalise();
 		Vector3f.cross(forward, side, up);
-		//up.normalise();
+		up.normalise();
 		lookVector = new Vector3f();
 		if(Keyboard.isKeyDown(Keyboard.KEY_W)){
 			Vector3f.add(forward, lookVector, lookVector);
@@ -373,16 +368,16 @@ public class RenderEngine2{
 			Vector3f.add(up, lookVector, lookVector);
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_LEFT)){
-			yAngle += rotateRate;
-		}
-		if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT)){
 			yAngle -= rotateRate;
 		}
+		if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT)){
+			yAngle += rotateRate;
+		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_UP)){
-			xAngle += rotateRate;
+			xAngle -= rotateRate;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_DOWN)){
-			xAngle -= rotateRate;
+			xAngle += rotateRate;
 		}
 		try{
 			lookVector.normalise();
