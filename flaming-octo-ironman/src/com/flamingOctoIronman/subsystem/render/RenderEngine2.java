@@ -341,8 +341,8 @@ public class RenderEngine2{
 		}
 		//Calculate vectors
 		forward = createVector(0.0f, 0.0f, 1.0f);
-		forward = matrixVectorMultiplication(createRotationMatrix(0, yAngle, 0), forward);
-		out.println(matrixVectorMultiplication(createRotationMatrix(xAngle, zAngle, yAngle), forward).toString());
+		forward.x *= -1;
+		out.println(forward.toString());
 		//forward.x += yAngle;
 		//forward.y += xAngle;
 		//forward.z += zAngle;
