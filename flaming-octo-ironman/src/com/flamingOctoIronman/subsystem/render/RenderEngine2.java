@@ -147,7 +147,7 @@ public class RenderEngine2{
 	//Camera data
 	private final float defaultXAngle = 0.0f;
 	private final float defaultYAngle = 0.0f;
-	private final float defaultZAngle = 0.0f;	//Set to a negligibly low value to prevent a gimble lock 
+	private final float defaultZAngle = 0.0f;
 	private float xAngle = defaultXAngle;
 	private float yAngle = defaultYAngle;
 	private float zAngle = defaultZAngle;
@@ -155,7 +155,7 @@ public class RenderEngine2{
 	private Vector3f side = new Vector3f();
 	private Vector3f up = new Vector3f();
 	private Matrix4f cameraMatrix = new Matrix4f();
-	private Vector3f translateVector = createVector(0.0f, 0.0f, 0.000001f);
+	private Vector3f translateVector = createVector(0.0f, 0.0f, 0.0f);
 	private Vector3f lookVector = new Vector3f();
 	private float rotateRate = 0.01f;
 	private float translateRate = 0.1f;
@@ -272,12 +272,12 @@ public class RenderEngine2{
 		
 		//GL11.glEnable(GL11.GL_TEXTURE_2D);
 		
-		OBJEntityList.add(new Model(ResourceManager.getFileDir("objects/ComplexShape.obj"), ResourceManager.getFileDir("textures/ComplexTexture.bmp")));
+		//OBJEntityList.add(new Model(ResourceManager.getFileDir("objects/ComplexShape.obj"), ResourceManager.getFileDir("textures/ComplexTexture.bmp")));
 		primitiveList.add(new Point(new Vector3f(1.0f, 1.0f, 1.0f), new Vector3f(1.0f, 1.0f, 1.0f), 10.0f));
 		primitiveList.add(new Line(new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(10.0f, 0.0f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f), 2.0f));
 		primitiveList.add(new Line(new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.0f, 10.0f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f), 2.0f));
 		primitiveList.add(new Line(new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.0f, 0.0f, 10.0f), new Vector3f(0.0f, 0.0f, 1.0f), 2.0f));
-		primitiveList.add(new Triangle(new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f), new Vector3f(1.0f, 0.0f, 1.0f)));
+		//primitiveList.add(new Triangle(new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f), new Vector3f(1.0f, 0.0f, 1.0f)));
 		primitiveList.add(null);
 
 		out.println("Done loading");
@@ -291,7 +291,7 @@ public class RenderEngine2{
 	 */
 	@EventHandler(event = "GameLoopEvent")
 	public void render(){
-		primitiveList.set(5, new Line(Vector3f.add(translateVector, forward, null), translateVector, new Vector3f(1.0f, 1.0f, 0.0f), 2.0f));
+		primitiveList.set(4, new Point(translateVector, new Vector3f(1.0f, 1.0f, 0.0f), 20.0f));
 		//Clear the screen, color and depth buffer
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		
@@ -341,9 +341,11 @@ public class RenderEngine2{
 		}
 		//Calculate vectors
 		forward = createVector(0.0f, 0.0f, 1.0f);
-		forward.x -= yAngle;
-		forward.y += xAngle;
-		forward.z += zAngle;
+		forward = matrixVectorMultiplication(createRotationMatrix(0, yAngle, 0), forward);
+		out.println(matrixVectorMultiplication(createRotationMatrix(xAngle, zAngle, yAngle), forward).toString());
+		//forward.x += yAngle;
+		//forward.y += xAngle;
+		//forward.z += zAngle;
 		if(forward.length() != 0.0f){
 			forward.normalise();
 		}
@@ -371,10 +373,10 @@ public class RenderEngine2{
 			Vector3f.add(up, lookVector, lookVector);
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_LEFT)){
-			yAngle -= rotateRate;
+			yAngle += rotateRate;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT)){
-			yAngle += rotateRate;
+			yAngle -= rotateRate;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_UP)){
 			xAngle += rotateRate;
@@ -475,9 +477,9 @@ public class RenderEngine2{
 	
 	public Vector3f matrixVectorMultiplication(Matrix4f matrix, Vector3f vector){
 		Vector3f result = new Vector3f();
-		result.x = matrix.m00 * vector.x + matrix.m10 * vector.x + matrix.m20 * vector.x + matrix.m30 * vector.x;
-		result.y = matrix.m01 * vector.y + matrix.m11 * vector.y + matrix.m21 * vector.y + matrix.m31 * vector.y;
-		result.z = matrix.m02 * vector.z + matrix.m12 * vector.z + matrix.m22 * vector.z + matrix.m32 * vector.z;
+		result.x = matrix.m00 * vector.x + matrix.m10 * vector.y + matrix.m20 * vector.z;
+		result.y = matrix.m01 * vector.x + matrix.m11 * vector.y + matrix.m21 * vector.z;
+		result.z = matrix.m02 * vector.x + matrix.m12 * vector.y + matrix.m22 * vector.z;
 		return result;
 	}
 	
