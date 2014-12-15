@@ -272,12 +272,12 @@ public class RenderEngine2{
 		
 		//GL11.glEnable(GL11.GL_TEXTURE_2D);
 		
-		//OBJEntityList.add(new Model(ResourceManager.getFileDir("objects/ComplexShape.obj"), ResourceManager.getFileDir("textures/ComplexTexture.bmp")));
+		OBJEntityList.add(new Model(ResourceManager.getFileDir("objects/testobject2.obj"), ResourceManager.getFileDir("textures/ForQuintpt2.bmp")));
 		primitiveList.add(new Point(new Vector3f(1.0f, 1.0f, 1.0f), new Vector3f(1.0f, 1.0f, 1.0f), 10.0f));
 		primitiveList.add(new Line(new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(10.0f, 0.0f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f), 2.0f));
 		primitiveList.add(new Line(new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.0f, 10.0f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f), 2.0f));
 		primitiveList.add(new Line(new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.0f, 0.0f, 10.0f), new Vector3f(0.0f, 0.0f, 1.0f), 2.0f));
-		//primitiveList.add(new Triangle(new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f), new Vector3f(1.0f, 0.0f, 1.0f)));
+		primitiveList.add(new Triangle(new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f), new Vector3f(1.0f, 0.0f, 1.0f)));
 		primitiveList.add(null);
 
 		out.println("Done loading");
@@ -291,7 +291,7 @@ public class RenderEngine2{
 	 */
 	@EventHandler(event = "GameLoopEvent")
 	public void render(){
-		primitiveList.set(4, new Point(translateVector, new Vector3f(1.0f, 1.0f, 0.0f), 20.0f));
+		//primitiveList.set(4, new Point(translateVector, new Vector3f(1.0f, 1.0f, 0.0f), 20.0f));
 		//Clear the screen, color and depth buffer
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		
@@ -306,12 +306,15 @@ public class RenderEngine2{
 		GL11.glEnable(GL32.GL_DEPTH_CLAMP);
 
 		for(int i = 0; i < primitiveList.size(); i++){
-			GL11.glPointSize(10.0f);
-			primitiveList.get(i).renderObject();
+			if(primitiveList.get(i) != null){
+				primitiveList.get(i).renderObject();
+			}
 		}
 		for(int i = 0; i< OBJEntityList.size(); i++){
-			OBJEntityList.get(i).getTexture().bind();
-			OBJEntityList.get(i).getPrimitive().renderObject();
+			if(OBJEntityList.get(i) != null){
+				OBJEntityList.get(i).getTexture().bind();
+				OBJEntityList.get(i).getPrimitive().renderObject();
+			}
 		}
 		
 		//Deselect the shader program
