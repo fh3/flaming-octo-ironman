@@ -7,30 +7,17 @@ in vec2 UV;	//UV coordinates from the vertex shader
 in vec3 color;	//Color values from the vertex shader
 uniform int colorType = COLOR;	//How to color the fragment
 
-out vec3 outputColor;	//Fragment color output
+out vec4 outputColor;	//Fragment color output
 
 uniform sampler2D textureSampler;	//Texture to use
-
-uniform int lightColor = 1;	//Light color
-uniform int lightPower = 1;	//Light power
-
-uniform vec3 lightSource;
-
-in vec3 Normal_cameraspace;
-in vec3 LightDirection_cameraspace;
-in vec4 Position_worldspace;
 
 void main()
 {
 	if(colorType == TEXTURE){
-		outputColor = texture(textureSampler, UV).rgb;
+		outputColor = texture(textureSampler, UV) * gl_Color;
 	} else if(colorType == COLOR){
-		outputColor = color;
+		outputColor = vec4(color, 0.0);
 	} else {
-		outputColor = vec3(0.5, 0.5, 0.5);
+		outputColor = vec4(0.5, 0.5, 0.5, 0.0);
 	}
-	
-	float fragDistance = distance(Position_worldspace.xyz, lightSource);
-	
-	outputColor = outputColor * lightColor * lightPower * clamp( dot( normalize(Normal_cameraspace), normalize(LightDirection_cameraspace) ), 0,1 ) / (fragDistance * fragDistance);
 }
