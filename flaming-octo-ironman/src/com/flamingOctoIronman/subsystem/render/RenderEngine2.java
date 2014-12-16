@@ -137,11 +137,11 @@ public class RenderEngine2{
 	};
 		
 	//Shader uniforms and data
-	private int cameraToClipUniform;
-	private float[] cameraToClipMatrix = new float[16];
-	private int modelToCameraUniform;
-	private float[] modelToCameraMatrix = new float[16];
-	private int cameraMatrixUniform;
+	private int perspectiveMatrixUniform;
+	private float[] perspectiveMatrix = new float[16];
+	private int modelMatrixUniform;
+	private float[] modelMatrix = new float[16];
+	private int viewMatrixUniform;
 	private int colorTypeUniform;
 
 	//Camera data
@@ -154,7 +154,7 @@ public class RenderEngine2{
 	private Vector3f forward = new Vector3f();
 	private Vector3f side = new Vector3f();
 	private Vector3f up = new Vector3f();
-	private Matrix4f cameraMatrix = new Matrix4f();
+	private Matrix4f viewMatrix = new Matrix4f();
 	private Vector3f translateVector = createVector(0.0f, 0.0f, 0.0f);
 	private Vector3f lookVector = new Vector3f();
 	private float rotateRate = 0.01f;
@@ -218,9 +218,9 @@ public class RenderEngine2{
 		program.compileProgram();//Compile the program
 		
 		//Get uniforms
-		cameraToClipUniform = GL20.glGetUniformLocation(program.getProgram(), "cameraToClipMatrix");
-		modelToCameraUniform = GL20.glGetUniformLocation(program.getProgram(), "modelToCameraMatrix");
-		cameraMatrixUniform = GL20.glGetUniformLocation(program.getProgram(), "cameraMatrix");
+		perspectiveMatrixUniform = GL20.glGetUniformLocation(program.getProgram(), "perspectiveMatrix");
+		modelMatrixUniform = GL20.glGetUniformLocation(program.getProgram(), "modelMatrix");
+		viewMatrixUniform = GL20.glGetUniformLocation(program.getProgram(), "viewMatrix");
 		colorTypeUniform = GL20.glGetUniformLocation(program.getProgram(), "colorType");
 		
 		//Far and near positions
@@ -228,24 +228,24 @@ public class RenderEngine2{
 		float zFar = 45.0f;
 		
 		//Compute the camera space to clip space matrix
-		cameraToClipMatrix[0] = frustumScale;
-		cameraToClipMatrix[5] = frustumScale;
-		cameraToClipMatrix[10] = (zFar + zNear) / (zNear - zFar);
-		cameraToClipMatrix[14] = (2 * zFar * zNear) / (zNear - zFar);
-		cameraToClipMatrix[11] = -1;
+		perspectiveMatrix[0] = frustumScale;
+		perspectiveMatrix[5] = frustumScale;
+		perspectiveMatrix[10] = (zFar + zNear) / (zNear - zFar);
+		perspectiveMatrix[14] = (2 * zFar * zNear) / (zNear - zFar);
+		perspectiveMatrix[11] = -1;
 		
 		//Setup the model matrix TODO change this
-		modelToCameraMatrix[0] = 1.0f;
-		modelToCameraMatrix[5] = 1.0f;
-		modelToCameraMatrix[10] = 1.0f;
-		modelToCameraMatrix[15] = 1.0f;
+		modelMatrix[0] = 1.0f;
+		modelMatrix[5] = 1.0f;
+		modelMatrix[10] = 1.0f;
+		modelMatrix[15] = 1.0f;
 		
 		//Run the program once
 		program.startProgram();
 		
 		//Putting data into the shaders
-		GL20.glUniformMatrix4(cameraToClipUniform, false, BufferBuilder.createFloatBuffer(cameraToClipMatrix));
-		GL20.glUniformMatrix4(modelToCameraUniform, false, BufferBuilder.createFloatBuffer(modelToCameraMatrix));
+		GL20.glUniformMatrix4(perspectiveMatrixUniform, false, BufferBuilder.createFloatBuffer(perspectiveMatrix));
+		GL20.glUniformMatrix4(modelMatrixUniform, false, BufferBuilder.createFloatBuffer(modelMatrix));
 		
 		//Stop the program
 		program.stopProgram();
@@ -295,13 +295,13 @@ public class RenderEngine2{
 		//Clear the screen, color and depth buffer
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		
-		cameraMatrix = createAtomicTransformationMatrix(xAngle, yAngle, zAngle, translateVector);
+		viewMatrix = createAtomicTransformationMatrix(xAngle, yAngle, zAngle, translateVector);
 
 		//Run the shader program
 		program.startProgram();
 		
-		GL20.glUniformMatrix4(cameraToClipUniform, false, BufferBuilder.createFloatBuffer(cameraToClipMatrix));
-		GL20.glUniformMatrix4(cameraMatrixUniform, false, BufferBuilder.createFloatBuffer(cameraMatrix));
+		GL20.glUniformMatrix4(perspectiveMatrixUniform, false, BufferBuilder.createFloatBuffer(perspectiveMatrix));
+		GL20.glUniformMatrix4(viewMatrixUniform, false, BufferBuilder.createFloatBuffer(viewMatrix));
 		
 		GL11.glEnable(GL32.GL_DEPTH_CLAMP);
 
@@ -400,9 +400,9 @@ public class RenderEngine2{
 	
 	public void resizeDisplay(){
 		GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());	//Change the viewport size to the current window size
-		cameraToClipMatrix[0] = frustumScale / ((float)Display.getWidth() / Display.getHeight());	//Adjust the perspective matrix
+		perspectiveMatrix[0] = frustumScale / ((float)Display.getWidth() / Display.getHeight());	//Adjust the perspective matrix
 		program.startProgram();	//Run the program
-		GL20.glUniformMatrix4(cameraToClipUniform, false, BufferBuilder.createFloatBuffer(cameraToClipMatrix));	//Update the perspective matrix in the VRAM
+		GL20.glUniformMatrix4(perspectiveMatrixUniform, false, BufferBuilder.createFloatBuffer(perspectiveMatrix));	//Update the perspective matrix in the VRAM
 		program.stopProgram();	//Stop the program
 	}
 		
