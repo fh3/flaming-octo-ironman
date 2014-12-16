@@ -12,21 +12,13 @@ uniform mat4 cameraToClipMatrix;	//View Matrix
 uniform mat4 modelToCameraMatrix;	//Model Matrix
 uniform mat4 cameraMatrix;	//Perspective Matrix
 
+smooth out vec4 vNormal;
+
 void main()
 {	
 	gl_Position = cameraToClipMatrix * modelToCameraMatrix * cameraMatrix * vec4(position, 1.0);
 	
-	//The normal in eye space
-	vec3 n = (cameraToClipMatrix * modelToCameraMatrix * vec4(normal, 0.0)).xyz;
-	//The light's direction vector normalized
-	vec3 lightDirection = normalize(gl_LightSource[0].position).xyz;
-	//The angle between n and lightDirection
-	float nLightDirectionAngle = max(dot(n, lightDirection), 0.0);
-	
-	//Compute the diffuse color
-	vec4 diffuse = gl_FrontMaterial.diffuse * gl_LightSource[0].diffuse;
-	
-	gl_FrontColor = nLightDirectionAngle * diffuse;
+	vNormal = cameraToClipMatrix * vec4(normal, 1.0);
 	
 	UV = vertexUV;
 	color = vertexColor;
