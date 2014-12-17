@@ -9,6 +9,8 @@ import com.flamingOctoIronman.subsystem.render.renderEntity.Primitive;
 import com.flamingOctoIronman.subsystem.resource.ResourceManager;
 
 public class OBJLoader {
+	public static float[] normals;
+	
 	public static Primitive loadObject(File toLoad){
 		String[] lines = ResourceManager.ReadFile(toLoad).split("\n");
 		String[][] objectData = new String[lines.length][];
@@ -18,6 +20,7 @@ public class OBJLoader {
 		int normalCount = 0;
 		boolean usesMTL = false;
 		boolean usesNormals = false;
+		
 		for(int i = 0; i < lines.length; i++){
 			objectData[i] = lines[i].split(" ");
 		}
@@ -121,6 +124,9 @@ public class OBJLoader {
 			}
 		}
 		
+		normals = new float[indexCount * 3];	
+		
+		
 		if(usesNormals){
 			for(int i = 0; i < indexCount; i++){
 				objectBuffer[(i * 3) + 0 + indexCount * 5] = normalVerticies[(normalIndicies[i] - 1) * 3 + 0];
@@ -128,6 +134,7 @@ public class OBJLoader {
 				objectBuffer[(i * 3) + 2 + indexCount * 5] = normalVerticies[(normalIndicies[i] - 1) * 3 + 2];
 			}
 		}
+		
 		return new Primitive(objectBuffer, indexCount, GL11.GL_TRIANGLES, ColorMethod.TEXTURE);
 	}
 }

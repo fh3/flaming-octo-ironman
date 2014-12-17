@@ -34,7 +34,9 @@ void main()
 	}
 	
 	for(int i = 0; i < directionalLights.length(); i++){
-		float diffuseIntensity = max(0.0, dot(normalize(vNormal), vec4(directionalLights[i].vDirection, 0.0)));
-		outputColor = outputColor * vec4(directionalLights[i].vColor, 0.0) * vec4(directionalLights[i].vColor*(directionalLights[i].intensity + diffuseIntensity), 0.0);
+		float diffuseIntensity = clamp(dot(normalize(vNormal), vec4(directionalLights[i].vDirection, 0.0)), 0.0, 1.0);
+		outputColor = outputColor * diffuseIntensity; //vec4(directionalLights[i].vColor, 0.0) * vec4(directionalLights[i].vColor * (directionalLights[i].intensity + diffuseIntensity), 0.0);
 	}
+	
+	outputColor = vNormal;
 }

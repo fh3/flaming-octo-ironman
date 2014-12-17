@@ -16,9 +16,9 @@ smooth out vec4 vNormal;
 
 void main()
 {	
-	gl_Position = perspectiveMatrix * modelMatrix * viewMatrix * vec4(position, 1.0);
+	gl_Position = perspectiveMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
 	
-	vNormal = perspectiveMatrix * modelMatrix * viewMatrix * vec4(normal, 0.0);
+	vNormal = perspectiveMatrix * viewMatrix * modelMatrix * vec4(normal, 0.0);
 	
 	UV = vertexUV;
 	color = vertexColor;
