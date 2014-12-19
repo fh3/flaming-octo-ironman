@@ -31,9 +31,9 @@ public class Primitive extends RenderEntity3D {
 		GL20.glEnableVertexAttribArray(method.getLocation());	//Enable the attribute at location = 1 (color attribute)
 		GL20.glEnableVertexAttribArray(Attribute.NORMAL.getLocation());	//Enable the normal attribute
 		//Set attribute information
-		GL20.glVertexAttribPointer(Attribute.POSITION.getLocation(), Attribute.POSITION.getSize(), GL11.GL_FLOAT, false, 0, 0 * 0 * 4);	//Attribute for vertex position 
-		GL20.glVertexAttribPointer(method.getLocation(), method.getSize(), GL11.GL_FLOAT, false, 0, indexCount * Attribute.POSITION.getSize() * 4);	//Attribute for color position, offset of number of vertices * 4 (xyzw)
-		GL20.glVertexAttribPointer(Attribute.NORMAL.getLocation(), Attribute.NORMAL.getSize(), GL11.GL_FLOAT, false, 0, indexCount * method.getSize() * 4);
+		GL20.glVertexAttribPointer(Attribute.POSITION.getLocation(), Attribute.POSITION.getSize(), GL11.GL_FLOAT, false, 0, indexCount * 0 * 4);	//Attribute for vertex position 
+		GL20.glVertexAttribPointer(method.getLocation(), method.getSize(), GL11.GL_FLOAT, false, 0, indexCount * 0 * 4 + indexCount * Attribute.POSITION.getSize() * 4);	//Attribute for color position, offset of number of vertices * 4 (xyzw)
+		GL20.glVertexAttribPointer(Attribute.NORMAL.getLocation(), Attribute.NORMAL.getSize(), GL11.GL_FLOAT, false, 0, indexCount * 0 * 4 + indexCount * Attribute.POSITION.getSize() * 4 + indexCount * method.getSize() * 4);
 		
 		//Draw the triangles
 		GL11.glDrawArrays(GL_PRIMITIVE_TYPE, 0, indexCount);

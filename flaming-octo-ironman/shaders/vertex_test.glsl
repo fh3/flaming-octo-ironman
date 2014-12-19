@@ -18,7 +18,7 @@ void main()
 {	
 	gl_Position = perspectiveMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
 	
-	vNormal = perspectiveMatrix * viewMatrix * modelMatrix * vec4(normal, 0.0);
+	vNormal = modelMatrix * viewMatrix * perspectiveMatrix * vec4(normal, 0.0);
 	
 	UV = vertexUV;
 	color = vertexColor;

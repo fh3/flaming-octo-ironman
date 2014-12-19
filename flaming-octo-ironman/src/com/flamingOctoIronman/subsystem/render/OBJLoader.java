@@ -126,7 +126,6 @@ public class OBJLoader {
 		
 		normals = new float[indexCount * 3];	
 		
-		
 		if(usesNormals){
 			for(int i = 0; i < indexCount; i++){
 				objectBuffer[(i * 3) + 0 + indexCount * 5] = normalVerticies[(normalIndicies[i] - 1) * 3 + 0];

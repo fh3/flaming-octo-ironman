@@ -21,22 +21,20 @@ struct SimpleDirectionalLight
 };
 
 
-uniform SimpleDirectionalLight directionalLights[] = SimpleDirectionalLight[](SimpleDirectionalLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), 0.0));
+uniform SimpleDirectionalLight directionalLights[] = SimpleDirectionalLight[](SimpleDirectionalLight(vec3(5.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), 1.0));
 
 void main()
 {
 	if(colorType == TEXTURE){
 		outputColor = texture(textureSampler, UV);
+		for(int i = 0; i < directionalLights.length(); i++){
+			float diffuseIntensity = clamp(dot(normalize(vNormal), vec4(directionalLights[i].vDirection, 0.0)), 0.0, 1.0);
+			outputColor = outputColor * diffuseIntensity * vec4(directionalLights[i].vColor, 0.0) * vec4(directionalLights[i].vColor * (directionalLights[i].intensity + diffuseIntensity), 0.0);
+		}
 	} else if(colorType == COLOR){
 		outputColor = vec4(color, 0.0);
 	} else {
 		outputColor = vec4(0.5, 0.5, 0.5, 0.0);
 	}
 	
-	for(int i = 0; i < directionalLights.length(); i++){
-		float diffuseIntensity = clamp(dot(normalize(vNormal), vec4(directionalLights[i].vDirection, 0.0)), 0.0, 1.0);
-		outputColor = outputColor * diffuseIntensity; //vec4(directionalLights[i].vColor, 0.0) * vec4(directionalLights[i].vColor * (directionalLights[i].intensity + diffuseIntensity), 0.0);
-	}
-	
-	outputColor = vNormal;
 }

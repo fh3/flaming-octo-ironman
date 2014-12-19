@@ -29,7 +29,7 @@ public class Triangle extends Primitive {
 				
 				color.x,
 				color.y,
-				color.z	
+				color.z
 		}, 3, GL11.GL_TRIANGLES, ColorMethod.COLOR);
 	}
 
