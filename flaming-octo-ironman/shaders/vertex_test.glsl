@@ -12,13 +12,17 @@ uniform mat4 perspectiveMatrix;	//Perspective Matrix
 uniform mat4 modelMatrix;	//Model Matrix
 uniform mat4 viewMatrix;	//View Matrix
 
-smooth out vec4 vNormal;
+smooth out vec3 vNormal;
+
+smooth out vec3 position_worldspace;
 
 void main()
 {	
 	gl_Position = perspectiveMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
 	
-	vNormal = modelMatrix * viewMatrix * perspectiveMatrix * vec4(normal, 0.0);
+	vNormal = normalize(transpose(inverse(mat3(modelMatrix))) * normal);
+	
+	position_worldspace = vec3(modelMatrix * vec4(position, 1.0)).xyz;
 	
 	UV = vertexUV;
 	color = vertexColor;
