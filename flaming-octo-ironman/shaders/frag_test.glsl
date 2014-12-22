@@ -38,7 +38,7 @@ struct Material	//Structure for material
 uniform PointLight pointLight = PointLight(vec3(0.0, 0.0, 1.0), 1.0, 0.01, 0);	//The point light
 uniform vec3 cameraPos;	//The camera's current position in worldspace
 
-uniform Material material = Material(1.5, vec3(1.0, 1.0, 1.0));	//The material (or default)
+uniform Material material = Material(50, vec3(1.0, 1.0, 1.0));	//The material (or default)
 //------------------------
 
 //--------Final color--------
@@ -66,6 +66,7 @@ void main()
 	
 	//----Point lights----
 	//Sets pointFinalColor to the surface color as it's effected by the point light
+	//Uses phong shading
 	vec4 pointFinalColor;
 	if(colorType == TEXTURE){	 
 		vec3 surfaceToLight = normalize(pointLight.position - surfacePosition);	//Vector from surface to light

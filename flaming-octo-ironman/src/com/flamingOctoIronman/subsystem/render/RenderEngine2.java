@@ -224,7 +224,7 @@ public class RenderEngine2{
 		modelMatrixUniform = GL20.glGetUniformLocation(program.getProgram(), "modelMatrix");
 		
 		//Far and near positions
-		float zNear = 1.0f;
+		float zNear = 0f;
 		float zFar = 45.0f;
 		
 		//Compute the camera space to clip space matrix
@@ -257,7 +257,7 @@ public class RenderEngine2{
 		
 		//GL11.glEnable(GL11.GL_TEXTURE_2D);
 		
-		OBJEntityList.add(new Model(ResourceManager.getFileDir("objects/testobject3.obj"), ResourceManager.getFileDir("textures/quintneedsthis.bmp")));
+		OBJEntityList.add(new Model(ResourceManager.getFileDir("objects/spheretest1.obj"), ResourceManager.getFileDir("textures/Spheretest1_texture.bmp")));
 		primitiveList.add(new Point(new Vector3f(1.0f, 1.0f, 1.0f), new Vector3f(1.0f, 1.0f, 1.0f), 10.0f));
 		primitiveList.add(new Line(new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(10.0f, 0.0f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f), 2.0f));
 		primitiveList.add(new Line(new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.0f, 10.0f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f), 2.0f));
