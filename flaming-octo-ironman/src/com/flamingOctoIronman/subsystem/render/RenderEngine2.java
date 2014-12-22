@@ -137,12 +137,12 @@ public class RenderEngine2{
 	};
 		
 	//Shader uniforms and data
-	private int perspectiveMatrixUniform;
-	private float[] perspectiveMatrix = new float[16];
-	private int modelMatrixUniform;
-	private float[] modelMatrix = new float[16];
-	private int viewMatrixUniform;
+	private int pvmMatrixUniform;
+	private Matrix4f perspectiveMatrix = new Matrix4f();
+	private Matrix4f modelMatrix = new Matrix4f();
 	private int colorTypeUniform;
+	private int cameraPosUniform;
+	private int modelMatrixUniform;
 
 	//Camera data
 	private final float defaultXAngle = 0.0f;
@@ -160,7 +160,7 @@ public class RenderEngine2{
 	private float rotateRate = 0.01f;
 	private float translateRate = 0.1f;
 	
-	private float frustumScale = calculateFrustumScale(90f);
+	private float frustumScale = calculateFrustumScale(70f);
 	
 	private StreamManager out;
 	
@@ -218,42 +218,27 @@ public class RenderEngine2{
 		program.compileProgram();//Compile the program
 		
 		//Get uniforms
-		perspectiveMatrixUniform = GL20.glGetUniformLocation(program.getProgram(), "perspectiveMatrix");
-		modelMatrixUniform = GL20.glGetUniformLocation(program.getProgram(), "modelMatrix");
-		viewMatrixUniform = GL20.glGetUniformLocation(program.getProgram(), "viewMatrix");
+		pvmMatrixUniform = GL20.glGetUniformLocation(program.getProgram(), "pvmMatrix");
 		colorTypeUniform = GL20.glGetUniformLocation(program.getProgram(), "colorType");
+		cameraPosUniform = GL20.glGetUniformLocation(program.getProgram(), "cameraPos");
+		modelMatrixUniform = GL20.glGetUniformLocation(program.getProgram(), "modelMatrix");
 		
 		//Far and near positions
 		float zNear = 1.0f;
 		float zFar = 45.0f;
 		
 		//Compute the camera space to clip space matrix
-		perspectiveMatrix[0] = frustumScale;
-		perspectiveMatrix[5] = frustumScale;
-		perspectiveMatrix[10] = (zFar + zNear) / (zNear - zFar);
-		perspectiveMatrix[14] = (2 * zFar * zNear) / (zNear - zFar);
-		perspectiveMatrix[11] = -1;
+		perspectiveMatrix.m00 = frustumScale;
+		perspectiveMatrix.m11 = frustumScale;
+		perspectiveMatrix.m22 = (zFar + zNear) / (zNear - zFar);
+		perspectiveMatrix.m32 = (2 * zFar * zNear) / (zNear - zFar);
+		perspectiveMatrix.m23 = -1;
 		
-		//Setup the model matrix TODO change this
-		modelMatrix[0] = 1.0f;
-		modelMatrix[5] = 1.0f;
-		modelMatrix[10] = 1.0f;
-		modelMatrix[15] = 1.0f;
-		
-		//Run the program once
-		program.startProgram();
-		
-		//Putting data into the shaders
-		GL20.glUniformMatrix4(perspectiveMatrixUniform, false, BufferBuilder.createFloatBuffer(perspectiveMatrix));
-		GL20.glUniformMatrix4(modelMatrixUniform, false, BufferBuilder.createFloatBuffer(modelMatrix));
-		
-		//Stop the program
-		program.stopProgram();
-		
-		//Setup the triangle to be rendered	
-		//primitiveList.add(OBJLoader.loadObject(ResourceManager.getFileDir("objects/testing/test.obj")));
-		//GL11.glLineWidth(1.0f);
-		//primitiveList.add(new Primitive(r2, GL11.GL_LINES));
+		//Setup the model matrix TODO change this based on mesh's translation
+		modelMatrix.m00 = 1.0f;
+		modelMatrix.m11 = 1.0f;
+		modelMatrix.m22 = 1.0f;
+		modelMatrix.m33 = 1.0f;
 		
 		//Create a Vertex Array Object
 		int VAO = GL30.glGenVertexArrays();
@@ -300,8 +285,9 @@ public class RenderEngine2{
 		//Run the shader program
 		program.startProgram();
 		
-		GL20.glUniformMatrix4(perspectiveMatrixUniform, false, BufferBuilder.createFloatBuffer(perspectiveMatrix));
-		GL20.glUniformMatrix4(viewMatrixUniform, false, BufferBuilder.createFloatBuffer(viewMatrix));
+		GL20.glUniformMatrix4(pvmMatrixUniform, false, BufferBuilder.createFloatBuffer(Matrix4f.mul(Matrix4f.mul(perspectiveMatrix, viewMatrix, null), modelMatrix, null)));
+		GL20.glUniform3f(cameraPosUniform, translateVector.x, translateVector.y, translateVector.z);
+		GL20.glUniformMatrix4(modelMatrixUniform, false, BufferBuilder.createFloatBuffer(modelMatrix));
 		
 		GL11.glEnable(GL32.GL_DEPTH_CLAMP);
 
@@ -400,10 +386,7 @@ public class RenderEngine2{
 	
 	public void resizeDisplay(){
 		GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());	//Change the viewport size to the current window size
-		perspectiveMatrix[0] = frustumScale / ((float)Display.getWidth() / Display.getHeight());	//Adjust the perspective matrix
-		program.startProgram();	//Run the program
-		GL20.glUniformMatrix4(perspectiveMatrixUniform, false, BufferBuilder.createFloatBuffer(perspectiveMatrix));	//Update the perspective matrix in the VRAM
-		program.stopProgram();	//Stop the program
+		perspectiveMatrix.m00 = frustumScale / ((float)Display.getWidth() / Display.getHeight());	//Adjust the perspective matrix
 	}
 		
 	/**

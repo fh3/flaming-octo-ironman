@@ -1,53 +1,57 @@
 #version 330
 
+//--------Color from texture--------
+//----Constants----
 const int TEXTURE = 0;
 const int COLOR = 1;
 
+//----In variables----
 in vec2 UV;	//UV coordinates from the vertex shader
 in vec3 color;	//Color values from the vertex shader
-uniform int colorType = COLOR;	//How to color the fragment
 
-out vec4 outputColor;	//Fragment color output
-
+//----Uniform variables----
+uniform int colorType;	//How to color the fragment
 uniform sampler2D textureSampler;	//Texture to use
+//---------------------------------
 
-uniform vec3 cameraPosition;
+//--------Lighting--------
+//----In variables----
+in vec3 vNormal;	//The vertex normal in worldspace
+in vec3 surfacePosition;	//The surface's position in worldspace
 
-smooth in vec3 vNormal;
-
-smooth in vec3 position_worldspace;
-
-struct DirectionalLight
-{
-	vec3 vColor;	//The light's color
-	vec3 vDirection;	//The light's direction
-	float fintensity;	//The light's strength
-};
-
-struct PointLight 
+//----Structures----
+struct PointLight	//Structure for point light
 { 
    vec3 position; //The light's position
    float intensity; //The light's strength
-   float ambient;	//The light's ambient coefficient
+   float ambientCoefficient;	//The light's ambient coefficient
+   float attenuation;	//The light's intensity over distance
 }; 
 
-struct Material
+struct Material	//Structure for material
 {
-	float shine;
-	vec3 specularColor;
+	float shine;	//The material's shine
+	vec3 specularColor;	//The material's specular color
 };
 
-uniform DirectionalLight directionalLights[] = DirectionalLight[](DirectionalLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), 1.0));
+//----Uniforms----
+uniform PointLight pointLight = PointLight(vec3(0.0, 0.0, 1.0), 1.0, 0.01, 0);	//The point light
+uniform vec3 cameraPos;	//The camera's current position in worldspace
 
-uniform PointLight pointLight = PointLight(vec3(0.0, 100.0, 0.0), 2.0, 0.5);
+uniform Material material = Material(1.5, vec3(1.0, 1.0, 1.0));	//The material (or default)
+//------------------------
 
-uniform Material material = Material(1.0, vec3(1.0, 1.0, 1.0));
+//--------Final color--------
+out vec4 outputColor;	//Fragment color output
+//---------------------------
 
 void main()
 {
+	vec4 debugColor;
+	//----------Color from texture--------
+	//Sets surfaceColor the the appropriate color from either the passed color or texture, defaults to grey
 	vec4 surfaceColor;
-
-	//Calculate the color based off of texture/passed color/none
+	
 	if(colorType == TEXTURE){
 		surfaceColor = texture(textureSampler, UV);
 	} else if(colorType == COLOR){
@@ -55,46 +59,55 @@ void main()
 	} else {
 		surfaceColor = vec4(0.5, 0.5, 0.5, 0.0);
 	}
-	/*
-	//Apply directional lighting
-	if(colorType == TEXTURE){
-		for(int i = 0; i < directionalLights.length(); i++){
-			float diffuseIntensity = max(0.0, dot(vNormal, directionalLights[i].vDirection));
-			outputColor = vec4(outputColor.rgb * diffuseIntensity * directionalLights[i].vColor * (directionalLights[i].vColor * (directionalLights[i].fintensity + diffuseIntensity)), outputColor.a);
-		}
-	}*/
-	//Apply point lights
-	vec3 diffuse;
-	vec3 ambient;
+	//------------------------------------
+	
+	//--------Lighting--------
+	//Lighting is only applied if a texture is being used (not color or default)
+	
+	//----Point lights----
+	//Sets pointFinalColor to the surface color as it's effected by the point light
+	vec4 pointFinalColor;
 	if(colorType == TEXTURE){	 
-		//----Diffuse----
-	    //Calculate the vector from this pixels surface to the light source
-	    vec3 surfaceToLight = normalize(pointLight.position - position_worldspace);
-	
-	    //Calculate the cosine of the angle of incidence
-	    float brightness = max(0.0, dot(vNormal, surfaceToLight));
-	
-	    //Calculate final color of the pixel
-	    diffuse = brightness * pointLight.intensity * surfaceColor.rgb;
-	    
-	    //----Ambient----
-	    //Calculate the ambient component
-	    ambient = pointLight.ambient * surfaceColor.xyz * pointLight.intensity;
-	    
-	    //----Specular----
-		float specularCoefficient = 0.0;
-		if(brightness > 0.0){
-		    specularCoefficient = pow(max(0.0, dot(normalize(, reflect(-surfaceToLight, normal))), material.shine);
-		}
-		vec3 surfaceToCamera = normalize(cameraPosition - surfacePosition);
-		vec3 specular = material.specularColor * specularCoefficient * pointLight.intensities;
+		vec3 surfaceToLight = normalize(pointLight.position - surfacePosition);	//Vector from surface to light
+    	vec3 surfaceToCamera = normalize(cameraPos - surfacePosition);	//Vector from camera to surface
+    	
+    	//--Ambient--
+    	vec3 ambient = pointLight.ambientCoefficient * surfaceColor.rgb * pointLight.intensity;
+    	
+    	//--Diffuse--
+    	float diffuseCoefficient = max(0.0, dot(vNormal, surfaceToLight));
+    	vec3 diffuse = diffuseCoefficient * surfaceColor.rgb * pointLight.intensity;
+    	
+    	//--Specular--
+    	float specularCoefficient = 0.0;
+    	vec3 surfaceToCamera_modified = vec3(-surfaceToCamera.x, -surfaceToCamera.y, surfaceToCamera.z);
+    	if(diffuseCoefficient > 0.0){	//No point in computing specular if diffuse is less than 0.0
+    		specularCoefficient = pow(max(0.0, dot(surfaceToCamera_modified, reflect(-surfaceToLight, vNormal))), material.shine);
+    	}
+    	vec3 specular = specularCoefficient * material.specularColor * pointLight.intensity;
+    	
+    	//--Attenuation--
+    	float distanceToLight = length(surfaceToLight);	//Distance from surface to light
+   		float attenuation = 1.0 / (1.0 + pointLight.attenuation * pow(distanceToLight, 2));	//Formula: 1.0/(1.0 + kd^2)
+   		
+   		//--Gamma--
+   		vec3 gamma = vec3(1.0/2.2);
+   		
+   		//--Output--
+   		vec3 linearColor = ambient + attenuation * (diffuse + specular);	//Color before gamma correction
+   		pointFinalColor = vec4(pow(linearColor, gamma), surfaceColor.a);
 	}
+	//------------------
 	
+	//------------------------
+	
+	//--------Sets the final fragment color--------
 	if(colorType == TEXTURE){
-		outputColor = vec4(diffuse, surfaceColor.a);
+		outputColor = pointFinalColor;
 	} else if(colorType == COLOR){
 		outputColor = surfaceColor;
 	} else {
 		outputColor = surfaceColor;
 	}
+	//---------------------------------------------
 }
