@@ -8,17 +8,32 @@ import org.lwjgl.opengl.GL30;
 import com.flamingOctoIronman.subsystem.resource.BufferBuilder;
 
 public class Primitive extends RenderEntity3D {
+	private final float[] buffer;
 	private final int indexCount;
 	private final int GL_PRIMITIVE_TYPE;
 	private static int VAO;
 	private final ColorMethod method;
 	private static int colorTypeUniform;
+	private String materialFile;
+	private String materialName;
 	
 	public Primitive(float[] buffer, int indexCount, int GL_PRIMITIVE_TYPE, ColorMethod method) {
 		super(RenderEntity3D.createVBO(BufferBuilder.createFloatBuffer(buffer), GL15.GL_ARRAY_BUFFER, GL15.GL_STATIC_DRAW));
+		this.buffer = buffer;
 		this.indexCount = indexCount;
 		this.GL_PRIMITIVE_TYPE = GL_PRIMITIVE_TYPE;
 		this.method = method;
+	}
+	
+	public Primitive(float[] buffer, int indexCount, int GL_PRIMITIVE_TYPE, ColorMethod method, String materialFile, String materialName){
+		this(buffer, indexCount, GL_PRIMITIVE_TYPE, method);
+		this.setMaterialFile(materialFile);
+		this.setMaterialName(materialName);
+	}
+	
+	@Override
+	public Primitive clone(){
+		return new Primitive(this.buffer, this.indexCount, this.GL_PRIMITIVE_TYPE, this.method);
 	}
 	
 	@Override
@@ -61,5 +76,21 @@ public class Primitive extends RenderEntity3D {
 	
 	public static void setColorTypeUniform(int colorTypeUniform){
 		Primitive.colorTypeUniform = colorTypeUniform;
+	}
+
+	public String getMaterialFile() {
+		return materialFile;
+	}
+
+	public void setMaterialFile(String materialFile) {
+		this.materialFile = materialFile;
+	}
+
+	public String getMaterialName() {
+		return materialName;
+	}
+
+	public void setMaterialName(String materialName) {
+		this.materialName = materialName;
 	}
 }

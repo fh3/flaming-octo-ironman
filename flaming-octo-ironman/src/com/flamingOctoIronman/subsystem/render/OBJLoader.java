@@ -20,6 +20,8 @@ public class OBJLoader {
 		int normalCount = 0;
 		boolean usesMTL = false;
 		boolean usesNormals = false;
+		String materialFile = null;
+		String materialName = null;
 		
 		for(int i = 0; i < lines.length; i++){
 			objectData[i] = lines[i].split(" ");
@@ -43,6 +45,12 @@ public class OBJLoader {
 			}
 			if(objectData[i][0].equals("vt")){
 				uvCount += 2;					
+			}
+			if(objectData[i][0].equals("mtllib")){
+				materialFile = objectData[i][1];
+			}
+			if(objectData[i][0].equals("usemtl")){
+				materialName = objectData[i][1];
 			}
 		}
 		float[] verticies = new float[vertexCount];
@@ -134,6 +142,6 @@ public class OBJLoader {
 			}
 		}
 		
-		return new Primitive(objectBuffer, indexCount, GL11.GL_TRIANGLES, ColorMethod.TEXTURE);
+		return new Primitive(objectBuffer, indexCount, GL11.GL_TRIANGLES, ColorMethod.TEXTURE, materialFile, materialName);
 	}
 }

@@ -24,19 +24,34 @@ public class Shader {
 	 */
 	private int type;
 	
+	private String name;
+	private String program;
+	
 	/**
 	 * Loads and compiles a new shader object
 	 * @param program	The source of the program to load
 	 * @param type	The type of shader this is
 	 */
 	public Shader(File program, int type){
-		this.shaderID = GL20.glCreateShader(type);	//Create a new shader of the passed type
-		GL20.glShaderSource(this.shaderID, ResourceManager.ReadFile(program));	//Load the shader source
+		this(ResourceManager.ReadFile(program), program.getName(), type);
+	}
+	
+	public Shader(String program, String shaderName, int type){
+		this.shaderID = GL20.glCreateShader(type);
+		this.program = program;
+		this.name = shaderName;
+		this.type = type;
+		
+		setShader(this.program);
+	}
+	
+	public void setShader(String shader){
+		GL20.glShaderSource(this.shaderID, shader);	//Load the shader source
 		GL20.glCompileShader(this.shaderID);	//Compile the shader
 		
 		//Error checking
 		if(GL20.glGetShaderi(this.shaderID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {	//If there was an error
-			System.err.println("Failure in compiling "+ program.getName() +". Error log:\n" + GL20.glGetShaderInfoLog(this.shaderID, GL20.glGetShaderi(this.shaderID, GL20.GL_INFO_LOG_LENGTH)));	//Print the error
+			System.err.println("Failure in compiling "+ this.name +". Error log:\n" + GL20.glGetShaderInfoLog(this.shaderID, GL20.glGetShaderi(this.shaderID, GL20.GL_INFO_LOG_LENGTH)));	//Print the error
 			FlamingOctoIronman.getInstance().stopGame(DeathReason.SHADER_COMPILE_ERROR);	//And shutdown the game
 		}
 	}
@@ -56,5 +71,13 @@ public class Shader {
 	 */
 	public int getType(){
 		return this.type;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+	
+	public String getProgram(){
+		return this.program;
 	}
 }

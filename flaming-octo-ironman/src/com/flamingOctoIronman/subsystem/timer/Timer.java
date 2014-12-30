@@ -3,60 +3,70 @@
  */
 package com.flamingOctoIronman.subsystem.timer;
 
+import org.lwjgl.opengl.Display;
+
 import com.flamingOctoIronman.FlamingOctoIronman;
+import com.flamingOctoIronman.core.manager.CoreManager;
 import com.flamingOctoIronman.framework.event.EventHandler;
-import com.flamingOctoIronman.subsystem.debugging.DebuggingManager;
 import com.flamingOctoIronman.subsystem.debugging.StreamManager;
 /**
  * @author Quint
  *
  */
-public class Timer {
-	private static StreamManager streams = ((DebuggingManager) FlamingOctoIronman.getInstance().getCoreManagerManager().getManager(DebuggingManager.class.getSimpleName())).getStreamManager(); //Use this to make things a little easier to read
+public class Timer extends CoreManager{
+	private static StreamManager out = FlamingOctoIronman.getInstance().getStreamManager();
 
-	private static float tickCount = 0;
-	private float passedTicks;
-	public Timer(){
-		setCurrentTick();
+	private static long lastFrame;
+	private static int deltaT;
+	private static int frameCount;
+	private static long lastFPS = getTime();
+	private static long fps;
+	private static long totalFrames;
+	
+	public static long getTime(){
+		return System.nanoTime() / 1000000;	//Time in ms
 	}
 	
-	/**
-	 * Called on every tick, increase the tick count
-	 */
-	@EventHandler(event = "GameTickEvent")
-	public static void tickEvent(){
-		tickCount++;
-		streams.println(String.format("Tick: %.0f", tickCount));
+	private static int calculateDelta() {
+	    long time = getTime();
+	    int delta = (int) (time - lastFrame);
+	    lastFrame = time;
+	         
+	    return delta;
 	}
 	
-	/**
-	 * Returns the current number of ticks that have passed since the start of the game
-	 * @return Ticks passed
-	 */
-	public static float getTickCount(){
-		return tickCount;
+	private static void updateFPS() {
+		if(getTime() - lastFPS < 1000){
+			frameCount++;
+		} else{
+			fps = frameCount;
+			frameCount = 0;
+			lastFPS += 1000;
+		}
+		totalFrames++;
 	}
 	
-	/**
-	 * Returns the number of ticks that have passed since the base tick count was set
-	 * @return Ticks passed
-	 */
-	public float ticksPassed(){
-		return tickCount - passedTicks;
+	public static int getDelta(){
+		return deltaT;
 	}
 	
-	/**
-	 * Sets the base tick count to the current tick
-	 */
-	public void setCurrentTick(){
-		passedTicks = tickCount;
+	public static float getFPS(){
+		return fps;
 	}
 	
-	/**
-	 * Sets the base number of ticks to the given tick number
-	 * @param Tick to set the base tick count to
-	 */
-	public void setCurrentTick(float tick){
-		passedTicks = tick;
+	@EventHandler(event = "GameLoopEvent")
+	public static void updateTimer(){
+		deltaT = calculateDelta();
+		updateFPS();
+	}
+
+	@Override
+	public String getName() {
+		return Timer.class.getSimpleName();
+	}
+
+	public static long getTickCount() {
+		// TODO Auto-generated method stub
+		return totalFrames;
 	}
 }

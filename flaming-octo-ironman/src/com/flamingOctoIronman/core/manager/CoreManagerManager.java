@@ -1,6 +1,5 @@
 package com.flamingOctoIronman.core.manager;
 
-import com.flamingOctoIronman.core.event.CoreEvent;
 import com.flamingOctoIronman.core.event.CoreEventBusService;
 import com.flamingOctoIronman.framework.manager.ManagerManager;
 

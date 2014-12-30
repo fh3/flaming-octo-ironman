@@ -15,18 +15,21 @@ uniform sampler2D textureSampler;	//Texture to use
 //---------------------------------
 
 //--------Lighting--------
+//----Definitions----
+#define MAX_LIGHTS 1
 //----In variables----
 in vec3 vNormal;	//The vertex normal in worldspace
 in vec3 surfacePosition;	//The surface's position in worldspace
 
 //----Structures----
-struct PointLight	//Structure for point light
-{ 
-   vec3 position; //The light's position
-   float intensity; //The light's strength
-   float ambientCoefficient;	//The light's ambient coefficient
-   float attenuation;	//The light's intensity over distance
-}; 
+struct Light {
+   vec4 position;
+   vec3 intensities; //a.k.a the color of the light
+   float attenuation;
+   float ambientCoefficient;
+   float coneAngle;
+   vec3 coneDirection;
+};
 
 struct Material	//Structure for material
 {
@@ -35,8 +38,9 @@ struct Material	//Structure for material
 };
 
 //----Uniforms----
-uniform PointLight pointLight = PointLight(vec3(0.0, 0.0, 1.0), 1.0, 0.01, 0);	//The point light
 uniform vec3 cameraPos;	//The camera's current position in worldspace
+uniform Light allLights[MAX_LIGHTS] = {Light(vec4(0.0, 1.0, 0.0, 1.0), vec3(1.0, 1.0, 1.0), 1.0, 0.5, 45, vec3(0.0, -1.0, 0.0))};
+uniform int numLights = 1;	//Total number of lights
 
 uniform Material material = Material(50, vec3(1.0, 1.0, 1.0));	//The material (or default)
 //------------------------
@@ -44,6 +48,43 @@ uniform Material material = Material(50, vec3(1.0, 1.0, 1.0));	//The material (o
 //--------Final color--------
 out vec4 outputColor;	//Fragment color output
 //---------------------------
+
+vec3 ApplyLight(Light light, vec3 surfaceColor, vec3 normal, vec3 surfacePos, vec3 surfaceToCamera) {
+    vec3 surfaceToLight;
+    float attenuation = 1.0;
+    if(light.position.w == 0.0) {
+        //directional light
+        surfaceToLight = normalize(light.position.xyz);
+        attenuation = 1.0; //no attenuation for directional lights
+    } else {
+        //point light
+        surfaceToLight = normalize(light.position.xyz - surfacePos);
+        float distanceToLight = length(light.position.xyz - surfacePos);
+        attenuation = 1.0 / (1.0 + light.attenuation * pow(distanceToLight, 2));
+
+        //cone restrictions (affects attenuation)
+        float lightToSurfaceAngle = degrees(acos(dot(-surfaceToLight, normalize(light.coneDirection))));
+        if(lightToSurfaceAngle > light.coneAngle){
+            attenuation = 0.0;
+        }
+    }
+
+    //ambient
+    vec3 ambient = light.ambientCoefficient * surfaceColor.rgb * light.intensities;
+
+    //diffuse
+    float diffuseCoefficient = max(0.0, dot(normal, surfaceToLight));
+    vec3 diffuse = diffuseCoefficient * surfaceColor.rgb * light.intensities;
+    
+    //specular
+    float specularCoefficient = 0.0;
+    if(diffuseCoefficient > 0.0)
+        specularCoefficient = pow(max(0.0, dot(surfaceToCamera, reflect(-surfaceToLight, normal))), material.shine);
+    vec3 specular = specularCoefficient * material.specularColor * light.intensities;
+
+    //linear color (color before gamma correction)
+    return ambient + attenuation*(diffuse + specular);
+}
 
 void main()
 {
@@ -63,52 +104,25 @@ void main()
 	
 	//--------Lighting--------
 	//Lighting is only applied if a texture is being used (not color or default)
+	vec3 surfaceToCamera = normalize(cameraPos - surfacePosition); //Vector from camera to surface
+	surfaceToCamera = vec3(-surfaceToCamera.x, -surfaceToCamera.y, surfaceToCamera.z);
 	
-	//----Point lights----
-	//Sets pointFinalColor to the surface color as it's effected by the point light
-	//Uses phong shading
-	vec4 pointFinalColor;
+	vec3 pointFinalColor = vec3(0);;	//The final color based on lighting
 	if(colorType == TEXTURE){	 
-		vec3 surfaceToLight = normalize(pointLight.position - surfacePosition);	//Vector from surface to light
-    	vec3 surfaceToCamera = normalize(cameraPos - surfacePosition);	//Vector from camera to surface
-    	
-    	//--Ambient--
-    	vec3 ambient = pointLight.ambientCoefficient * surfaceColor.rgb * pointLight.intensity;
-    	
-    	//--Diffuse--
-    	float diffuseCoefficient = max(0.0, dot(vNormal, surfaceToLight));
-    	vec3 diffuse = diffuseCoefficient * surfaceColor.rgb * pointLight.intensity;
-    	
-    	//--Specular--
-    	float specularCoefficient = 0.0;
-    	vec3 surfaceToCamera_modified = vec3(-surfaceToCamera.x, -surfaceToCamera.y, surfaceToCamera.z);
-    	if(diffuseCoefficient > 0.0){	//No point in computing specular if diffuse is less than 0.0
-    		specularCoefficient = pow(max(0.0, dot(surfaceToCamera_modified, reflect(-surfaceToLight, vNormal))), material.shine);
-    	}
-    	vec3 specular = specularCoefficient * material.specularColor * pointLight.intensity;
-    	
-    	//--Attenuation--
-    	float distanceToLight = length(surfaceToLight);	//Distance from surface to light
-   		float attenuation = 1.0 / (1.0 + pointLight.attenuation * pow(distanceToLight, 2));	//Formula: 1.0/(1.0 + kd^2)
-   		
-   		//--Gamma--
-   		vec3 gamma = vec3(1.0/2.2);
-   		
-   		//--Output--
-   		vec3 linearColor = ambient + attenuation * (diffuse + specular);	//Color before gamma correction
-   		pointFinalColor = vec4(pow(linearColor, gamma), surfaceColor.a);
+		for(int i = 0; i < numLights; ++i){
+		    pointFinalColor += ApplyLight(allLights[i], surfaceColor.rgb, vNormal, surfacePosition, surfaceToCamera);
+		}
 	}
-	//------------------
 	
 	//------------------------
-	
 	//--------Sets the final fragment color--------
 	if(colorType == TEXTURE){
-		outputColor = pointFinalColor;
+		outputColor = vec4(pointFinalColor, surfaceColor.a);
 	} else if(colorType == COLOR){
 		outputColor = surfaceColor;
 	} else {
 		outputColor = surfaceColor;
 	}
 	//---------------------------------------------
+	
 }

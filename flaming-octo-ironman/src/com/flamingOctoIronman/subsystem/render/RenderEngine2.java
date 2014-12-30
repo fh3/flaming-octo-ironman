@@ -1,6 +1,7 @@
 package com.flamingOctoIronman.subsystem.render;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
@@ -34,7 +35,7 @@ import com.flamingOctoIronman.subsystem.resource.BufferBuilder;
 import com.flamingOctoIronman.subsystem.resource.ResourceManager;
 
 public class RenderEngine2{
-	private ShaderProgram program;
+	private static ShaderProgram program;
 	
 	private static RenderEngine2 instance;
 	
@@ -162,6 +163,8 @@ public class RenderEngine2{
 	
 	private float frustumScale = calculateFrustumScale(70f);
 	
+	private static boolean VSync = true;
+	
 	private StreamManager out;
 	
 	private RenderEngine2(){
@@ -189,6 +192,10 @@ public class RenderEngine2{
         Display.setResizable(true);	//Make it resizeable
         Display.setTitle("FLAMING OCTO IRONMAN");	//Set the title
         
+        if(VSync){
+        	FlamingOctoIronman.setTargetFPS(Display.getDesktopDisplayMode().getFrequency());
+        }
+        	
         try {
 			Keyboard.create();
 		} catch (LWJGLException e) {
@@ -216,6 +223,11 @@ public class RenderEngine2{
 		program.addShader(new Shader(ResourceManager.getFileDir("shaders/vertex_test.glsl"), GL20.GL_VERTEX_SHADER));	//Add the vertex shader
 		program.addShader(new Shader(ResourceManager.getFileDir("shaders/frag_test.glsl"), GL20.GL_FRAGMENT_SHADER));	//Add the fragment shader
 		program.compileProgram();//Compile the program
+		
+		HashMap<String, String> fragChanges = new HashMap<String, String>(1);
+		fragChanges.put("MAX_LIGHTS", "1");
+		program = program.modifyGLSLDefine(program.getShader("frag_test.glsl"), fragChanges);
+
 		
 		//Get uniforms
 		pvmMatrixUniform = GL20.glGetUniformLocation(program.getProgram(), "pvmMatrix");
@@ -255,9 +267,9 @@ public class RenderEngine2{
 		GL11.glDepthFunc(GL11.GL_LEQUAL);
 		GL11.glDepthRange(0.0f, 1.0f);
 		
-		//GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		
-		OBJEntityList.add(new Model(ResourceManager.getFileDir("objects/spheretest1.obj"), ResourceManager.getFileDir("textures/Spheretest1_texture.bmp")));
+		OBJEntityList.add(new Model(ResourceManager.getFileDir("objects/spheretest1.obj")));
 		primitiveList.add(new Point(new Vector3f(1.0f, 1.0f, 1.0f), new Vector3f(1.0f, 1.0f, 1.0f), 10.0f));
 		primitiveList.add(new Line(new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(10.0f, 0.0f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f), 2.0f));
 		primitiveList.add(new Line(new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.0f, 10.0f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f), 2.0f));
@@ -269,6 +281,7 @@ public class RenderEngine2{
 		
 		Primitive.setColorTypeUniform(colorTypeUniform);
 		Primitive.setVAO(VAO);
+		Material.setProgram(program.getProgram());
 	}
 	
 	/**
@@ -299,6 +312,7 @@ public class RenderEngine2{
 		for(int i = 0; i< OBJEntityList.size(); i++){
 			if(OBJEntityList.get(i) != null){
 				OBJEntityList.get(i).getTexture().bind();
+				OBJEntityList.get(i).getMaterial().loadMaterial();
 				OBJEntityList.get(i).getPrimitive().renderObject();
 			}
 		}
@@ -318,16 +332,7 @@ public class RenderEngine2{
 		
 		//Update the display
 		Display.update();
-			
-		if(true){
-			//xAngle = -0.001f * (Display.getWidth() / 2 - Mouse.getY());
-			//yAngle = 0.001f * (Display.getHeight() / 2 - Mouse.getX());
-			//out.println("X: " + Mouse.getX() + ", Y: " + Mouse.getY());
-			//out.println(Display.getWidth() / 2);
-			//out.println(Display.getHeight() / 2);
-			//out.println(forward.toString());
-			//Mouse.setCursorPosition(Display.getWidth() / 2, Display.getHeight() / 2);
-		}
+
 		//Calculate vectors
 		forward = createVector(0.0f, 0.0f, 1.0f);
 		forward = matrixVectorMultiplication(createRotationMatrix(0, yAngle, 0), forward);
@@ -479,5 +484,9 @@ public class RenderEngine2{
 			instance = new RenderEngine2();		//Then create it
 		}
 		return instance;	//And return it
+	}
+	
+	public static ShaderProgram getProgram(){
+		return program;
 	}
 }
